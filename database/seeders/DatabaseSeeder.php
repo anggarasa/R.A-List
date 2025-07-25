@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(CategoryTaskSeeder::class);
+        $this->call([
+            CategoryTaskSeeder::class,
+            StatusTaskSeeder::class,
+        ]);
 
         User::factory()->create([
             'name' => 'Anggara Saputra',
