@@ -14,10 +14,9 @@ class CategoryTaskSeeder extends Seeder
     public function run(): void
     {
         $categoryTasks = [
-            'Revisi',
-            'To do',
-            'Error',
-            'Done',
+            'Slicing',
+            'Integration API',
+            'Clean Code',
         ];
         
         foreach($categoryTasks as $categori) {

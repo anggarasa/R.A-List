@@ -2,7 +2,6 @@
     <div class="flex justify-between items-center">
         <flux:heading size="xl">Job List Management</flux:heading>
 
-        {{-- <flux:button icon="plus" variant="primary">Add Job</flux:button> --}}
         {{-- button modal add --}}
         <livewire:list-jobs.modal-add-job />
     </div>
