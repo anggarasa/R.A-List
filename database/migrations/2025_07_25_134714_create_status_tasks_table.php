@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_lists', function (Blueprint $table) {
+        Schema::create('status_tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_task_id')->constrained('category_tasks')->onDelete('cascade');
-            $table->string('name_job_list');
-            $table->text('description');
-            $table->date('date_job')->nullable();
+            $table->string('name_status_task');
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_lists');
+        Schema::dropIfExists('status_tasks');
     }
 };
