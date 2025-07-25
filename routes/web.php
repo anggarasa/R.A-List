@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\ListJobs\JobListView;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -9,11 +10,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('dashboard', 'dashboard')->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+    // job list route
+    Route::get('job-lists', JobListView::class)->name('job-list.view');
+
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
