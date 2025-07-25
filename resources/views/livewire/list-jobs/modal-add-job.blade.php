@@ -12,26 +12,30 @@
 
             <form wire:submit="createTask" class="space-y-6">
                 {{-- input name job --}}
-                <flux:input wire:model="nameTask" label="Name Job" placeholder="Enter name in here..." />
+                <flux:input wire:model="form.nameTask" label="Name Task" placeholder="Enter name in here..." />
 
                 {{-- input category --}}
-                <flux:select wire:model="categoryTaskId" label="Category" placeholder="Choose Category...">
-                    <flux:select.option>Slicing</flux:select.option>
-                    <flux:select.option>Integration API</flux:select.option>
-                    <flux:select.option>Clean Code</flux:select.option>
+                <flux:select wire:model="form.categoryTaskId" label="Category">
+                    <flux:select.option>Choose Category...</flux:select.option>
+                    @foreach ($categories as $categoryTask)
+                    <flux:select.option value="{{ $categoryTask->id }}">
+                        {{ $categoryTask->name_category_task }}
+                    </flux:select.option>
+                    @endforeach
                 </flux:select>
 
                 {{-- input status --}}
-                <flux:select wire:model="statusTaskId" label="Status" placeholder="Choose Status...">
-                    <flux:select.option>Pending</flux:select.option>
-                    <flux:select.option>In Progress</flux:select.option>
-                    <flux:select.option>Completed</flux:select.option>
-                    <flux:select.option>Error</flux:select.option>
-                    <flux:select.option>Revision</flux:select.option>
+                <flux:select wire:model="form.statusTaskId" label="Status">
+                    <flux:select.option>Choose Status...</flux:select.option>
+                    @foreach ($statuses as $statusTask)
+                    <flux:select.option value="{{ $statusTask->id }}">
+                        {{ $statusTask->name_status_task }}
+                    </flux:select.option>
+                    @endforeach
                 </flux:select>
 
                 {{-- textaread description --}}
-                <flux:textarea wire:model="description" rows="2" label="Description"
+                <flux:textarea wire:model="form.description" rows="2" label="Description"
                     placeholder="Enter description in here..." />
 
                 <div class="flex">
