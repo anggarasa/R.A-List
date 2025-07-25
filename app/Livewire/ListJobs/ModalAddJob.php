@@ -14,7 +14,8 @@ class ModalAddJob extends Component
     public function createTask()
     {
         $this->form->store();
-
+        
+        $this->dispatch('new-job');
         $this->dispatch('notification', type: 'success', message: 'New task created successfully!');
     }
     
