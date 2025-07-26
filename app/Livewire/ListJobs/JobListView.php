@@ -2,18 +2,25 @@
 
 namespace App\Livewire\ListJobs;
 
+use App\Livewire\Forms\JobListForm;
 use App\Models\CategoryTask;
 use App\Models\JobList;
 use App\Models\StatusTask;
 use Flux\Flux;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use phpDocumentor\Reflection\Types\This;
+
+use function PHPSTORM_META\type;
 
 #[On('new-job')]
 class JobListView extends Component
 {
+    public JobListForm $form;
+    
     public $jobId;
     public $detailJob;
+    public $isEdit = false;
     
     public $categories = [];
     public $statusTasks = [];
@@ -47,6 +54,30 @@ class JobListView extends Component
             $this->categoryTaskId = $this->detailJob->category_task_id;
             $this->statusTaskId = $this->detailJob->status_task_id;
             $this->revisionDate = $this->detailJob->date_job;
+        }
+    }
+
+    public function editTask($jobId)
+    {
+        $this->form->setJobList($jobId);
+        $this->isEdit = true;
+    }
+
+    public function updateTask()
+    {
+        $updated = $this->form->store();
+        
+        if ($updated) {
+            $this->loadJob();
+            
+            $this->dispatch('notification', type: 'success', message: 'Successfully updated task');
+            
+            $this->cachedJobLists = null;
+            
+            Flux::modal('detail-task')->close();
+            $this->isEdit = false;
+            
+            $this->form->resetForm();
         }
     }
     
@@ -88,7 +119,7 @@ class JobListView extends Component
             
             $this->loadJob();
             
-            $this->cachedJobLists = null;   
+            $this->cachedJobLists = null;
         }
     }
     
@@ -105,7 +136,7 @@ class JobListView extends Component
             
             Flux::modal('detail-task')->close();
             
-            $this->dispatch('job-deleted', ['message' => 'Job deleted successfully']);
+            $this->dispatch('notification', type: 'success', message: 'successfully deleted the task');
         }
     }
     
@@ -119,6 +150,11 @@ class JobListView extends Component
         }
         
         return $this->cachedJobLists;
+    }
+
+    public function cancelEdit()
+    {
+        $this->isEdit = false;
     }
     
     public function render()

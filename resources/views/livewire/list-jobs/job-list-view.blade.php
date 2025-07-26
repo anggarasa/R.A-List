@@ -40,8 +40,27 @@
 
     {{-- Modal detail task --}}
     @if ($detailJob)
-    <flux:modal name="detail-task" class="md:w-1/2" wire:ignore.self>
+    <flux:modal name="detail-task" class="md:w-1/2" @close="cancelEdit" wire:ignore.self>
         <div class="space-y-6">
+            @if ($isEdit)
+            <form wire:submit="updateTask" class="space-y-6">
+                <div class="space-y-4">
+                    <flux:input wire:model="form.nameTask" label="Name Task" placeholder="enter name task in here..." />
+
+                    <flux:textarea wire:model="form.description" label="Description"
+                        placeholder="enter description in here..." />
+                </div>
+
+                <div class="flex items-center justify-end space-x-3">
+                    <flux:button wire:click="cancelEdit">
+                        Cancel
+                    </flux:button>
+                    <flux:button wire:click="updateTask" variant="primary">
+                        Save Changes
+                    </flux:button>
+                </div>
+            </form>
+            @else
             <div>
                 <div class="flex items-center space-x-3">
                     <flux:heading size="lg">{{ $detailJob->name_job_list }}</flux:heading>
@@ -59,7 +78,7 @@
                 };
                 @endphp
 
-                <div class="flex items-center justify-between mt-2">
+                <div class="flex items-center justify-between mt-5">
                     <div class="space-y-1">
                         <flux:heading>Category Task</flux:heading>
                         <flux:badge color="lime">{{ $detailJob->categoryTask->name_category_task }}</flux:badge>
@@ -101,11 +120,14 @@
                     label="Revision Date" />
             </div>
 
-            <div class="flex items-center space-x-3">
-                <flux:spacer />
+            <div class="flex items-center justify-end space-x-3">
+                <flux:button wire:click="editTask({{ $detailJob->id }})" variant="primary">
+                    Edit Task
+                </flux:button>
                 <flux:button variant="danger" wire:click="deleteJob"
                     wire:confirm="Are you sure you want to delete this job?">Delete</flux:button>
             </div>
+            @endif
         </div>
     </flux:modal>
     @endif
