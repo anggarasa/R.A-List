@@ -23,7 +23,7 @@
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
                 {{-- job list --}}
-                <flux:navlist.item class="mt-3" icon="home" :href="route('job-list.view')"
+                <flux:navlist.item class="mt-3" icon="list-bullet" :href="route('job-list.view')"
                     :current="request()->routeIs('job-list.view')" wire:navigate>{{ __('Job List') }}
                 </flux:navlist.item>
             </flux:navlist.group>
