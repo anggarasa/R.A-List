@@ -14,12 +14,19 @@
 
                     @php
                     $badgeColor = match($job->statusTask->name_status_task) {
-                    'In Progress' => 'amber',
+                    'In Progress' => 'blue',
                     'Completed' => 'green',
                     'Error' => 'red',
-                    'Revisi' => 'indigo',
-                    default => 'zinc'
+                    'Revisi' => 'yellow',
+                    default => 'gray'
                     };
+
+                    $categoryColor = match ($job->categoryTask->name_category_task) {
+                    'Slicing' => 'sky',
+                    'Integration API' => 'indigo',
+                    'Clean Code' => 'emerald',
+                    default => 'lime'
+                    }
                     @endphp
                     <flux:badge color="{{ $badgeColor }}">{{ $job->statusTask->name_status_task }}</flux:badge>
                 </div>
@@ -28,7 +35,7 @@
                 </flux:text>
 
                 <div class="flex items-center mt-5 justify-between">
-                    <flux:badge size="sm" color='lime'>
+                    <flux:badge size="sm" color='{{ $categoryColor }}'>
                         {{ $job->categoryTask->name_category_task ?? 'Category' }}
                     </flux:badge>
                     <flux:text>
@@ -72,18 +79,26 @@
 
                 @php
                 $badgeColor = match($detailJob->statusTask->name_status_task) {
-                'In Progress' => 'amber',
+                'In Progress' => 'blue',
                 'Completed' => 'green',
                 'Error' => 'red',
-                'Revisi' => 'indigo',
-                default => 'zinc'
+                'Revisi' => 'yellow',
+                default => 'gray'
                 };
+
+                $categoryColor = match ($detailJob->categoryTask->name_category_task) {
+                'Slicing' => 'sky',
+                'Integration API' => 'indigo',
+                'Clean Code' => 'emerald',
+                default => 'lime'
+                }
                 @endphp
 
                 <div class="flex items-center justify-between mt-5">
                     <div class="space-y-1">
                         <flux:heading>Category Task</flux:heading>
-                        <flux:badge color="lime">{{ $detailJob->categoryTask->name_category_task }}</flux:badge>
+                        <flux:badge color="{{ $categoryColor }}">{{ $detailJob->categoryTask->name_category_task }}
+                        </flux:badge>
                     </div>
                     <div class="space-y-1">
                         <flux:heading>Status Task</flux:heading>
