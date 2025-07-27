@@ -123,7 +123,7 @@
 
     {{-- pagination --}}
     <div class="mt-7">
-        {{ $jobLists->links() }}
+        {{ $jobLists->links('vendor.pagination.tailwind') }}
     </div>
 
     {{-- Modal detail task --}}

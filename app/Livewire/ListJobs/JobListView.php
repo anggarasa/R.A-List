@@ -29,7 +29,7 @@ class JobListView extends Component
     
     public $categoryTaskId;
     public $statusTaskId;
-    public $revisionDates = []; // Array untuk handle multiple revision dates
+    public $revisionDates = [];
     
     // Search properties
     public $search = '';
@@ -191,35 +191,31 @@ class JobListView extends Component
      */
     public function getJobListsProperty()
     {
-        if ($this->cachedJobLists === null) {
-            $query = JobList::with(['categoryTask', 'statusTask']);
-            
-            // Search by name and description
-            if (!empty($this->search)) {
-                $query->where(function ($q) {
-                    $q->where('name_job_list', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
-                });
-            }
-            
-            // Filter by category
-            if (!empty($this->searchCategory)) {
-                $query->whereHas('categoryTask', function ($q) {
-                    $q->where('name_category_task', 'like', '%' . $this->searchCategory . '%');
-                });
-            }
-            
-            // Filter by status
-            if (!empty($this->searchStatus)) {
-                $query->whereHas('statusTask', function ($q) {
-                    $q->where('name_status_task', 'like', '%' . $this->searchStatus . '%');
-                });
-            }
-            
-            $this->cachedJobLists = $query->latest()->paginate(6);
+        $query = JobList::with(['categoryTask', 'statusTask']);
+        
+        // Search by name and description
+        if (!empty($this->search)) {
+            $query->where(function ($q) {
+                $q->where('name_job_list', 'like', '%' . $this->search . '%')
+                  ->orWhere('description', 'like', '%' . $this->search . '%');
+            });
         }
         
-        return $this->cachedJobLists;
+        // Filter by category
+        if (!empty($this->searchCategory)) {
+            $query->whereHas('categoryTask', function ($q) {
+                $q->where('name_category_task', 'like', '%' . $this->searchCategory . '%');
+            });
+        }
+        
+        // Filter by status
+        if (!empty($this->searchStatus)) {
+            $query->whereHas('statusTask', function ($q) {
+                $q->where('name_status_task', 'like', '%' . $this->searchStatus . '%');
+            });
+        }
+        
+        return $query->latest()->paginate(9);
     }
 
     public function cancelEdit()
