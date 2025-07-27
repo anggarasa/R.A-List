@@ -4,11 +4,64 @@
         <livewire:list-jobs.modal-add-job />
     </div>
 
-    <div class="grid gap-5 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+    {{-- Search and Filter Section --}}
+    <div class="mt-6 bg-white dark:bg-zinc-900 rounded-2xl border dark:border-zinc-600 p-6 shadow">
+        <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            {{-- Main Search Input --}}
+            <div class="lg:col-span-2">
+                <flux:input wire:model.live="search" placeholder="Search by name or description..."
+                    icon="magnifying-glass" label="Search Jobs" />
+            </div>
+
+            {{-- Category Filter --}}
+            <div>
+                <flux:select wire:model.live="searchCategory" label="Filter by Category" placeholder="All Categories">
+                    <option value="">All Categories</option>
+                    @foreach ($categories as $category)
+                    <option value="{{ $category->name_category_task }}">{{ $category->name_category_task }}</option>
+                    @endforeach
+                </flux:select>
+            </div>
+
+            {{-- Status Filter --}}
+            <div>
+                <flux:select wire:model.live="searchStatus" label="Filter by Status" placeholder="All Status">
+                    <option value="">All Status</option>
+                    @foreach ($statusTasks as $status)
+                    <option value="{{ $status->name_status_task }}">{{ $status->name_status_task }}</option>
+                    @endforeach
+                </flux:select>
+            </div>
+        </div>
+
+        {{-- Search Actions --}}
+        <div class="flex items-center justify-between mt-4">
+            <div class="flex items-center space-x-2">
+                <flux:text class="text-sm text-gray-600 dark:text-gray-400">
+                    Showing {{ count($jobLists) }} job(s)
+                </flux:text>
+                @if($search || $searchCategory || $searchStatus)
+                <flux:badge color="blue" size="sm">
+                    Filtered
+                </flux:badge>
+                @endif
+            </div>
+
+            @if($search || $searchCategory || $searchStatus)
+            <flux:button wire:click="resetSearch" size="sm" variant="outline" icon="x-mark">
+                Clear Filters
+            </flux:button>
+            @endif
+        </div>
+    </div>
+
+    {{-- Job Cards Grid --}}
+    @if(count($jobLists) > 0)
+    <div class="grid gap-5 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-6">
         @foreach ($jobLists as $job)
         <flux:modal.trigger :name="'detail-job'.$job->id">
             <div
-                class="mt-10 container bg-white border p-6 rounded-2xl shadow dark:bg-zinc-900 dark:border-zinc-600 cursor-pointer hover:shadow-lg transition-shadow">
+                class="container bg-white border p-6 rounded-2xl shadow dark:bg-zinc-900 dark:border-zinc-600 cursor-pointer hover:shadow-lg transition-shadow">
                 <div class="flex items-center gap-3">
                     <flux:heading>{{ $job->name_job_list }}</flux:heading>
 
@@ -45,6 +98,32 @@
             </div>
         </flux:modal.trigger>
         @endforeach
+    </div>
+    @else
+    {{-- No Results State --}}
+    <div class="mt-6 bg-white dark:bg-zinc-900 rounded-2xl border dark:border-zinc-600 p-12 shadow text-center">
+        <div class="max-w-md mx-auto">
+            <flux:icon.magnifying-glass class="mx-auto h-12 w-12 text-gray-400" />
+            <flux:heading size="lg" class="mt-4">No jobs found</flux:heading>
+            <flux:text class="mt-2 text-gray-600 dark:text-gray-400">
+                @if($search || $searchCategory || $searchStatus)
+                No jobs match your search criteria. Try adjusting your filters.
+                @else
+                No jobs have been created yet. Create your first job to get started.
+                @endif
+            </flux:text>
+            @if($search || $searchCategory || $searchStatus)
+            <flux:button wire:click="resetSearch" class="mt-4" variant="outline">
+                Clear all filters
+            </flux:button>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    {{-- pagination --}}
+    <div class="mt-7">
+        {{ $jobLists->links() }}
     </div>
 
     {{-- Modal detail task --}}

@@ -9,6 +9,7 @@ use App\Models\StatusTask;
 use Flux\Flux;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithPagination;
 use phpDocumentor\Reflection\Types\This;
 
 use function PHPSTORM_META\type;
@@ -16,6 +17,8 @@ use function PHPSTORM_META\type;
 #[On('new-job')]
 class JobListView extends Component
 {
+    use WithPagination;
+    
     public JobListForm $form;
     
     public $isEdit = false;
@@ -27,6 +30,11 @@ class JobListView extends Component
     public $categoryTaskId;
     public $statusTaskId;
     public $revisionDates = []; // Array untuk handle multiple revision dates
+    
+    // Search properties
+    public $search = '';
+    public $searchCategory = '';
+    public $searchStatus = '';
     
     protected $cachedJobLists;
     
@@ -48,6 +56,35 @@ class JobListView extends Component
         foreach ($jobLists as $job) {
             $this->revisionDates[$job->id] = $job->date_job;
         }
+    }
+
+    /**
+     * Reset search filters
+     */
+    public function resetSearch()
+    {
+        $this->search = '';
+        $this->searchCategory = '';
+        $this->searchStatus = '';
+        $this->cachedJobLists = null;
+    }
+
+    /**
+     * Listener untuk real-time search
+     */
+    public function updatedSearch()
+    {
+        $this->cachedJobLists = null;
+    }
+
+    public function updatedSearchCategory()
+    {
+        $this->cachedJobLists = null;
+    }
+
+    public function updatedSearchStatus()
+    {
+        $this->cachedJobLists = null;
     }
 
     public function editTask($jobId)
@@ -150,14 +187,36 @@ class JobListView extends Component
     }
     
     /**
-     * Getter untuk job lists dengan caching
+     * Getter untuk job lists dengan caching dan search functionality
      */
     public function getJobListsProperty()
     {
         if ($this->cachedJobLists === null) {
-            $this->cachedJobLists = JobList::with(['categoryTask', 'statusTask'])
-                ->latest()
-                ->get();
+            $query = JobList::with(['categoryTask', 'statusTask']);
+            
+            // Search by name and description
+            if (!empty($this->search)) {
+                $query->where(function ($q) {
+                    $q->where('name_job_list', 'like', '%' . $this->search . '%')
+                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                });
+            }
+            
+            // Filter by category
+            if (!empty($this->searchCategory)) {
+                $query->whereHas('categoryTask', function ($q) {
+                    $q->where('name_category_task', 'like', '%' . $this->searchCategory . '%');
+                });
+            }
+            
+            // Filter by status
+            if (!empty($this->searchStatus)) {
+                $query->whereHas('statusTask', function ($q) {
+                    $q->where('name_status_task', 'like', '%' . $this->searchStatus . '%');
+                });
+            }
+            
+            $this->cachedJobLists = $query->latest()->paginate(6);
         }
         
         return $this->cachedJobLists;
@@ -184,5 +243,4 @@ class JobListView extends Component
             'jobLists' => $this->jobLists,
         ]);
     }
-
 }
