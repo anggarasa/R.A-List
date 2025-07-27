@@ -17,6 +17,7 @@ class ModalAddJob extends Component
         
         $this->dispatch('new-job');
         $this->dispatch('notification', type: 'success', message: 'New task created successfully!');
+        $this->form->resetForm();
     }
     
     public function render()

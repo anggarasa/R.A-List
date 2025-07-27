@@ -18,16 +18,15 @@ class JobListView extends Component
 {
     public JobListForm $form;
     
-    public $jobId;
-    public $detailJob;
     public $isEdit = false;
+    public $jobId;
     
     public $categories = [];
     public $statusTasks = [];
     
     public $categoryTaskId;
     public $statusTaskId;
-    public $revisionDate;
+    public $revisionDates = []; // Array untuk handle multiple revision dates
     
     protected $cachedJobLists;
     
@@ -35,30 +34,25 @@ class JobListView extends Component
     {
         $this->categories = CategoryTask::all();
         $this->statusTasks = StatusTask::all();
-    }
-    
-    public function showDetailTask($jobId)
-    {
-        if($jobId) {
-            $this->jobId = $jobId;
-            $this->loadJob();
-            Flux::modal('detail-task')->show();
-        }
-    }
-    
-    public function loadJob()
-    {
-        $this->detailJob = JobList::with(['categoryTask', 'statusTask'])->find($this->jobId);
         
-        if($this->detailJob) {
-            $this->categoryTaskId = $this->detailJob->category_task_id;
-            $this->statusTaskId = $this->detailJob->status_task_id;
-            $this->revisionDate = $this->detailJob->date_job;
+        // Initialize revision dates array
+        $this->initializeRevisionDates();
+    }
+
+    /**
+     * Initialize revision dates untuk semua job lists
+     */
+    private function initializeRevisionDates()
+    {
+        $jobLists = JobList::all();
+        foreach ($jobLists as $job) {
+            $this->revisionDates[$job->id] = $job->date_job;
         }
     }
 
     public function editTask($jobId)
     {
+        $this->jobId = $jobId;
         $this->form->setJobList($jobId);
         $this->isEdit = true;
     }
@@ -68,79 +62,96 @@ class JobListView extends Component
         $updated = $this->form->store();
         
         if ($updated) {
-            $this->loadJob();
-            
             $this->dispatch('notification', type: 'success', message: 'Successfully updated task');
             
             $this->cachedJobLists = null;
             
-            Flux::modal('detail-task')->close();
+            // Refresh revision dates after update
+            $this->initializeRevisionDates();
+            
+            Flux::modal('detail-job'.$this->jobId)->close();
             $this->isEdit = false;
+
+            $this->reset('jobId');
             
             $this->form->resetForm();
         }
     }
     
-    // Realtime update untuk category
-    public function updatedCategoryTaskId($value)
+    /**
+     * Realtime update untuk category
+     */
+    public function updateCategoryTaskId($value, $jobId)
     {
-        if ($this->detailJob && $value) {
-            $this->detailJob->update([
+        $job = JobList::find($jobId);
+        
+        if ($job && $value) {
+            $job->update([
                 'category_task_id' => $value
             ]);
             
-            $this->loadJob();
-            
             $this->cachedJobLists = null;
         }
     }
     
-    // Realtime update untuk status
-    public function updatedStatusTaskId($value)
+    /**
+     * Realtime update untuk status
+     */
+    public function updateStatusTaskId($value, $jobId)
     {
-        if ($this->detailJob && $value) {
-            $this->detailJob->update([
+        $job = JobList::find($jobId);
+        
+        if ($job && $value) {
+            $job->update([
                 'status_task_id' => $value
             ]);
             
-            $this->loadJob();
-            
-            $this->cachedJobLists = null;   
+            $this->cachedJobLists = null;
         }
     }
     
-    // Realtime update untuk revision date
-    public function updatedRevisionDate($value)
+    /**
+     * Realtime update untuk revision date menggunakan updatedRevisionDates
+     */
+    public function updatedRevisionDates($value, $key)
     {
-        if ($this->detailJob) {
-            $this->detailJob->update([
-                'date_job' => $value
+        // $key adalah job ID, $value adalah tanggal yang baru
+        $job = JobList::find($key);
+        
+        if ($job) {
+            $job->update([
+                'date_job' => $value ? $value : null
             ]);
-            
-            $this->loadJob();
             
             $this->cachedJobLists = null;
         }
     }
     
-    // Method untuk delete job
-    public function deleteJob()
+    /**
+     * Method untuk delete job
+     */
+    public function deleteJob($jobId)
     {
-        if ($this->detailJob) {
-            $this->detailJob->delete();
+        $job = JobList::find($jobId);
+        
+        if ($job) {
+            $job->delete();
             
-            $this->reset(['jobId', 'detailJob', 'categoryTaskId', 'statusTaskId', 'revisionDate']);
+            // Remove from revision dates array
+            unset($this->revisionDates[$jobId]);
             
             // Refresh cache
             $this->cachedJobLists = null;
             
-            Flux::modal('detail-task')->close();
-            
-            $this->dispatch('notification', type: 'success', message: 'successfully deleted the task');
+            Flux::modal('detail-job' . $jobId)->close();
+
+            $this->dispatch('notification', type: 'success', message: 'Task deleted successfully');
         }
     }
     
-    // Getter untuk job lists dengan caching
+    /**
+     * Getter untuk job lists dengan caching
+     */
     public function getJobListsProperty()
     {
         if ($this->cachedJobLists === null) {
@@ -155,6 +166,16 @@ class JobListView extends Component
     public function cancelEdit()
     {
         $this->isEdit = false;
+        $this->form->resetForm();
+    }
+    
+    /**
+     * Refresh job lists dan revision dates
+     */
+    public function refreshJobLists()
+    {
+        $this->cachedJobLists = null;
+        $this->initializeRevisionDates();
     }
     
     public function render()
@@ -163,4 +184,5 @@ class JobListView extends Component
             'jobLists' => $this->jobLists,
         ]);
     }
+
 }
