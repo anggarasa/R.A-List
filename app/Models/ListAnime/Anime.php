@@ -15,4 +15,10 @@ class Anime extends Model
         'air_day',
         'next_air_day',
     ];
+
+    // Has Many
+    public function animeProgreses()
+    {
+        return $this->hasMany(UserAnimeProgres::class);
+    }
 }
