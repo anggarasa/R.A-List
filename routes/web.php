@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\ListAnime\ListAnime;
 use App\Livewire\ListJobs\JobListView;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -15,6 +16,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // job list route
     Route::get('job-lists', JobListView::class)->name('job-list.view');
+
+    // anime list route
+    Route::get('anime-lists', ListAnime::class)->name('anime-list.view');
 
     Route::redirect('settings', 'settings/profile');
 

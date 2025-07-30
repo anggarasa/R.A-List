@@ -26,6 +26,11 @@
                 <flux:navlist.item class="mt-3" icon="list-bullet" :href="route('job-list.view')"
                     :current="request()->routeIs('job-list.view')" wire:navigate>{{ __('Job List') }}
                 </flux:navlist.item>
+
+                {{-- anime list --}}
+                <flux:navlist.item class="mt-3" icon="film" :href="route('anime-list.view')"
+                    :current="request()->routeIs('anime-list.view')" wire:navigate>{{ __('Anime List') }}
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

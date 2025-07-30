@@ -8,6 +8,7 @@ class Anime extends Model
 {
     protected $fillable = [
         'title',
+        'image',
         'season',
         'year',
         'status',

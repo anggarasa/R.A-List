@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('animes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('image');
             $table->enum('season', ['Winter', 'Spring', 'Summer', 'Fall']);
             $table->year('year');
             $table->enum('status', ['Ongoing', 'Finished']);
