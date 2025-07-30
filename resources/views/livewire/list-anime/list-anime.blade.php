@@ -48,7 +48,30 @@
                 {{-- Poster --}}
                 <flux:field>
                     <flux:label badge="Required">Poster</flux:label>
-                    <flux:input type="file" wire:model="poster" />
+                    <flux:input type="file" wire:model="form.poster" />
+                    <div wire:loading wire:target="form.poster"
+                        class="mt-2 text-gray-500 flex justify-center items-center">
+                        {{-- <i class="fa-solid fa-circle-notch animate-spin text-xl mr-3"></i> --}}
+                        <flux:icon.arrow-path class="animate-spin text-xl mr-3" />
+                        <span>Mengunggah...</span>
+                    </div>
+
+                    @if ($form->poster)
+                    <div wire:loading.remove wire:target="form.foto" class="mt-4">
+                        <div class="w-32 h-32 overflow-hidden rounded-lg shadow-md">
+                            <img src="{{ $form->poster->temporaryUrl() }}" alt="Preview"
+                                class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+                    @elseif ($form->oldPoster)
+                    <!-- Jika tidak ada gambar baru, tampilkan gambar lama -->
+                    <div class="mt-4">
+                        <div class="w-32 h-32 overflow-hidden rounded-lg shadow-md">
+                            <img src="{{ asset('storage/' . $form->oldPoster) }}" alt="Old Foto"
+                                class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+                    @endif
                 </flux:field>
 
                 {{-- title --}}
@@ -88,14 +111,43 @@
                 {{-- total episode --}}
                 <flux:field>
                     <flux:label badge="Optional">Total Episode</flux:label>
-                    <flux:input wire:model="form.totalEpisode" autocomplete="off"
+                    <flux:input wire:model="form.totalEpisode" type="number" autocomplete="off"
                         placeholder="Enter total episode in here..." />
                 </flux:field>
+
+                {{-- hari tayang --}}
+                <flux:field>
+                    <flux:label badge="Optional">Air Date</flux:label>
+                    <flux:select wire:model="form.airDate" placeholder="Choose air date...">
+                        <flux:select.option value="Sunday">Sunday</flux:select.option>
+                        <flux:select.option value="Monday">Monday</flux:select.option>
+                        <flux:select.option value="Tuesday">Tuesday</flux:select.option>
+                        <flux:select.option value="Wednesday">Wednesday</flux:select.option>
+                        <flux:select.option value="Thursday">Thursday</flux:select.option>
+                        <flux:select.option value="Friday">Friday</flux:select.option>
+                        <flux:select.option value="Saturday">Saturday</flux:select.option>
+                    </flux:select>
+                </flux:field>
+
+                {{-- episode terakhir --}}
+                <flux:field>
+                    <flux:label badge="Optional">Last watched episode</flux:label>
+                    <flux:input wire:model="form.lastWatch" type="number" autocomplete="off"
+                        placeholder="Enter last watch episode in here..." />
+                </flux:field>
+
+                {{-- pengingat --}}
+                <flux:field variant="inline">
+                    <flux:checkbox wire:model="form.reminder" />
+
+                    <flux:label>Activate reminder</flux:label>
+                </flux:field>
+
+                <div class="flex">
+                    <flux:spacer />
+                    <flux:button type="submit" variant="primary">Save Anime</flux:button>
+                </div>
             </form>
-            <div class="flex">
-                <flux:spacer />
-                <flux:button type="submit" variant="primary">Save changes</flux:button>
-            </div>
         </div>
     </flux:modal>
 </div>
