@@ -10,35 +10,28 @@ use Livewire\Form;
 
 class AnimeForm extends Form
 {
-    public ?Anime $anime;
-    public ?UserAnimeProgres $user_anime_progres;
-    public $oldPoster;
+    public ?Anime $anime = null;
+    public ?UserAnimeProgres $user_anime_progres = null;
+    public $oldPoster;      
 
-    #[Validate('required|image|mimes:png,jpg,jpeg|max:5000')]
-    public $poster;
+    public $poster, $title, $season, $year, $status, $totalEpisode, $airDate, $lastWatch;
 
-    #[Validate('required')]
-    public $title;
+    public bool $reminder = false;
     
-    #[Validate('required')]
-    public $season;
-
-    #[Validate('required|date')]
-    public $year;
-
-    #[Validate('required')]
-    public $status;
-
-    #[Validate('nullable')]
-    public $totalEpisode;
-    
-    #[Validate('nullable')]
-    public $airDate;
-
-    #[Validate('nullable')]
-    public $lastWatch;
-
-    public $reminder;
+    protected function rules()
+    {
+        return [
+            'poster' => 'required|image|max:5000|mimes:jpg,png,jpeg',
+            'title' => 'required|string|max:255',
+            'season' => 'required|in:Winter,Spring,Summer,Fall',
+            'year' => 'required|integer|between:1990,' . date('Y'),
+            'status' => 'required|in:Ongoing,Finished',
+            'totalEpisode' => 'nullable|integer|min:1',
+            'airDate' => 'nullable|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday',
+            'lastWatch' => 'required|integer',
+            'reminder' => 'boolean',
+        ];
+    }
 
     public function store()
     {
@@ -47,7 +40,7 @@ class AnimeForm extends Form
         if($this->anime && $this->user_anime_progres) {
             // updater
         } else {
-            $saveImage = $this->storeAs('animes', $this->title . '_' . now()->timestamp . '.' . $this->poster->getClientOriginalExtension(), 'public');
+            $saveImage = $this->poster->storeAs(path: 'animes', name: $this->title . '_' . now()->timestamp . '.' . $this->poster->getClientOriginalExtension());
             
             $animeId = Anime::create([
                 'title' => $this->title,
@@ -60,11 +53,11 @@ class AnimeForm extends Form
             ]);
 
             UserAnimeProgres::create([
-                'user_id' => auth()->user()->id,
                 'anime_id' => $animeId->id,
                 'last_watched_episode' => $this->lastWatch,
                 'reminder_enabled' => $this->reminder,
-                'updaterd_at' => now(),
+                'created_at' => now(),
+                // 'updaterd_at' => now(),
             ]);
 
             $this->reset();

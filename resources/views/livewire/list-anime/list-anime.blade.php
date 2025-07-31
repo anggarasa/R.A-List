@@ -51,7 +51,7 @@
                     <flux:input type="file" wire:model="form.poster" />
                     <div wire:loading wire:target="form.poster"
                         class="mt-2 text-gray-500 flex justify-center items-center">
-                        {{-- <i class="fa-solid fa-circle-notch animate-spin text-xl mr-3"></i> --}}
+                        <flux:error name="form.poster" />
                         <flux:icon.arrow-path class="animate-spin text-xl mr-3" />
                         <span>Mengunggah...</span>
                     </div>
@@ -79,17 +79,20 @@
                     <flux:label badge="Required">Anime Title</flux:label>
                     <flux:input wire:model="form.title" required autocomplete="off"
                         placeholder="Enter anime title in here..." />
+                    <flux:error name="form.title" />
                 </flux:field>
 
                 {{-- musim --}}
                 <flux:field>
                     <flux:label badge="Required">Season</flux:label>
-                    <flux:select wire:model="form.season" required autocomplete="off" placeholder="Choose season...">
+                    <flux:select wire:model="form.season" required autocomplete="off">
+                        <flux:select.option>Choose season...</flux:select.option>
                         <flux:select.option value="Winter">Winter</flux:select.option>
                         <flux:select.option value="Spring">Spring</flux:select.option>
                         <flux:select.option value="Summer">Summer</flux:select.option>
                         <flux:select.option value="Fall">Fall</flux:select.option>
                     </flux:select>
+                    <flux:error name="form.season" />
                 </flux:field>
 
                 {{-- tahun --}}
@@ -97,15 +100,18 @@
                     <flux:label badge="Required">Release Year</flux:label>
                     <flux:input wire:model="form.year" required autocomplete="off"
                         placeholder="Enter release year in here..." />
+                    <flux:error name="form.year" />
                 </flux:field>
 
                 {{-- status --}}
                 <flux:field>
                     <flux:label badge="Required">Status</flux:label>
-                    <flux:select wire:model="form.status" required autocomplete="off" placeholder="Choose status...">
+                    <flux:select wire:model="form.status" required autocomplete="off">
+                        <flux:select.option>Choose status...</flux:select.option>
                         <flux:select.option value="Ongoing">Ongoing</flux:select.option>
                         <flux:select.option value="Finished">Finished</flux:select.option>
                     </flux:select>
+                    <flux:error name="form.status" />
                 </flux:field>
 
                 {{-- total episode --}}
@@ -113,12 +119,14 @@
                     <flux:label badge="Optional">Total Episode</flux:label>
                     <flux:input wire:model="form.totalEpisode" type="number" autocomplete="off"
                         placeholder="Enter total episode in here..." />
+                    <flux:error name="form.totalEpisode" />
                 </flux:field>
 
                 {{-- hari tayang --}}
                 <flux:field>
                     <flux:label badge="Optional">Air Date</flux:label>
-                    <flux:select wire:model="form.airDate" placeholder="Choose air date...">
+                    <flux:select wire:model="form.airDate">
+                        <flux:select.option>Choose air date...</flux:select.option>
                         <flux:select.option value="Sunday">Sunday</flux:select.option>
                         <flux:select.option value="Monday">Monday</flux:select.option>
                         <flux:select.option value="Tuesday">Tuesday</flux:select.option>
@@ -127,13 +135,15 @@
                         <flux:select.option value="Friday">Friday</flux:select.option>
                         <flux:select.option value="Saturday">Saturday</flux:select.option>
                     </flux:select>
+                    <flux:error name="form.airDate" />
                 </flux:field>
 
                 {{-- episode terakhir --}}
                 <flux:field>
-                    <flux:label badge="Optional">Last watched episode</flux:label>
-                    <flux:input wire:model="form.lastWatch" type="number" autocomplete="off"
+                    <flux:label badge="Required">Last watched episode</flux:label>
+                    <flux:input wire:model="form.lastWatch" type="number" required autocomplete="off"
                         placeholder="Enter last watch episode in here..." />
+                    <flux:error name="form.lastWatch" />
                 </flux:field>
 
                 {{-- pengingat --}}

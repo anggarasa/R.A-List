@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_anime_progres', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('anime_id')->constrained('animes')->onDelete('cascade');
             $table->integer('last_watched_episode');
             $table->boolean('reminder_enabled');
             $table->text('notes')->nullable();
-            $table->timestamp('updated_at');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
