@@ -14,7 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
     // job list route
-    Route::get('job-lists', JobListView::class)->name('job-list.view');
+    // Route::get('job-lists', JobListView::class)->name('job-list.view');
 
     Route::redirect('settings', 'settings/profile');
 
