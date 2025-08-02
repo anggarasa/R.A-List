@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Job\ProjectDetail;
+use App\Livewire\Job\ProjectList;
 use App\Livewire\ListJobs\JobListView;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -14,7 +16,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
     // job list route
-    // Route::get('job-lists', JobListView::class)->name('job-list.view');
+    Route::get('job/project_lists', ProjectList::class)->name('job.project_list');
+    Route::get('job/project_detail', ProjectDetail::class)->name('job.project_detail');
 
     Route::redirect('settings', 'settings/profile');
 
