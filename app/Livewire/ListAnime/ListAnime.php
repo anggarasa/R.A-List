@@ -3,6 +3,7 @@
 namespace App\Livewire\ListAnime;
 
 use App\Livewire\Forms\AnimeForm;
+use App\Models\ListAnime\UserAnimeProgres;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -21,6 +22,8 @@ class ListAnime extends Component
     
     public function render()
     {
-        return view('livewire.list-anime.list-anime');
+        return view('livewire.list-anime.list-anime', [
+            'animes' => UserAnimeProgres::latest()->get(),
+        ]);
     }
 }

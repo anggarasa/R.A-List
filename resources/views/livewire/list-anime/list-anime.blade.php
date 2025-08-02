@@ -7,10 +7,11 @@
         </flux:modal.trigger>
     </div>
     <!-- Loop this -->
+    @foreach ($animes as $anime)
     <div
         class="bg-white rounded-2xl shadow-sm p-5 flex items-start gap-4 border border-gray-200 hover:shadow-md transition dark:bg-zinc-900 dark:border-zinc-600">
         <!-- Poster Anime -->
-        <img src="{{ asset('assets/images/jujutsu-kaisen-s2.jpg') }}" alt="Poster Jujutsu Kaisen"
+        <img src="{{ asset('assets/') }}" alt="Poster Jujutsu Kaisen"
             class="w-24 h-36 object-cover rounded-xl shadow-sm border border-gray-100 flex-shrink-0 dark:border-zinc-600">
 
         <!-- Detail Anime -->
@@ -33,6 +34,7 @@
             </div>
         </div>
     </div>
+    @endforeach
 
     {{-- Kalau kosong --}}
     {{-- <div class="text-center text-gray-500 py-10">Belum ada anime yang ditambahkan.</div> --}}
