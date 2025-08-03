@@ -28,6 +28,8 @@ class ProjectList extends Component
     // Property untuk search
     public $search = '';
     public $statusFilter = '';
+
+    public $projectDetail;
     
     #[On('dateChanged')]
     public function dateChanged($data)
@@ -41,6 +43,13 @@ class ProjectList extends Component
                 $this->endDate = $data['endDate'];
             }
         }
+    }
+
+    public function detailProject(Project $project)
+    {
+        $this->projectDetail = $project;
+
+        Flux::modal('detail-project')->show();
     }
 
     public function createProject()

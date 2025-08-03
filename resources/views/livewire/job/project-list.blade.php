@@ -65,12 +65,13 @@
         @foreach ($projects as $project)
         <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-2xl shadow hover:shadow-lg transition">
             <div class="flex justify-between items-center">
-                <flux:heading>{{ $project->name }}</flux:heading>
+                <flux:heading wire:click="detailProject({{ $project }})" class="cursor-pointer hover:underline">
+                    {{ $project->name }}
+                </flux:heading>
 
                 <flux:text>
-                    {{
-                    \Carbon\Carbon::parse($project->start_date)->diffInDays(\Carbon\Carbon::parse($project->end_date)) +
-                    1 }} day
+                    {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date), true) }}
+                    remaining
                 </flux:text>
             </div>
             <flux:text class="mt-2">
@@ -122,7 +123,7 @@
     </div>
     @endif
 
-    {{-- Modal --}}
+    {{-- Modal add --}}
     <flux:modal name="add-project" variant="flyout">
         <div class="space-y-6">
             <div>
@@ -163,5 +164,57 @@
                 </div>
             </form>
         </div>
+    </flux:modal>
+
+    {{-- modal detail --}}
+    <flux:modal name="detail-project" class="md:w-1/2">
+        <div class="space-y-6">
+            <div>
+                <div class="flex items-center space-x-5">
+                    <flux:heading size="lg">{{ $projectDetail->name ?? '' }}</flux:heading>
+
+                    <flux:text>
+                        {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date), true) }}
+                        remaining
+                    </flux:text>
+                </div>
+                <flux:text class="mt-2">{{ $projectDetail->description ?? "" }}</flux:text>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:heading>Start Date</flux:heading>
+                    <flux:text class="mt-2">
+                        {{ \Carbon\Carbon::parse($projectDetail->start_date ?? '')->format('d M Y') }}
+                    </flux:text>
+                </div>
+
+                <div>
+                    <flux:heading>End Date</flux:heading>
+                    <flux:text class="mt-2">
+                        {{ \Carbon\Carbon::parse($projectDetail->end_date ?? '')->format('d M Y') }}
+                    </flux:text>
+                </div>
+
+                <div>
+                    @php
+                    $statusColor = match($projectDetail->status ?? '') {
+                    'In Progress' => 'blue',
+                    'Completed' => 'green',
+                    'On Hold' => 'orange',
+                    'Planning' => 'purple',
+                    default => 'gray'
+                    };
+                    @endphp
+                    <flux:heading>Status</flux:heading>
+                    <flux:badge color="{{ $statusColor }}" class="mt-2">{{ $projectDetail->status ?? '' }}</flux:badge>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <flux:spacer />
+                <flux:button icon="trash" variant="danger">Delete</flux:button>
+                <flux:button icon="pencil-square" variant="primary">Edit</flux:button>
+            </div>
     </flux:modal>
 </div>
