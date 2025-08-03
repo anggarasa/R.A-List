@@ -125,7 +125,7 @@
     @endif
 
     {{-- Modal add --}}
-    <flux:modal name="add-project" variant="flyout">
+    <flux:modal name="add-project" variant="flyout" @close="clearForm">
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">{{ $projectDetail ? 'Edit Project' : 'Add Project' }}</flux:heading>
@@ -170,7 +170,7 @@
     </flux:modal>
 
     {{-- modal detail --}}
-    <flux:modal name="detail-project" class="md:w-1/2">
+    <flux:modal name="detail-project" class="md:w-1/2" @close="clearDetail">
         <div class="space-y-6">
             <div>
                 <div class="flex items-center space-x-5">
@@ -216,7 +216,8 @@
 
             <div class="flex items-center space-x-3">
                 <flux:spacer />
-                <flux:button icon="trash" variant="danger">Delete</flux:button>
+                <flux:button wire:click="deleteProject" icon="trash" variant="danger"
+                    wire:confirm="Are you sure you want to delete this project?">Delete</flux:button>
                 <flux:button wire:click="setEdit" icon="pencil-square" variant="primary">Edit</flux:button>
             </div>
     </flux:modal>

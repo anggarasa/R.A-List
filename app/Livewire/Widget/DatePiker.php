@@ -42,11 +42,15 @@ class DatePiker extends Component
     public function setEditDate($data)
     {
         if($data['mode'] === 'range') {
-            if($data['startDate']) {
-                $this->startDate = $data['startDate'];
-            }
-            if($data['endDate']) {
-                $this->endDate = $data['endDate'];
+            if($data['reset'] == true) {
+                $this->reset('startDate', 'endDate');
+            } else {
+                if($data['startDate']) {
+                    $this->startDate = $data['startDate'];
+                }
+                if($data['endDate']) {
+                    $this->endDate = $data['endDate'];
+                }
             }
         }
     }

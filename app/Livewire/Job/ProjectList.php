@@ -50,6 +50,7 @@ class ProjectList extends Component
         if ($this->projectDetail) {
             $this->dispatch('updateDate', [
                 'mode' => 'range',
+                'reset' => false,
                 'startDate' => $this->projectDetail->start_date,
                 'endDate' => $this->projectDetail->end_date
             ]);
@@ -61,7 +62,6 @@ class ProjectList extends Component
             $this->endDate = $this->projectDetail->end_date;
 
             Flux::modal('add-project')->show();
-            Flux::modal('detail-project')->close();
         }
     }
 
@@ -86,9 +86,11 @@ class ProjectList extends Component
                     'end_date' => $this->endDate,
                 ]);
 
+                $this->dispatch('updateDate', ['mode' => 'range', 'reset' => true]);
                 $this->dispatch('notification', type: 'success', message: 'Successfully changed the project');
-                $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject']);
+                $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject', 'projectDetail']);
                 Flux::modal('add-project')->close();
+                Flux::modal('detail-project')->close();
             } catch (\Exception $e) {
                 $this->dispatch('notification', type: 'error', message: 'Failed to changed project');
             }
@@ -102,6 +104,7 @@ class ProjectList extends Component
                     'end_date' => $this->endDate
                 ]);
 
+                $this->dispatch('updateDate', ['mode' => 'range', 'reset' => true]);
                 $this->dispatch('notification', type: 'success', message: 'Successfully created the project');
                 $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject']);
                 Flux::modal('add-project')->close();
@@ -110,11 +113,40 @@ class ProjectList extends Component
             }
         }
     }
+
+    public function deleteProject()
+    {
+        if($this->projectDetail) {
+            $this->projectDetail->delete();
+
+            Flux::modal('detail-project')->close();
+
+            $this->dispatch('notification', type: 'success', message: 'Successfully deleted the project');
+
+            $this->reset('projectDetail');
+        }
+    }
     
     public function clearSearch()
     {
         $this->search = '';
         $this->statusFilter = '';
+    }
+
+    public function clearDetail()
+    {
+        $this->reset(['projectDetail']);
+    }
+
+    public function clearForm()
+    {
+        $this->reset(['nameProject', 'descriptionProject', 'statusProject', 'startDate', 'endDate']);
+        $this->dispatch('updateDate', [
+            'mode' => 'range',
+            'reset' => true,
+            'startDate' => '',
+            'endDate' => '',
+        ]);
     }
     
     public function render()
