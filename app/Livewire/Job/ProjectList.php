@@ -25,6 +25,10 @@ class ProjectList extends Component
     #[Validate('required')]
     public $descriptionProject;
     
+    // Property untuk search
+    public $search = '';
+    public $statusFilter = '';
+    
     #[On('dateChanged')]
     public function dateChanged($data)
     {
@@ -53,17 +57,37 @@ class ProjectList extends Component
             ]);
 
             $this->dispatch('notification', type: 'success', message: 'Successfully created the project');
-            $this->reset();
+            $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject']);
             Flux::modal('add-project')->close();
         } catch (\Exception $e) {
             $this->dispatch('notification', type: 'error', message: 'Failed to create project');
         }
     }
     
+    public function clearSearch()
+    {
+        $this->search = '';
+        $this->statusFilter = '';
+    }
+    
     public function render()
     {
+        $query = Project::query();
+        
+        // Filter berdasarkan search (nama project)
+        if (!empty($this->search)) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        }
+        
+        // Filter berdasarkan status
+        if (!empty($this->statusFilter)) {
+            $query->where('status', $this->statusFilter);
+        }
+        
+        $projects = $query->latest()->get();
+        
         return view('livewire.job.project-list', [
-            'projects' => Project::latest()->get(),
+            'projects' => $projects,
         ]);
     }
 }

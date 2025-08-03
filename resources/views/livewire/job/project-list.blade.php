@@ -7,8 +7,61 @@
         </flux:modal.trigger>
     </div>
 
+    {{-- Search Section --}}
+    <div class="mb-6 space-y-4">
+        <div class="flex flex-col sm:flex-row gap-4">
+            {{-- Search Input --}}
+            <div class="flex-1">
+                <flux:input wire:model.live.debounce.300ms="search" placeholder="Search projects by name..."
+                    icon="magnifying-glass" clearable />
+            </div>
+
+            {{-- Status Filter --}}
+            <div class="w-full sm:w-48">
+                <flux:select wire:model.live="statusFilter">
+                    <flux:select.option value="">All Status</flux:select.option>
+                    <flux:select.option value="Planning">Planning</flux:select.option>
+                    <flux:select.option value="In Progress">In Progress</flux:select.option>
+                    <flux:select.option value="Completed">Completed</flux:select.option>
+                    <flux:select.option value="On Hold">On Hold</flux:select.option>
+                </flux:select>
+            </div>
+
+            {{-- Clear Button --}}
+            @if($search || $statusFilter)
+            <flux:button wire:click="clearSearch" variant="ghost" icon="x-mark">
+                Clear
+            </flux:button>
+            @endif
+        </div>
+
+        {{-- Search Results Info --}}
+        @if($search || $statusFilter)
+        <div class="text-sm text-zinc-600 dark:text-zinc-400">
+            @if($projects->count() > 0)
+            Showing {{ $projects->count() }} project(s)
+            @if($search)
+            for "<strong>{{ $search }}</strong>"
+            @endif
+            @if($statusFilter)
+            with status "<strong>{{ $statusFilter }}</strong>"
+            @endif
+            @else
+            No projects found
+            @if($search)
+            for "<strong>{{ $search }}</strong>"
+            @endif
+            @if($statusFilter)
+            with status "<strong>{{ $statusFilter }}</strong>"
+            @endif
+            @endif
+        </div>
+        @endif
+    </div>
+
+    {{-- Projects Grid --}}
+    @if($projects->count() > 0)
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Card Project -->
         @foreach ($projects as $project)
         <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-2xl shadow hover:shadow-lg transition">
             <div class="flex justify-between items-center">
@@ -29,6 +82,7 @@
                 'In Progress' => 'blue',
                 'Completed' => 'green',
                 'On Hold' => 'orange',
+                'Planning' => 'purple',
                 default => 'gray'
                 };
                 @endphp
@@ -39,8 +93,36 @@
         </div>
         @endforeach
     </div>
+    @else
+    {{-- Empty State --}}
+    <div class="text-center py-12">
+        <div class="mx-auto w-24 h-24 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-12 h-12 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+        </div>
+        <flux:heading size="lg" class="mb-2">No Projects Found</flux:heading>
+        <flux:text class="text-zinc-500 dark:text-zinc-400 mb-4">
+            @if($search || $statusFilter)
+            Try adjusting your search criteria or create a new project.
+            @else
+            Get started by creating your first project.
+            @endif
+        </flux:text>
+        @if($search || $statusFilter)
+        <flux:button wire:click="clearSearch" variant="ghost">
+            Clear Search
+        </flux:button>
+        @else
+        <flux:modal.trigger name="add-project">
+            <flux:button icon="plus" variant="primary">Add Your First Project</flux:button>
+        </flux:modal.trigger>
+        @endif
+    </div>
+    @endif
 
-    {{-- modal --}}
+    {{-- Modal --}}
     <flux:modal name="add-project" variant="flyout">
         <div class="space-y-6">
             <div>
