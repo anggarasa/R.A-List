@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Widget;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class DatePiker extends Component
@@ -34,6 +35,19 @@ class DatePiker extends Component
         // Set default min date to today if not specified
         if (empty($this->minDate)) {
             $this->minDate = now()->format('Y-m-d');
+        }
+    }
+
+    #[On('updateDate')]
+    public function setEditDate($data)
+    {
+        if($data['mode'] === 'range') {
+            if($data['startDate']) {
+                $this->startDate = $data['startDate'];
+            }
+            if($data['endDate']) {
+                $this->endDate = $data['endDate'];
+            }
         }
     }
     

@@ -29,7 +29,7 @@ class ProjectList extends Component
     public $search = '';
     public $statusFilter = '';
 
-    public $projectDetail;
+    public ?Project $projectDetail = null;
     
     #[On('dateChanged')]
     public function dateChanged($data)
@@ -45,6 +45,24 @@ class ProjectList extends Component
         }
     }
 
+    public function setEdit()
+    {
+        if ($this->projectDetail) {
+            $this->dispatch('updateDate', [
+                'mode' => 'range',
+                'startDate' => $this->projectDetail->start_date,
+                'endDate' => $this->projectDetail->end_date
+            ]);
+            
+            $this->nameProject = $this->projectDetail->name;
+            $this->descriptionProject = $this->projectDetail->description;
+            $this->statusProject = $this->projectDetail->status;
+
+            Flux::modal('add-project')->show();
+            Flux::modal('detail-project')->close();
+        }
+    }
+
     public function detailProject(Project $project)
     {
         $this->projectDetail = $project;
@@ -56,20 +74,38 @@ class ProjectList extends Component
     {
         $this->validate();
 
-        try {
-            Project::create([
-                'name' => $this->nameProject,
-                'description' => $this->descriptionProject,
-                'status' => $this->statusProject,
-                'start_date' => $this->startDate,
-                'end_date' => $this->endDate
-            ]);
+        if($this->projectDetail) {
+            try {
+                $this->projectDetail->update([
+                    'name' => $this->nameProject,
+                    'description' => $this->descriptionProject,
+                    'status' => $this->statusProject,
+                    'start_date' => $this->startDate,
+                    'end_date' => $this->endDate,
+                ]);
 
-            $this->dispatch('notification', type: 'success', message: 'Successfully created the project');
-            $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject']);
-            Flux::modal('add-project')->close();
-        } catch (\Exception $e) {
-            $this->dispatch('notification', type: 'error', message: 'Failed to create project');
+                $this->dispatch('notification', type: 'success', message: 'Successfully changed the project');
+                $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject']);
+                Flux::modal('add-project')->close();
+            } catch (\Exception $e) {
+                $this->dispatch('notification', type: 'error', message: 'Failed to changed project');
+            }
+        } else {
+            try {
+                Project::create([
+                    'name' => $this->nameProject,
+                    'description' => $this->descriptionProject,
+                    'status' => $this->statusProject,
+                    'start_date' => $this->startDate,
+                    'end_date' => $this->endDate
+                ]);
+
+                $this->dispatch('notification', type: 'success', message: 'Successfully created the project');
+                $this->reset(['nameProject', 'statusProject', 'startDate', 'endDate', 'descriptionProject']);
+                Flux::modal('add-project')->close();
+            } catch (\Exception $e) {
+                $this->dispatch('notification', type: 'error', message: 'Failed to create project');
+            }
         }
     }
     

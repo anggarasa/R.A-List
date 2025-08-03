@@ -63,9 +63,10 @@
     @if($projects->count() > 0)
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach ($projects as $project)
-        <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-2xl shadow hover:shadow-lg transition">
+        <div wire:click="detailProject({{ $project }})"
+            class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-2xl shadow hover:shadow-lg transition cursor-pointer">
             <div class="flex justify-between items-center">
-                <flux:heading wire:click="detailProject({{ $project }})" class="cursor-pointer hover:underline">
+                <flux:heading>
                     {{ $project->name }}
                 </flux:heading>
 
@@ -127,8 +128,9 @@
     <flux:modal name="add-project" variant="flyout">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Add Project</flux:heading>
-                <flux:text class="mt-2">create your project.</flux:text>
+                <flux:heading size="lg">{{ $projectDetail ? 'Edit Project' : 'Add Project' }}</flux:heading>
+                <flux:text class="mt-2">{{ $projectDetail ? 'Change your project' : 'create your project.' }}
+                </flux:text>
             </div>
 
             <form wire:submit="createProject" class="space-y-6">
@@ -160,7 +162,8 @@
                 {{-- bottom --}}
                 <div class="flex">
                     <flux:spacer />
-                    <flux:button type="submit" variant="primary">Create Project</flux:button>
+                    <flux:button type="submit" variant="primary">{{ $projectDetail ? 'Change Project' : 'Create Project'
+                        }}</flux:button>
                 </div>
             </form>
         </div>
@@ -214,7 +217,7 @@
             <div class="flex items-center space-x-3">
                 <flux:spacer />
                 <flux:button icon="trash" variant="danger">Delete</flux:button>
-                <flux:button icon="pencil-square" variant="primary">Edit</flux:button>
+                <flux:button wire:click="setEdit" icon="pencil-square" variant="primary">Edit</flux:button>
             </div>
     </flux:modal>
 </div>
