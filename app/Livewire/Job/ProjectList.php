@@ -57,6 +57,8 @@ class ProjectList extends Component
             $this->nameProject = $this->projectDetail->name;
             $this->descriptionProject = $this->projectDetail->description;
             $this->statusProject = $this->projectDetail->status;
+            $this->startDate = $this->projectDetail->start_date;
+            $this->endDate = $this->projectDetail->end_date;
 
             Flux::modal('add-project')->show();
             Flux::modal('detail-project')->close();
