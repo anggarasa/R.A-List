@@ -13,7 +13,7 @@
     {{-- Single Date Input --}}
     <div class="relative">
         <input type="date" wire:model.live="singleDate"
-            class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-sm focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-colors duration-200 {{ $disabled ? 'bg-gray-100 dark:bg-zinc-800 cursor-not-allowed' : 'bg-white dark:bg-zinc-900' }} {{ $inputClass }} text-gray-900 dark:text-gray-100"
+            class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-lg shadow-sm focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-colors duration-200 {{ $disabled ? 'bg-gray-100 dark:bg-zinc-800 cursor-not-allowed' : 'bg-white dark:bg-zinc-700' }} {{ $inputClass }} text-gray-900 dark:text-gray-300"
             placeholder="{{ $placeholder }}" @if($required) required @endif @if($disabled) disabled @endif @if($minDate)
             min="{{ $minDate }}" @endif @if($maxDate) max="{{ $maxDate }}" @endif />
     </div>
@@ -24,7 +24,7 @@
         <div class="relative">
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Start Date</label>
             <input type="date" wire:model.live="startDate"
-                class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-sm focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-colors duration-200 {{ $disabled ? 'bg-gray-100 dark:bg-zinc-800 cursor-not-allowed' : 'bg-white dark:bg-zinc-900' }} {{ $inputClass }} text-gray-900 dark:text-gray-100"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-lg shadow-sm focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-colors duration-200 {{ $disabled ? 'bg-gray-100 dark:bg-zinc-800 cursor-not-allowed' : 'bg-white dark:bg-zinc-700' }} {{ $inputClass }} text-gray-900 dark:text-gray-300"
                 placeholder="Select start date" @if($required) required @endif @if($disabled) disabled @endif
                 @if($minDate) min="{{ $minDate }}" @endif @if($maxDate) max="{{ $maxDate }}" @endif />
         </div>
@@ -33,7 +33,7 @@
         <div class="relative">
             <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">End Date</label>
             <input type="date" wire:model.live="endDate"
-                class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg shadow-sm focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-colors duration-200 {{ $disabled ? 'bg-gray-100 dark:bg-zinc-800 cursor-not-allowed' : 'bg-white dark:bg-zinc-900' }} {{ $startDate ? '' : 'opacity-50' }} {{ $inputClass }} text-gray-900 dark:text-gray-100"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-lg shadow-sm focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-colors duration-200 {{ $disabled ? 'bg-gray-100 dark:bg-zinc-800 cursor-not-allowed' : 'bg-white dark:bg-zinc-700' }} {{ $startDate ? '' : 'opacity-50' }} {{ $inputClass }} text-gray-900 dark:text-gray-300"
                 placeholder="Select end date" @if($required) required @endif @if($disabled || !$startDate) disabled
                 @endif min="{{ $this->getMinDateForEndDate() }}" @if($maxDate) max="{{ $maxDate }}" @endif />
             @if(!$startDate)
