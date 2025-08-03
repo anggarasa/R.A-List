@@ -62,6 +62,8 @@ class ProjectList extends Component
     
     public function render()
     {
-        return view('livewire.job.project-list');
+        return view('livewire.job.project-list', [
+            'projects' => Project::latest()->get(),
+        ]);
     }
 }

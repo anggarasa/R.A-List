@@ -9,17 +9,35 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Card Project -->
+        @foreach ($projects as $project)
         <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-2xl shadow hover:shadow-lg transition">
-            <flux:heading>Nama Project</flux:heading>
+            <div class="flex justify-between items-center">
+                <flux:heading>{{ $project->name }}</flux:heading>
+
+                <flux:text>
+                    {{
+                    \Carbon\Carbon::parse($project->start_date)->diffInDays(\Carbon\Carbon::parse($project->end_date)) +
+                    1 }} day
+                </flux:text>
+            </div>
             <flux:text class="mt-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit...
+                {{ Str::limit($project->description, 50, '...') }}
             </flux:text>
             <div class="mt-4 flex justify-between items-center">
-                <flux:badge color="lime">In Progress</flux:badge>
-                <a href="{{ route('job.project_detail') }}"
+                @php
+                $statusColor = match($project->status) {
+                'In Progress' => 'blue',
+                'Completed' => 'green',
+                'On Hold' => 'orange',
+                default => 'gray'
+                };
+                @endphp
+                <flux:badge color="{{ $statusColor }}">{{ $project->status }}</flux:badge>
+                <a href="{{ route('job.project_detail') }}" wire:navigate
                     class="text-lime-600 dark:text-lime-400 text-sm hover:underline">Lihat Detail →</a>
             </div>
         </div>
+        @endforeach
     </div>
 
     {{-- modal --}}
