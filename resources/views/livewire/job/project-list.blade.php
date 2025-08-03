@@ -32,7 +32,8 @@
 
             <form wire:submit="createProject" class="space-y-6">
                 {{-- input name --}}
-                <flux:input wire:model="nameProject" label="Name" placeholder="Enter name project in here..." />
+                <flux:input wire:model="nameProject" label="Name" autocomplete="off"
+                    placeholder="Enter name project in here..." />
 
                 {{-- input select status --}}
                 <flux:select wire:model="statusProject" label="Status">
@@ -43,6 +44,7 @@
                     <flux:select.option value="On Hold">On Hold</flux:select.option>
                 </flux:select>
 
+                {{-- input start date & end date --}}
                 @livewire('widget.date-piker', [
                 'mode' => 'range',
                 'label' => 'Period',
@@ -50,10 +52,14 @@
                 'minDate' => now()->format('Y-m-d')
                 ])
 
+                {{-- deskripsi --}}
+                <flux:textarea wire:model="descriptionProject" rows="2" label="Description"
+                    placeholder="Enter description in here..." />
+
                 {{-- bottom --}}
                 <div class="flex">
                     <flux:spacer />
-                    <flux:button type="submit" variant="primary">Save changes</flux:button>
+                    <flux:button type="submit" variant="primary">Create Project</flux:button>
                 </div>
             </form>
         </div>
