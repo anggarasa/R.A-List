@@ -17,11 +17,11 @@ class DatePiker extends Component
     public $disabled = false;
     public $minDate = '';
     public $maxDate = '';
-    
+
     // Properties untuk styling
     public $inputClass = '';
     public $containerClass = '';
-    
+
     public function mount($mode = 'single', $label = '', $placeholder = 'Pilih tanggal', $required = false, $disabled = false, $minDate = '', $maxDate = '')
     {
         $this->mode = $mode;
@@ -31,7 +31,7 @@ class DatePiker extends Component
         $this->disabled = $disabled;
         $this->minDate = $minDate;
         $this->maxDate = $maxDate;
-        
+
         // Set default min date to today if not specified
         if (empty($this->minDate)) {
             $this->minDate = now()->format('Y-m-d');
@@ -41,6 +41,16 @@ class DatePiker extends Component
     #[On('updateDate')]
     public function setEditDate($data)
     {
+        if ($data['mode'] === 'single') {
+            if ($data['reset'] == true) {
+                $this->reset('singleDate');
+            } else {
+                if ($data['singleDate']) {
+                    $this->singleDate = $data['singleDate'];
+                }
+            }
+        }
+
         if($data['mode'] === 'range') {
             if($data['reset'] == true) {
                 $this->reset('startDate', 'endDate');
@@ -54,7 +64,7 @@ class DatePiker extends Component
             }
         }
     }
-    
+
     public function updatedStartDate($value)
     {
         if ($this->mode === 'range' && $value) {
@@ -64,7 +74,7 @@ class DatePiker extends Component
                 $this->endDate = '';
             }
         }
-        
+
         $this->dispatch('dateChanged', [
             'mode' => $this->mode,
             'singleDate' => $this->singleDate,
@@ -72,7 +82,7 @@ class DatePiker extends Component
             'endDate' => $this->endDate
         ]);
     }
-    
+
     public function updatedEndDate($value)
     {
         $this->dispatch('dateChanged', [
@@ -82,7 +92,7 @@ class DatePiker extends Component
             'endDate' => $this->endDate
         ]);
     }
-    
+
     public function updatedSingleDate($value)
     {
         $this->dispatch('dateChanged', [
@@ -92,7 +102,7 @@ class DatePiker extends Component
             'endDate' => $this->endDate
         ]);
     }
-    
+
     public function getMinDateForEndDate()
     {
         if ($this->mode === 'range' && $this->startDate) {
@@ -100,7 +110,7 @@ class DatePiker extends Component
         }
         return $this->minDate;
     }
-    
+
     public function render()
     {
         return view('livewire.widget.date-piker');

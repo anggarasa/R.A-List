@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="flex items-center space-x-5 mt-7">
-                    <flux:button icon="pencil-square" variant="primary">Edit</flux:button>
+                    <flux:button wire:click="setEdit({{ $task->id }})" icon="pencil-square" variant="primary">Edit</flux:button>
                     <flux:button icon="trash" variant="danger">Delete</flux:button>
                 </div>
             </div>
@@ -74,18 +74,25 @@
     </div>
 
     {{--Modal add--}}
-    <flux:modal name="add-task" variant="flyout">
+    <flux:modal name="add-task" variant="flyout" @close="clearForm">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Add Task</flux:heading>
-                <flux:text class="mt-2">Add your task.</flux:text>
+                <flux:heading size="lg">{{ $taskId ? 'Update' : 'Add'}} Task</flux:heading>
+                <flux:text class="mt-2">{{ $taskId ? 'Update' : 'Add' }} your task.</flux:text>
             </div>
 
             <form wire:submit="createTask" class="space-y-6">
                 {{-- title --}}
                 <flux:input wire:model="titleTask" label="Title" autocomplete="off" placeholder="Enter title in here..." />
 
-                <flux:input type="date" wire:model="dueTask" label="Deadline" />
+                {{-- deadline --}}
+{{--                <flux:input type="date" wire:model="dueTask" minDate="{{ now()->format('Y-m-d') }}" label="Deadline" />--}}
+                @livewire('widget.date-piker', [
+                    'mode' => 'single',
+                    'label' => 'Deadline',
+                    'required' => false,
+                    'minDate' => now()->format('Y-m-d')
+                ])
 
                 {{-- select status --}}
                 <flux:select wire:model="statusTask" label="Status">
@@ -118,7 +125,7 @@
 
                 <div class="flex">
                     <flux:spacer />
-                    <flux:button type="submit" variant="primary">Create Task</flux:button>
+                    <flux:button type="submit" variant="primary">{{ $taskId ? 'Update' : 'Create'}} Task</flux:button>
                 </div>
             </form>
         </div>
