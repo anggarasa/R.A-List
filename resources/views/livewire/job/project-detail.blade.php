@@ -13,33 +13,64 @@
     <!-- Tasks List -->
     <div class="mt-4 grid gap-4">
         <!-- Task Item -->
-        <div
-            class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl space-y-3">
-            <div class="flex justify-between items-center">
-                <flux:heading size="lg">Name Task</flux:heading>
+        @foreach($tasks as $task)
+            <div
+                class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <flux:heading size="lg">{{ $task->title }}</flux:heading>
 
-                <flux:badge color="blue">In Progress</flux:badge>
-            </div>
-            <flux:text>Lorem ipsum dolor sit amet consectetur adipisicing elit.</flux:text>
-            <div class="flex space-x-5 items-center">
-                <flux:text>🔗 Integration API</flux:text>
+                    @php
+                        $statusColor = match($task->status) {
+                        'Todo' => 'grey',
+                        'In Progress' => 'blue',
+                        'Done' => 'emerald',
+                        'Error' => 'red',
+                        'Revisi' => 'indigo',
+                        default => 'yellow'
+                        };
+                    @endphp
+                    <flux:badge color="{{ $statusColor }}">{{ $task->status }}</flux:badge>
+                </div>
+                <flux:text>{{ $task->description }}</flux:text>
+                <div class="flex space-x-5 items-center">
+                    @php
+                        $categoryIcon = match($task->category) {
+                        'Slicing' => '🎨',
+                        'Integration API' => '🔗',
+                        'Clean Code' => '🧹'
+                        };
+                    @endphp
+                    <flux:text>{{ $categoryIcon }} {{ $task->category }}</flux:text>
 
-                <div class="text-red-600 flex items-center space-x-1">
-                    <flux:icon.exclamation-circle variant="micro"/>
-                    <flux:text class="text-red-600">High Prioritas</flux:text>
+                    @php
+                        $priority = strtolower($task->priority); // misalnya: Low, Medium, High
+                        $priorityColor = match($priority) {
+                            'low' => 'text-green-600',
+                            'medium' => 'text-yellow-600',
+                            'high' => 'text-red-600',
+                            default => 'text-gray-600',
+                        };
+                    @endphp
+
+                    <div class="{{ $priorityColor }} flex items-center space-x-1">
+                        <flux:icon.exclamation-circle variant="micro" class="{{ $priorityColor }}" />
+                        <flux:text class="{{ $priorityColor }}">
+                            {{ ucfirst($priority) }} Prioritas
+                        </flux:text>
+                    </div>
+
+                    <div class="flex items-center space-x-1">
+                        <flux:icon.calendar variant="micro"/>
+                        <flux:text>Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d F Y') }}</flux:text>
+                    </div>
                 </div>
 
-                <div class="flex items-center space-x-1">
-                    <flux:icon.calendar variant="micro"/>
-                    <flux:text>Due: 15 Agustus 2025</flux:text>
+                <div class="flex items-center space-x-5 mt-7">
+                    <flux:button icon="pencil-square" variant="primary">Edit</flux:button>
+                    <flux:button icon="trash" variant="danger">Delete</flux:button>
                 </div>
             </div>
-
-            <div class="flex items-center space-x-5 mt-7">
-                <flux:button icon="pencil-square" variant="primary">Edit</flux:button>
-                <flux:button icon="trash" variant="danger">Delete</flux:button>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     {{--Modal add--}}
@@ -52,7 +83,9 @@
 
             <form wire:submit="createTask" class="space-y-6">
                 {{-- title --}}
-                <flux:input wire:model="titleTask" label="Title" placeholder="Enter title in here..." />
+                <flux:input wire:model="titleTask" label="Title" autocomplete="off" placeholder="Enter title in here..." />
+
+                <flux:input type="date" wire:model="dueTask" label="Deadline" />
 
                 {{-- select status --}}
                 <flux:select wire:model="statusTask" label="Status">
@@ -81,7 +114,7 @@
                 </flux:select>
 
                 {{-- description --}}
-                <flux:textarea label="Description" placeholder="Enter description in here..." />
+                <flux:textarea wire:model="description" label="Description" placeholder="Enter description in here..." />
 
                 <div class="flex">
                     <flux:spacer />

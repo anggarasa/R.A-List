@@ -67,20 +67,20 @@
             class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-2xl shadow hover:shadow-lg transition cursor-pointer">
             <div class="flex justify-between items-center">
                 <flux:heading>
-                    {{ $project->name }}
+                    {{ $project->name ?? '' }}
                 </flux:heading>
 
                 <flux:text>
-                    {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date), true) }}
+                    {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date ?? ''), true) }}
                     remaining
                 </flux:text>
             </div>
             <flux:text class="mt-2">
-                {{ Str::limit($project->description, 50, '...') }}
+                {{ Str::limit($project->description ?? '', 50, '...') }}
             </flux:text>
             <div class="mt-4 flex justify-between items-center">
                 @php
-                $statusColor = match($project->status) {
+                $statusColor = match($project->status ?? '') {
                 'In Progress' => 'blue',
                 'Completed' => 'green',
                 'On Hold' => 'orange',
@@ -88,8 +88,8 @@
                 default => 'gray'
                 };
                 @endphp
-                <flux:badge color="{{ $statusColor }}">{{ $project->status }}</flux:badge>
-                <a href="{{ route('job.project_detail', $project->id) }}" wire:navigate
+                <flux:badge color="{{ $statusColor }}">{{ $project->status ?? '' }}</flux:badge>
+                <a href="{{ route('job.project_detail', $project->id ?? '') }}" wire:navigate
                     class="text-lime-600 dark:text-lime-400 text-sm hover:underline">Lihat Detail →</a>
             </div>
         </div>
@@ -177,7 +177,7 @@
                     <flux:heading size="lg">{{ $projectDetail->name ?? '' }}</flux:heading>
 
                     <flux:text>
-                        {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date), true) }}
+                        {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date ?? ''), true) }}
                         remaining
                     </flux:text>
                 </div>
