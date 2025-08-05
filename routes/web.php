@@ -17,7 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // job list route
     Route::get('job/project_lists', ProjectList::class)->name('job.project_list');
-    Route::get('job/project_detail', ProjectDetail::class)->name('job.project_detail');
+    Route::get('job/project_detail/{id}', ProjectDetail::class)->name('job.project_detail');
 
     Route::redirect('settings', 'settings/profile');
 

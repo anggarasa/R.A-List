@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->string('title');
             $table->text('description');
-            $table->enum('status', ['Todo', 'In Progress', 'Done']);
+            $table->enum('status', ['Todo', 'In Progress', 'Done', 'Error', 'Revisi']);
             $table->enum('category', ['Slicing', 'Integration API', 'Clean Code']);
             $table->enum('priority', ['Low', 'Medium', 'High']);
             $table->date('due_date');
