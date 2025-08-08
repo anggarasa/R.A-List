@@ -26,6 +26,11 @@
                 <flux:navlist.item class="mt-3" icon="list-bullet" :href="route('job.project_list')"
                     :current="request()->routeIs('job.project_list')" wire:navigate>{{ __('Job List') }}
                 </flux:navlist.item>
+
+                {{-- financial --}}
+                <flux:navlist.item class="mt-3" icon="banknotes" :href="route('financial-page')"
+                    :current="request()->routeIs('financial-page')" wire:navigate>{{ __('Fianncial Report') }}
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 

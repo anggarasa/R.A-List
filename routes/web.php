@@ -19,6 +19,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('job/project_lists', ProjectList::class)->name('job.project_list');
     Route::get('job/project_detail/{id}', ProjectDetail::class)->name('job.project_detail');
 
+    // financial
+    Route::get('financial', \App\Livewire\Financial\FinancialPage::class)->name('financial-page');
+
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
