@@ -1,5 +1,11 @@
 <div class="max-w-5xl mx-auto p-4">
-    <flux:heading size="xl">Detail: {{ $project->name }}</flux:heading>
+    <div class="flex items-center space-x-5">
+        <a href="{{ route('job.project_list') }}" wire:navigate>
+            <flux:icon.arrow-left/>
+        </a>
+        <flux:heading size="xl">Detail: {{ $project->name }}</flux:heading>
+    </div>
+
     <flux:modal.trigger name="add-task">
         <flux:button icon="plus" variant="primary" class="mt-5">Add Task</flux:button>
     </flux:modal.trigger>
@@ -67,7 +73,7 @@
 
                 <div class="flex items-center space-x-5 mt-7">
                     <flux:button wire:click="setEdit({{ $task->id }})" icon="pencil-square" variant="primary">Edit</flux:button>
-                    <flux:button icon="trash" variant="danger">Delete</flux:button>
+                    <flux:button wire:click="confirmDelete({{ $task->id }})" icon="trash" variant="danger">Delete</flux:button>
                 </div>
             </div>
         @endforeach
@@ -86,7 +92,6 @@
                 <flux:input wire:model="titleTask" label="Title" autocomplete="off" placeholder="Enter title in here..." />
 
                 {{-- deadline --}}
-{{--                <flux:input type="date" wire:model="dueTask" minDate="{{ now()->format('Y-m-d') }}" label="Deadline" />--}}
                 @livewire('widget.date-piker', [
                     'mode' => 'single',
                     'label' => 'Deadline',

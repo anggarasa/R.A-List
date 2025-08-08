@@ -89,7 +89,7 @@
                 };
                 @endphp
                 <flux:badge color="{{ $statusColor }}">{{ $project->status ?? '' }}</flux:badge>
-                <a href="{{ route('job.project_detail', $project->id ?? '') }}" wire:navigate
+                <a href="{{ route('job.project_detail', $project->id ?? '') }}" wire:navigate @click.stop
                     class="text-lime-600 dark:text-lime-400 text-sm hover:underline">Lihat Detail →</a>
             </div>
         </div>

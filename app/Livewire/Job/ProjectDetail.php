@@ -100,6 +100,31 @@ class ProjectDetail extends Component
         Flux::modal('add-task')->close();
     }
 
+    public function confirmDelete($taskId)
+    {
+        $task = Task::find($taskId);
+
+        $this->dispatch('notification',
+            type: 'warning',
+            message: 'Are you sure you want to delete ' . $task->title . ' task?',
+            actionEvent: 'deleteTask',
+            actionParams: [$taskId]
+        );
+    }
+
+    #[On('deleteTask')]
+    public function deleteTask($taskId)
+    {
+        $task = Task::find($taskId);
+
+        $task->delete();
+
+        $this->dispatch('notification',
+            type: 'success',
+            message: 'Task Deleted Successfully',
+        );
+    }
+
     public function clearForm()
     {
         $this->dispatch('updateDate', ['mode' => 'single', 'reset' => true, 'singleDate' => '']);
