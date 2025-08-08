@@ -3,6 +3,7 @@
 namespace App\Livewire\Job;
 
 use App\Models\job\Task;
+use App\Models\job\Note;
 use Flux\Flux;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -13,6 +14,10 @@ class ProjectDetail extends Component
 {
     public ?Project $project;
 
+    // Tab state
+    public string $activeTab = 'tasks';
+
+    // Task properties
     #[Validate('required')]
     public $titleTask;
 
@@ -22,7 +27,7 @@ class ProjectDetail extends Component
     #[Validate('required|in:Todo,In Progress,Done,Error,Revisi')]
     public $statusTask;
 
-    #[Validate('required|in:Slicing,Integration API, Clean Code')]
+    #[Validate('required|in:Slicing,Integration API,Clean Code')]
     public $categoryTask;
 
     #[Validate('required|in:Low,Medium,High')]
@@ -33,28 +38,45 @@ class ProjectDetail extends Component
 
     public $taskId;
 
+    // Note properties
+    #[Validate('required')]
+    public $titleNote;
+
+    #[Validate('required')]
+    public $contentNote;
+
+    public $noteId;
+
     public function mount($id)
     {
         $this->project = Project::find($id);
     }
 
+    // Tab methods
+    public function setActiveTab($tab)
+    {
+        $this->activeTab = $tab;
+    }
+
+    // Task methods
     public function setEdit($taskId)
     {
         if ($taskId) {
-            $this->taskId = Task::find($taskId);
+            $task = Task::find($taskId);
+            $this->taskId = $task->id;
 
             $this->dispatch('updateDate', [
                 'mode' => 'single',
                 'reset' => false,
-                'singleDate' => $this->taskId->due_date,
+                'singleDate' => $task->due_date,
             ]);
 
-            $this->titleTask = $this->taskId->title;
-            $this->description = $this->taskId->description;
-            $this->categoryTask = $this->taskId->category;
-            $this->priorityTask = $this->taskId->priority;
-            $this->dueTask = $this->taskId->due_date;
-            $this->statusTask = $this->taskId->status;
+            $this->titleTask = $task->title;
+            $this->description = $task->description;
+            $this->categoryTask = $task->category;
+            $this->priorityTask = $task->priority;
+            $this->dueTask = $task->due_date;
+            $this->statusTask = $task->status;
 
             Flux::modal('add-task')->show();
         }
@@ -70,10 +92,18 @@ class ProjectDetail extends Component
 
     public function createTask()
     {
-        $this->validate();
+        $this->validate([
+            'titleTask' => 'required',
+            'dueTask' => 'required|date',
+            'statusTask' => 'required|in:Todo,In Progress,Done,Error,Revisi',
+            'categoryTask' => 'required|in:Slicing,Integration API,Clean Code',
+            'priorityTask' => 'required|in:Low,Medium,High',
+            'description' => 'required',
+        ]);
 
         if ($this->taskId) {
-            $this->taskId->update([
+            $task = Task::find($this->taskId);
+            $task->update([
                 'title' => $this->titleTask,
                 'description' => $this->description,
                 'category' => $this->categoryTask,
@@ -95,8 +125,9 @@ class ProjectDetail extends Component
 
             $this->dispatch('notification', type: 'success',  message: 'Task Created Successfully');
         }
+
         $this->dispatch('updateDate', ['mode' => 'single', 'reset' => true]);
-        $this->reset(['titleTask', 'description', 'statusTask', 'priorityTask', 'categoryTask', 'taskId']);
+        $this->clearForm();
         Flux::modal('add-task')->close();
     }
 
@@ -116,7 +147,6 @@ class ProjectDetail extends Component
     public function deleteTask($taskId)
     {
         $task = Task::find($taskId);
-
         $task->delete();
 
         $this->dispatch('notification',
@@ -131,10 +161,81 @@ class ProjectDetail extends Component
         $this->reset(['taskId', 'titleTask', 'description', 'categoryTask', 'priorityTask', 'dueTask', 'statusTask']);
     }
 
+    // Note methods
+    public function editNote($noteId)
+    {
+        if ($noteId) {
+            $note = Note::find($noteId);
+            $this->noteId = $note->id;
+            $this->titleNote = $note->title;
+            $this->contentNote = $note->content;
+
+            Flux::modal('add-note')->show();
+        }
+    }
+
+    public function createNote()
+    {
+        $this->validate([
+            'titleNote' => 'required',
+            'contentNote' => 'required',
+        ]);
+
+        if ($this->noteId) {
+            $note = Note::find($this->noteId);
+            $note->update([
+                'title' => $this->titleNote,
+                'content' => $this->contentNote,
+            ]);
+            $this->dispatch('notification', type: 'success', message: 'Updated Note Successfully');
+        } else {
+            Note::create([
+                'project_id' => $this->project->id,
+                'title' => $this->titleNote,
+                'content' => $this->contentNote,
+            ]);
+
+            $this->dispatch('notification', type: 'success', message: 'Note Created Successfully');
+        }
+
+        $this->clearNoteForm();
+        Flux::modal('add-note')->close();
+    }
+
+    public function confirmDeleteNote($noteId)
+    {
+        $note = Note::find($noteId);
+
+        $this->dispatch('notification',
+            type: 'warning',
+            message: 'Are you sure you want to delete this note?',
+            actionEvent: 'deleteNote',
+            actionParams: [$noteId]
+        );
+    }
+
+    #[On('deleteNote')]
+    public function deleteNote($noteId)
+    {
+        $note = Note::find($noteId);
+        $note->delete();
+
+        $this->dispatch('notification',
+            type: 'success',
+            message: 'Note Deleted Successfully',
+        );
+    }
+
+    public function clearNoteForm()
+    {
+        $this->reset(['noteId', 'titleNote', 'contentNote']);
+    }
+
     public function render()
     {
         return view('livewire.job.project-detail', [
-            'tasks' => Task::latest()->get(),
+            'tasks' => Task::where('project_id', $this->project->id)->latest()->get(),
+            'notes' => Note::where('project_id', $this->project->id)->latest()->get(),
         ]);
     }
 }

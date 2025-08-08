@@ -6,80 +6,124 @@
         <flux:heading size="xl">Detail: {{ $project->name }}</flux:heading>
     </div>
 
-    <flux:modal.trigger name="add-task">
-        <flux:button icon="plus" variant="primary" class="mt-5">Add Task</flux:button>
-    </flux:modal.trigger>
+    <!-- Dynamic Add Button based on active tab -->
+    @if($activeTab === 'tasks')
+        <flux:modal.trigger name="add-task">
+            <flux:button icon="plus" variant="primary" class="mt-5">Add Task</flux:button>
+        </flux:modal.trigger>
+    @else
+        <flux:modal.trigger name="add-note">
+            <flux:button icon="plus" variant="primary" class="mt-5">Add Notes</flux:button>
+        </flux:modal.trigger>
+    @endif
 
     <!-- Tabs -->
     <div class="mt-6 flex space-x-4 border-b border-zinc-300 dark:border-zinc-700">
-        <button class="pb-2 border-b-2 border-lime-500 text-lime-400">Tasks</button>
-        <button class="pb-2 hover:text-lime-400">Notes</button>
+        <button
+            wire:click="setActiveTab('tasks')"
+            class="pb-2 {{ $activeTab === 'tasks' ? 'border-b-2 border-lime-500 text-lime-400' : 'hover:text-lime-400' }}">
+            Tasks
+        </button>
+        <button
+            wire:click="setActiveTab('notes')"
+            class="pb-2 {{ $activeTab === 'notes' ? 'border-b-2 border-lime-500 text-lime-400' : 'hover:text-lime-400' }}">
+            Notes
+        </button>
     </div>
 
-    <!-- Tasks List -->
-    <div class="mt-4 grid gap-4">
-        <!-- Task Item -->
-        @foreach($tasks as $task)
-            <div
-                class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl space-y-3">
-                <div class="flex justify-between items-center">
-                    <flux:heading size="lg">{{ $task->title }}</flux:heading>
+    <!-- Tab Content -->
+    @if($activeTab === 'tasks')
+        <!-- Tasks List -->
+        <div class="mt-4 grid gap-4">
+            <!-- Task Item -->
+            @foreach($tasks as $task)
+                <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl space-y-3">
+                    <div class="flex justify-between items-center">
+                        <flux:heading size="lg">{{ $task->title }}</flux:heading>
 
-                    @php
-                        $statusColor = match($task->status) {
-                        'Todo' => 'grey',
-                        'In Progress' => 'blue',
-                        'Done' => 'emerald',
-                        'Error' => 'red',
-                        'Revisi' => 'indigo',
-                        default => 'yellow'
-                        };
-                    @endphp
-                    <flux:badge color="{{ $statusColor }}">{{ $task->status }}</flux:badge>
-                </div>
-                <flux:text>{{ $task->description }}</flux:text>
-                <div class="flex space-x-5 items-center">
-                    @php
-                        $categoryIcon = match($task->category) {
-                        'Slicing' => '🎨',
-                        'Integration API' => '🔗',
-                        'Clean Code' => '🧹'
-                        };
-                    @endphp
-                    <flux:text>{{ $categoryIcon }} {{ $task->category }}</flux:text>
+                        @php
+                            $statusColor = match($task->status) {
+                            'Todo' => 'grey',
+                            'In Progress' => 'blue',
+                            'Done' => 'emerald',
+                            'Error' => 'red',
+                            'Revisi' => 'indigo',
+                            default => 'yellow'
+                            };
+                        @endphp
+                        <flux:badge color="{{ $statusColor }}">{{ $task->status }}</flux:badge>
+                    </div>
+                    <flux:text>{{ $task->description }}</flux:text>
+                    <div class="flex space-x-5 items-center">
+                        @php
+                            $categoryIcon = match($task->category) {
+                            'Slicing' => '🎨',
+                            'Integration API' => '🔗',
+                            'Clean Code' => '🧹'
+                            };
+                        @endphp
+                        <flux:text>{{ $categoryIcon }} {{ $task->category }}</flux:text>
 
-                    @php
-                        $priority = strtolower($task->priority); // misalnya: Low, Medium, High
-                        $priorityColor = match($priority) {
-                            'low' => 'text-green-600',
-                            'medium' => 'text-yellow-600',
-                            'high' => 'text-red-600',
-                            default => 'text-gray-600',
-                        };
-                    @endphp
+                        @php
+                            $priority = strtolower($task->priority);
+                            $priorityColor = match($priority) {
+                                'low' => 'text-green-600',
+                                'medium' => 'text-yellow-600',
+                                'high' => 'text-red-600',
+                                default => 'text-gray-600',
+                            };
+                        @endphp
 
-                    <div class="{{ $priorityColor }} flex items-center space-x-1">
-                        <flux:icon.exclamation-circle variant="micro" class="{{ $priorityColor }}" />
-                        <flux:text class="{{ $priorityColor }}">
-                            {{ ucfirst($priority) }} Prioritas
-                        </flux:text>
+                        <div class="{{ $priorityColor }} flex items-center space-x-1">
+                            <flux:icon.exclamation-circle variant="micro" class="{{ $priorityColor }}" />
+                            <flux:text class="{{ $priorityColor }}">
+                                {{ ucfirst($priority) }} Prioritas
+                            </flux:text>
+                        </div>
+
+                        <div class="flex items-center space-x-1">
+                            <flux:icon.calendar variant="micro"/>
+                            <flux:text>Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d F Y') }}</flux:text>
+                        </div>
                     </div>
 
-                    <div class="flex items-center space-x-1">
-                        <flux:icon.calendar variant="micro"/>
-                        <flux:text>Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d F Y') }}</flux:text>
+                    <div class="flex items-center space-x-5 mt-7">
+                        <flux:button wire:click="setEdit({{ $task->id }})" icon="pencil-square" variant="primary">Edit</flux:button>
+                        <flux:button wire:click="confirmDelete({{ $task->id }})" icon="trash" variant="danger">Delete</flux:button>
                     </div>
                 </div>
-
-                <div class="flex items-center space-x-5 mt-7">
-                    <flux:button wire:click="setEdit({{ $task->id }})" icon="pencil-square" variant="primary">Edit</flux:button>
-                    <flux:button wire:click="confirmDelete({{ $task->id }})" icon="trash" variant="danger">Delete</flux:button>
+            @endforeach
+        </div>
+    @else
+        <!-- Notes List -->
+        <div class="mt-4 grid gap-4">
+            @if($notes && count($notes) > 0)
+                @foreach($notes as $note)
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl space-y-3">
+                        <div class="flex justify-between items-center">
+                            <flux:heading size="lg">{{ $note->title ?? 'Untitled Note' }}</flux:heading>
+                            <flux:text variant="caption" class="text-zinc-500">
+                                {{ \Carbon\Carbon::parse($note->created_at)->format('d F Y, H:i') }}
+                            </flux:text>
+                        </div>
+                        <flux:text class="whitespace-pre-wrap">{{ $note->content }}</flux:text>
+                        <div class="flex items-center space-x-5 mt-7">
+                            <flux:button wire:click="editNote({{ $note->id }})" icon="pencil-square" variant="primary">Edit</flux:button>
+                            <flux:button wire:click="confirmDeleteNote({{ $note->id }})" icon="trash" variant="danger">Delete</flux:button>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="bg-zinc-100 dark:bg-zinc-900 p-8 rounded-xl text-center">
+                    <flux:icon.document-text class="mx-auto mb-4 text-zinc-400" variant="outline" />
+                    <flux:heading size="lg" class="text-zinc-500 mb-2">No Notes Yet</flux:heading>
+                    <flux:text class="text-zinc-400">Create your first note by clicking the "Add Notes" button above.</flux:text>
                 </div>
-            </div>
-        @endforeach
-    </div>
+            @endif
+        </div>
+    @endif
 
-    {{--Modal add--}}
+    {{-- Modal add/edit task --}}
     <flux:modal name="add-task" variant="flyout" @close="clearForm">
         <div class="space-y-6">
             <div>
@@ -117,7 +161,7 @@
                     <flux:select.option value="Clean Code">Clean Code</flux:select.option>
                 </flux:select>
 
-                {{-- select category --}}
+                {{-- select priority --}}
                 <flux:select wire:model="priorityTask" label="Priority">
                     <flux:select.option>Choose priority...</flux:select.option>
                     <flux:select.option value="Low">Low</flux:select.option>
@@ -131,6 +175,34 @@
                 <div class="flex">
                     <flux:spacer />
                     <flux:button type="submit" variant="primary">{{ $taskId ? 'Update' : 'Create'}} Task</flux:button>
+                </div>
+            </form>
+        </div>
+    </flux:modal>
+
+    {{-- Modal add/edit note --}}
+    <flux:modal name="add-note" variant="flyout" @close="clearNoteForm">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">{{ $noteId ? 'Update' : 'Add'}} Note</flux:heading>
+                <flux:text class="mt-2">{{ $noteId ? 'Update' : 'Add' }} your note.</flux:text>
+            </div>
+
+            <form wire:submit="createNote" class="space-y-6">
+                {{-- title --}}
+                <flux:input wire:model="titleNote" label="Title" autocomplete="off" placeholder="Enter note title..." />
+
+                {{-- content --}}
+                <flux:textarea
+                    wire:model="contentNote"
+                    label="Content"
+                    placeholder="Write your note here..."
+                    rows="8"
+                />
+
+                <div class="flex">
+                    <flux:spacer />
+                    <flux:button type="submit" variant="primary">{{ $noteId ? 'Update' : 'Create'}} Note</flux:button>
                 </div>
             </form>
         </div>
