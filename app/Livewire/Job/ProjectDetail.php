@@ -17,6 +17,16 @@ class ProjectDetail extends Component
     // Tab state
     public string $activeTab = 'tasks';
 
+    // Search properties
+    public string $searchTask = '';
+    public string $searchNote = '';
+
+    // Filter properties for tasks
+    public bool $showFilters = false;
+    public string $filterCategory = '';
+    public string $filterStatus = '';
+    public string $filterPriority = '';
+
     // Task properties
     #[Validate('required')]
     public $titleTask;
@@ -56,6 +66,77 @@ class ProjectDetail extends Component
     public function setActiveTab($tab)
     {
         $this->activeTab = $tab;
+        // Reset search when switching tabs
+        $this->searchTask = '';
+        $this->searchNote = '';
+        $this->clearAllFilters();
+    }
+
+    // Search and Filter methods
+    public function toggleFilters()
+    {
+        $this->showFilters = !$this->showFilters;
+    }
+
+    public function clearAllFilters()
+    {
+        $this->filterCategory = '';
+        $this->filterStatus = '';
+        $this->filterPriority = '';
+        $this->showFilters = false;
+    }
+
+    public function hasActiveFilters()
+    {
+        return !empty($this->filterCategory) ||
+            !empty($this->filterStatus) ||
+            !empty($this->filterPriority);
+    }
+
+    // Computed properties for filtered data
+    public function getFilteredTasksProperty()
+    {
+        $query = Task::where('project_id', $this->project->id);
+
+        // Apply search filter
+        if (!empty($this->searchTask)) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->searchTask . '%')
+                    ->orWhere('description', 'like', '%' . $this->searchTask . '%');
+            });
+        }
+
+        // Apply category filter
+        if (!empty($this->filterCategory)) {
+            $query->where('category', $this->filterCategory);
+        }
+
+        // Apply status filter
+        if (!empty($this->filterStatus)) {
+            $query->where('status', $this->filterStatus);
+        }
+
+        // Apply priority filter
+        if (!empty($this->filterPriority)) {
+            $query->where('priority', $this->filterPriority);
+        }
+
+        return $query->latest()->get();
+    }
+
+    public function getFilteredNotesProperty()
+    {
+        $query = Note::where('project_id', $this->project->id);
+
+        // Apply search filter
+        if (!empty($this->searchNote)) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->searchNote . '%')
+                    ->orWhere('content', 'like', '%' . $this->searchNote . '%');
+            });
+        }
+
+        return $query->latest()->get();
     }
 
     // Task methods
@@ -234,8 +315,8 @@ class ProjectDetail extends Component
     public function render()
     {
         return view('livewire.job.project-detail', [
-            'tasks' => Task::where('project_id', $this->project->id)->latest()->get(),
-            'notes' => Note::where('project_id', $this->project->id)->latest()->get(),
+            'tasks' => $this->filteredTasks,
+            'notes' => $this->filteredNotes,
         ]);
     }
 }
