@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('monthly_reports', function (Blueprint $table) {
+        Schema::create('financial_budgets', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('financial_category_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount', 15, 2);
             $table->integer('month');
             $table->integer('year');
-            $table->decimal('total_income', 10, 2);
-            $table->decimal('total_expense', 10, 2);
-            $table->decimal('belance', 10, 2);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('monthly_reports');
+        Schema::dropIfExists('financial_budgets');
     }
 };

@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('report_categories', function (Blueprint $table) {
+        Schema::create('financial_goals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['Income', 'Expense']);
+            $table->decimal('target_amount', 15, 2);
+            $table->decimal('current_amount', 15, 2)->default(0);
+            $table->date('target_date');
+            $table->enum('status', ['active', 'completed', 'paused'])->default('active');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('report_categories');
+        Schema::dropIfExists('financial_goals');
     }
 };

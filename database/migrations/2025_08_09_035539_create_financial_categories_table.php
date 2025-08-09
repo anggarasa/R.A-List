@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('financial_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('report_category_id')->constrained('report_categories')->onDelete('cascade');
-            $table->date('date');
-            $table->decimal('amount', 10, 2);
-            $table->text('description');
-            $table->enum('type', ['Income', 'Expense']);
+            $table->string('name');
+            $table->enum('type', ['income', 'expense']);
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('financial_categories');
     }
 };
