@@ -29,6 +29,8 @@ class FinancialCategoryPage extends Component
     
     public function render()
     {
-        return view('livewire.financial.financial-category-page');
+        return view('livewire.financial.financial-category-page', [
+            'categories' => FinancialCategory::latest()->get(),
+        ]);
     }
 }
