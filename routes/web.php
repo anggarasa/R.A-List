@@ -1,12 +1,14 @@
 <?php
 
-use App\Livewire\Job\ProjectDetail;
+use App\Livewire\Financial\FinancialCategoryPage;
 use App\Livewire\Job\ProjectList;
-use App\Livewire\ListJobs\JobListView;
-use App\Livewire\Settings\Appearance;
-use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
+use App\Livewire\Job\ProjectDetail;
+use App\Livewire\Settings\Password;
+use App\Livewire\Settings\Appearance;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\ListJobs\JobListView;
+use App\Livewire\Financial\FinancialPage;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -20,7 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('job/project_detail/{id}', ProjectDetail::class)->name('job.project_detail');
 
     // financial
-    Route::get('financial', \App\Livewire\Financial\FinancialPage::class)->name('financial-page');
+    Route::get('financial', FinancialPage::class)->name('financial-page');
+    Route::get('financial/category', FinancialCategoryPage::class)->name('financial.category');
 
     Route::redirect('settings', 'settings/profile');
 

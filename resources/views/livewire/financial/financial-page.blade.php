@@ -78,7 +78,7 @@
             <div class="flex justify-between items-start">
                 <flux:heading size="lg" class="mb-3">Expense Categories</flux:heading>
                 <flux:text size="sm">
-                    <flux:link href="#">Manage Category</flux:link>
+                    <flux:link href="{{ route('financial.category') }}" wire:navigate>Manage Category</flux:link>
                 </flux:text>
             </div>
             <div class="relative h-64 sm:h-72 lg:h-96">
