@@ -1,5 +1,10 @@
-<div class="space-y-6">
-    <flux:heading size="xl">Manage Financial Categories</flux:heading>
+<div class="space-y-10">
+    <div class="flex items-center space-x-3">
+        <a href="{{ route('financial-page') }}" wire:navigate>
+            <flux:icon.arrow-left />
+        </a>
+        <flux:heading size="xl">Manage Financial Categories</flux:heading>
+    </div>
 
     <div
         class="p-6 space-y-4 bg-zinc-50 rounded-xl shadow border border-zinc-400 dark:bg-zinc-900 dark:border-zinc-600">
@@ -18,38 +23,27 @@
             </flux:select>
 
             <!-- Save Button -->
-            <div class="flex justify-end pt-2">
+            <div class="flex justify-end pt-2 space-x-3">
+                <flux:button wire:click="clearForm">Cancel</flux:button>
                 <flux:button type="submit" variant="primary">Save</flux:button>
             </div>
         </form>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        @foreach ($categories as $category)
-        <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-400 dark:border-zinc-600">
-            <div class="flex justify-between items-center">
-                <flux:heading>{{ $category->name }}</flux:heading>
-
-                @php
-                $typeColor = match($category->type) {
-                'income' => 'green',
-                'expense' => 'red',
-                default => 'gray'
-                };
-
-                $typeChar = match ($category->type) {
-                'income' => 'Income',
-                'expense' => 'Expense',
-                }
-                @endphp
-                <flux:badge color="{{ $typeColor }}">{{ $typeChar }}</flux:badge>
-            </div>
-
-            <div class="flex items-center space-x-3 mt-5">
-                <flux:button variant="primary">Edit</flux:button>
-                <flux:button variant="danger">Delete</flux:button>
-            </div>
-        </div>
-        @endforeach
-    </div>
+    <livewire:widget.flexible-table :model="App\Models\financial\FinancialCategory::class" :columns="[
+                    'name' => ['label' => 'Category Name'],
+                    'type' => ['label' => 'Type', 'format' => 'badge']
+                ]" :sortable="['name']" :searchable="['name']" :actions="[
+                        [
+                            'method' => 'edit',
+                            'label' => 'Edit',
+                            'class' => 'bg-lime-400 text-black hover:bg-lime-600 cursor-pointer'
+                        ],
+                        [
+                            'method' => 'confirmDelete',
+                            'label' => 'Delete',
+                            'class' => 'text-white bg-red-600 hover:bg-red-700 cursor-pointer',
+                            'confirm' => 'Are you sure you want to delete this category?'
+                        ]
+                    ]">
 </div>
