@@ -40,10 +40,11 @@
                 @if($showFilters && (!empty($filters) || !empty($dateFilters)))
                 <div class="border-t border-gray-200 dark:border-zinc-700 pt-4">
                     <div class="flex flex-col lg:flex-row lg:items-end gap-4">
-                        <div class="flex flex-wrap items-center gap-3">
+                        {{-- Filter Group --}}
+                        <div class="flex flex-wrap gap-3 w-full">
                             {{-- Select Filters --}}
                             @foreach($filters as $key => $filter)
-                            <div class="min-w-[200px]">
+                            <div class="min-w-[200px] flex-1">
                                 <label class="block text-xs font-medium text-gray-700 dark:text-zinc-300 mb-1">
                                     {{ $filter['label'] ?? ucfirst($key) }}
                                 </label>
@@ -59,17 +60,17 @@
 
                             {{-- Date Filters --}}
                             @foreach($dateFilters as $key => $dateFilter)
-                            <div class="flex flex-col space-y-1">
+                            <div class="flex flex-col space-y-1 min-w-[200px] flex-1">
                                 <label class="text-xs font-medium text-gray-700 dark:text-zinc-300">
                                     {{ $dateFilter['label'] ?? ucfirst($key) }}
                                 </label>
-                                <div class="flex space-x-2">
+                                <div class="flex flex-col sm:flex-row sm:space-x-2 gap-2 sm:gap-0">
                                     <input type="date" wire:model.live="dateFilterValues.{{ $key }}.from"
                                         placeholder="Dari"
-                                        class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                        class="flex-1 border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
                                     <input type="date" wire:model.live="dateFilterValues.{{ $key }}.to"
                                         placeholder="Sampai"
-                                        class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                        class="flex-1 border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
                                 </div>
                             </div>
                             @endforeach
@@ -77,7 +78,7 @@
 
                         {{-- Clear Filters Button --}}
                         <button wire:click="clearFilters"
-                            class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-zinc-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 transition-colors duration-150">
+                            class="w-full lg:w-auto inline-flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-zinc-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 transition-colors duration-150">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12"></path>
