@@ -22,8 +22,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('job/project_detail/{id}', ProjectDetail::class)->name('job.project_detail');
 
     // financial
-    Route::get('financial', FinancialPage::class)->name('financial-page');
-    Route::get('financial/category', FinancialCategoryPage::class)->name('financial.category');
+    Route::prefix('financial')->name('financial.')->group(function () {
+        Route::get('financial', FinancialPage::class)->name('dashboard');
+        Route::get('financial/category', FinancialCategoryPage::class)->name('category');
+    });
 
     Route::redirect('settings', 'settings/profile');
 

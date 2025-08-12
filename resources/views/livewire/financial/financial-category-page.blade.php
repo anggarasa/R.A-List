@@ -1,7 +1,7 @@
 <div class="space-y-10">
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div class="flex items-center space-x-3">
-            <a href="{{ route('financial-page') }}" wire:navigate>
+            <a href="{{ route('financial.dashboard') }}" wire:navigate>
                 <flux:icon.arrow-left />
             </a>
             <flux:heading size="xl">Manage Financial Categories</flux:heading>
