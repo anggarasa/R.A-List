@@ -1,40 +1,43 @@
 @if ($paginator->hasPages())
 <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}"
-    class="flex items-center justify-between bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-700 p-6 shadow-sm">
+    class="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-zinc-700 p-4 sm:p-6 shadow-sm">
 
     {{-- Mobile Pagination --}}
-    <div class="flex justify-between flex-1 sm:hidden">
+    <div class="flex items-center justify-center gap-3 sm:hidden">
+        {{-- Prev Button --}}
         @if ($paginator->onFirstPage())
         <span
-            class="relative inline-flex items-center px-6 py-3 text-sm font-medium text-gray-400 dark:text-zinc-500 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 cursor-not-allowed leading-5 rounded-xl transition-all duration-200">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="flex items-center justify-center w-10 h-10 text-gray-400 dark:text-zinc-500 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-full cursor-not-allowed">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-            {!! __('pagination.previous') !!}
         </span>
         @else
         <button wire:click="previousPage" wire:loading.attr="disabled"
-            class="relative inline-flex items-center px-6 py-3 text-sm font-medium text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 leading-5 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-750 hover:border-gray-300 dark:hover:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 active:bg-gray-100 dark:active:bg-zinc-700 transition-all duration-200 shadow-sm hover:shadow-md">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="flex items-center justify-center w-10 h-10 text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-full hover:bg-gray-50 dark:hover:bg-zinc-750 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-            {!! __('pagination.previous') !!}
         </button>
         @endif
 
+        {{-- Page Info --}}
+        <span class="text-sm font-medium text-gray-700 dark:text-zinc-300">
+            {{ $paginator->currentPage() }} / {{ $paginator->lastPage() }}
+        </span>
+
+        {{-- Next Button --}}
         @if ($paginator->hasMorePages())
         <button wire:click="nextPage" wire:loading.attr="disabled"
-            class="relative inline-flex items-center px-6 py-3 ml-3 text-sm font-medium text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 leading-5 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-750 hover:border-gray-300 dark:hover:border-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 active:bg-gray-100 dark:active:bg-zinc-700 transition-all duration-200 shadow-sm hover:shadow-md">
-            {!! __('pagination.next') !!}
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="flex items-center justify-center w-10 h-10 text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-full hover:bg-gray-50 dark:hover:bg-zinc-750 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
         </button>
         @else
         <span
-            class="relative inline-flex items-center px-6 py-3 ml-3 text-sm font-medium text-gray-400 dark:text-zinc-500 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 cursor-not-allowed leading-5 rounded-xl transition-all duration-200">
-            {!! __('pagination.next') !!}
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="flex items-center justify-center w-10 h-10 text-gray-400 dark:text-zinc-500 bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-full cursor-not-allowed">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
         </span>
