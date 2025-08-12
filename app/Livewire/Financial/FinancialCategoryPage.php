@@ -57,6 +57,42 @@ class FinancialCategoryPage extends Component
     {
         $this->reset(['name', 'type', 'categoryId']);
     }
+
+    public $columns = [
+        'name' => ['label' => 'Category Name'],
+        'type' => [
+            'label' => 'Type',
+            'format' => 'badge',
+            'badge_colors' => [
+                'income' => 'green',
+                'expense' => 'red'
+            ],
+            'badge_labels' => [
+                'income' => 'Income',
+                'expense' => 'Expense',
+            ],
+        ],
+    ];
+
+    public $filter = ['type' => ['label', 'Type']];
+
+    public $search = ['name'];
+
+    public $sortable = ['name'];
+
+    public $actions = [
+        [
+            'method' => 'edit',
+            'label' => 'Edit',
+            'class' => 'bg-lime-400 text-black hover:bg-lime-600 cursor-pointer'
+        ],
+        [
+            'method' => 'confirmDelete',
+            'label' => 'Delete',
+            'class' => 'text-white bg-red-600 hover:bg-red-700 cursor-pointer',
+            'confirm' => 'Are you sure you want to delete this category?'
+        ]
+    ];
     
     public function render()
     {

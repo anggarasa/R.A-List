@@ -1,35 +1,135 @@
 <div>
     <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-700">
-        {{-- Header with Search and Per Page --}}
+        {{-- Header with Search, Filters and Per Page --}}
         <div class="p-4 border-b border-gray-200 dark:border-zinc-700">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                {{-- Search --}}
-                @if($showSearch)
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+            <div class="flex flex-col gap-4">
+                {{-- Search and Per Page Row --}}
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    {{-- Search --}}
+                    @if($showSearch)
+                    <div class="relative flex-1 max-w-md">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400 dark:text-zinc-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari data..."
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-md leading-5 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-zinc-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-lime-500 focus:border-lime-500 sm:text-sm" />
                     </div>
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari data..."
-                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-md leading-5 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-zinc-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-lime-500 focus:border-lime-500 sm:text-sm" />
-                </div>
-                @endif
+                    @endif
 
-                {{-- Per Page Selector --}}
-                @if($showPerPage)
-                <div class="flex items-center space-x-2">
-                    <label class="text-sm text-gray-700 dark:text-zinc-300">Tampilkan:</label>
-                    <select wire:model.live="perPage"
-                        class="border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-1 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
+                    {{-- Per Page Selector --}}
+                    @if($showPerPage)
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm text-gray-700 dark:text-zinc-300">Tampilkan:</label>
+                        <select wire:model.live="perPage"
+                            class="border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-1 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Filters Row --}}
+                @if($showFilters && (!empty($filters) || !empty($dateFilters)))
+                <div class="border-t border-gray-200 dark:border-zinc-700 pt-4">
+                    <div class="flex flex-col lg:flex-row lg:items-end gap-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            {{-- Select Filters --}}
+                            @foreach($filters as $key => $filter)
+                            <div class="min-w-[200px]">
+                                <label class="block text-xs font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                                    {{ $filter['label'] ?? ucfirst($key) }}
+                                </label>
+                                <select wire:model.live="selectedFilters.{{ $key }}"
+                                    class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                    <option value="">Semua {{ $filter['label'] ?? ucfirst($key) }}</option>
+                                    @foreach($this->getFilterOptions($key) as $option)
+                                    <option value="{{ $option }}">{{ ucfirst($option) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @endforeach
+
+                            {{-- Date Filters --}}
+                            @foreach($dateFilters as $key => $dateFilter)
+                            <div class="flex flex-col space-y-1">
+                                <label class="text-xs font-medium text-gray-700 dark:text-zinc-300">
+                                    {{ $dateFilter['label'] ?? ucfirst($key) }}
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="date" wire:model.live="dateFilterValues.{{ $key }}.from"
+                                        placeholder="Dari"
+                                        class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                    <input type="date" wire:model.live="dateFilterValues.{{ $key }}.to"
+                                        placeholder="Sampai"
+                                        class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        {{-- Clear Filters Button --}}
+                        <button wire:click="clearFilters"
+                            class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-zinc-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 transition-colors duration-150">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Reset Filter
+                        </button>
+                    </div>
+
+                    {{-- Active Filters Display --}}
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        {{-- Selected Filter Tags --}}
+                        @foreach($selectedFilters as $field => $value)
+                        @if(!empty($value))
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-lime-100 text-lime-800 dark:bg-lime-900 dark:text-lime-200">
+                            {{ isset($filters[$field]['label']) ? $filters[$field]['label'] : ucfirst($field) }}: {{
+                            ucfirst($value) }}
+                            <button wire:click="$set('selectedFilters.{{ $field }}', '')"
+                                class="ml-1.5 -mr-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-lime-600 hover:bg-lime-200 hover:text-lime-900 dark:text-lime-300 dark:hover:bg-lime-800">
+                                <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                    <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
+                                </svg>
+                            </button>
+                        </span>
+                        @endif
+                        @endforeach
+
+                        {{-- Date Filter Tags --}}
+                        @foreach($dateFilterValues as $field => $dateRange)
+                        @if(!empty($dateRange['from']) || !empty($dateRange['to']))
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            {{ isset($dateFilters[$field]['label']) ? $dateFilters[$field]['label'] : ucfirst($field)
+                            }}:
+                            @if(!empty($dateRange['from']) && !empty($dateRange['to']))
+                            {{ \Carbon\Carbon::parse($dateRange['from'])->format('d M Y') }} - {{
+                            \Carbon\Carbon::parse($dateRange['to'])->format('d M Y') }}
+                            @elseif(!empty($dateRange['from']))
+                            Dari {{ \Carbon\Carbon::parse($dateRange['from'])->format('d M Y') }}
+                            @else
+                            Sampai {{ \Carbon\Carbon::parse($dateRange['to'])->format('d M Y') }}
+                            @endif
+                            <button wire:click="$set('dateFilterValues.{{ $field }}', ['from' => '', 'to' => ''])"
+                                class="ml-1.5 -mr-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-blue-600 hover:bg-blue-200 hover:text-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
+                                <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                    <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
+                                </svg>
+                            </button>
+                        </span>
+                        @endif
+                        @endforeach
+                    </div>
                 </div>
                 @endif
             </div>
@@ -92,12 +192,28 @@
                             @elseif(isset($column['format']) && $column['format'] === 'datetime')
                             {{ $item->$key ? \Carbon\Carbon::parse($item->$key)->format('d M Y H:i') : '-' }}
                             @elseif(isset($column['format']) && $column['format'] === 'badge')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                    @if($item->$key === 'income') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                    @elseif($item->$key === 'expense') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                    @else bg-gray-100 text-gray-800 dark:bg-zinc-700 dark:text-zinc-300
-                                    @endif">
-                                {{ ucfirst($item->$key) }}
+                            @php
+                            $badgeColor = 'gray'; // default color
+                            $badgeClasses = 'bg-gray-100 text-gray-800 dark:bg-zinc-700 dark:text-zinc-300'; // default
+
+                            // Check if custom badge colors are defined
+                            if (isset($column['badge_colors']) && isset($column['badge_colors'][$item->$key])) {
+                            $color = $column['badge_colors'][$item->$key];
+                            $badgeClasses = "bg-{$color}-100 text-{$color}-800 dark:bg-{$color}-900
+                            dark:text-{$color}-200";
+                            }
+                            // Legacy support for old badge format
+                            elseif ($item->$key === 'income') {
+                            $badgeClasses = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+                            }
+                            elseif ($item->$key === 'expense') {
+                            $badgeClasses = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+                            }
+                            @endphp
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $badgeClasses }}">
+                                {{ isset($column['badge_labels'][$item->$key]) ? $column['badge_labels'][$item->$key] :
+                                ucfirst($item->$key) }}
                             </span>
                             @elseif(isset($column['relation']))
                             {{ data_get($item, $column['relation']) }}
@@ -115,7 +231,7 @@
                                     wire:click="{{ $action['method'] }}({{ $item->id }}, '{{ $action['confirm'] }}')"
                                     @else wire:click="{{ $action['method'] }}({{ $item->id }})" @endif class="inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium rounded-md 
     {{ $action['class'] ?? 'text-lime-600 hover:text-lime-900 dark:text-lime-400 dark:hover:text-lime-300' }} 
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-colors duration-150">
+    transition-colors duration-150">
 
                                     @if(isset($action['icon']))
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,8 +258,10 @@
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 <p>Tidak ada data yang ditemukan</p>
-                                @if($search)
-                                <p class="mt-1 text-xs">Coba ubah kata kunci pencarian</p>
+                                @if($search || !empty(array_filter($selectedFilters)) ||
+                                !empty(array_filter($dateFilterValues, function($date) { return !empty($date['from']) ||
+                                !empty($date['to']); })))
+                                <p class="mt-1 text-xs">Coba ubah kata kunci pencarian atau filter</p>
                                 @endif
                             </div>
                         </td>

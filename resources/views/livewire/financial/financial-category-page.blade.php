@@ -30,20 +30,7 @@
         </form>
     </div>
 
-    <livewire:widget.flexible-table :model="App\Models\financial\FinancialCategory::class" :columns="[
-                    'name' => ['label' => 'Category Name'],
-                    'type' => ['label' => 'Type', 'format' => 'badge']
-                ]" :sortable="['name']" :searchable="['name']" :actions="[
-                        [
-                            'method' => 'edit',
-                            'label' => 'Edit',
-                            'class' => 'bg-lime-400 text-black hover:bg-lime-600 cursor-pointer'
-                        ],
-                        [
-                            'method' => 'confirmDelete',
-                            'label' => 'Delete',
-                            'class' => 'text-white bg-red-600 hover:bg-red-700 cursor-pointer',
-                            'confirm' => 'Are you sure you want to delete this category?'
-                        ]
-                    ]">
+    <livewire:widget.flexible-table :model="App\Models\financial\FinancialCategory::class" :columns="$columns"
+        :searchable="$search" :sortable="$sortable" :actions="$actions" :filters="$filter" :per-page="10"
+        :show-search="true" :show-per-page="true" :show-pagination="true" :show-filters="true" />
 </div>
