@@ -1,5 +1,5 @@
 <div class="space-y-10">
-    <div class="flex justify-between items-center">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div class="flex items-center space-x-3">
             <a href="{{ route('financial-page') }}" wire:navigate>
                 <flux:icon.arrow-left />
@@ -8,10 +8,14 @@
         </div>
 
         <flux:modal.trigger name="add-financial-category">
-            <flux:button icon="plus" variant="primary">Add Category</flux:button>
+            <flux:button icon="plus" variant="primary" class="w-full sm:w-auto">
+                Add Category
+            </flux:button>
         </flux:modal.trigger>
     </div>
 
+
+    {{-- table category --}}
     <livewire:widget.flexible-table :model="App\Models\financial\FinancialCategory::class" :columns="$columns"
         :searchable="$search" :sortable="$sortable" :actions="$actions" :filters="$filter" :per-page="10"
         :show-search="true" :show-per-page="true" :show-pagination="true" :show-filters="true" />
