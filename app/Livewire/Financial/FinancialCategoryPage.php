@@ -2,11 +2,12 @@
 
 namespace App\Livewire\Financial;
 
-use App\Livewire\Widget\FlexibleTable;
-use App\Models\financial\FinancialCategory;
+use Flux\Flux;
+use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
-use Livewire\Component;
+use App\Livewire\Widget\FlexibleTable;
+use App\Models\financial\FinancialCategory;
 
 class FinancialCategoryPage extends Component
 {
@@ -17,6 +18,18 @@ class FinancialCategoryPage extends Component
 
     #[Validate('required|in:income,expense')]
     public $type;
+
+    #[On('update-data-table')]
+    public function edit($data)
+    {
+        if($data) {
+            $this->categoryId = $data['id'];
+            $this->name = $data['name'];
+            $this->type = $data['type'];
+
+            Flux::modal('add-financial-category')->show();
+        }
+    }
 
     public function saveCategory()
     {
@@ -43,21 +56,13 @@ class FinancialCategoryPage extends Component
         $this->dispatch('refresh-table')->to(FlexibleTable::class);
     }
 
-    #[On('update-data-table')]
-    public function edit($data)
-    {
-        if($data) {
-            $this->categoryId = $data['id'];
-            $this->name = $data['name'];
-            $this->type = $data['type'];
-        }
-    }
-
     public function clearForm()
     {
         $this->reset(['name', 'type', 'categoryId']);
+        Flux::modal('add-financial-category')->close();
     }
 
+    // Start Manage view flexible table category
     public $columns = [
         'name' => ['label' => 'Category Name'],
         'type' => [
@@ -93,6 +98,7 @@ class FinancialCategoryPage extends Component
             'confirm' => 'Are you sure you want to delete this category?'
         ]
     ];
+    // End Manage view flexible table category
     
     public function render()
     {
