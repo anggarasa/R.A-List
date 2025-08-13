@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Financial\FinancialAccountPage;
 use App\Livewire\Financial\FinancialCategoryPage;
 use App\Livewire\Job\ProjectList;
 use App\Livewire\Settings\Profile;
@@ -24,7 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // financial
     Route::prefix('financial')->name('financial.')->group(function () {
         Route::get('dashboard', FinancialPage::class)->name('dashboard');
-        Route::get('category', FinancialCategoryPage::class)->name('category');
+        Route::get('categories', FinancialCategoryPage::class)->name('category');
+        Route::get('accounts', FinancialAccountPage::class)->name('account');
     });
 
     Route::redirect('settings', 'settings/profile');
