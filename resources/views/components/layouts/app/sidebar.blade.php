@@ -33,17 +33,20 @@
                         toggle() {
                             this.open = !this.open;
                         },
+                        openDropdown() {
+                            this.open = true;
+                        },
                         init() {
                             // Auto-open if we're on a financial route
                             if ({{ request()->routeIs('financial.*') ? 'true' : 'false' }}) {
                                 this.open = true;
                             }
                         }
-                     }" x-init="init()">
+                     }" x-init="init()" @financial-page-loaded.window="openDropdown()">
 
                     {{-- Main Financial Item --}}
                     <div class="relative">
-                        <a href="{{ route('financial.dashboard') }}" wire:navigate @click="toggle()"
+                        <a href="{{ route('financial.dashboard') }}" wire:navigate
                             class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors duration-200 group
                                 {{ request()->routeIs('financial.*') ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100' : '' }}">
                             <div class="flex items-center gap-3">

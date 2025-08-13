@@ -23,8 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // financial
     Route::prefix('financial')->name('financial.')->group(function () {
-        Route::get('financial', FinancialPage::class)->name('dashboard');
-        Route::get('financial/category', FinancialCategoryPage::class)->name('category');
+        Route::get('dashboard', FinancialPage::class)->name('dashboard');
+        Route::get('category', FinancialCategoryPage::class)->name('category');
     });
 
     Route::redirect('settings', 'settings/profile');
