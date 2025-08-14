@@ -11,10 +11,24 @@
         @foreach ($accounts as $account)
         @php
         $cardColor = match ($account->type) {
-        'bank' => 'blue',
-        'cash' => 'green',
-        'ewallet' => 'purple',
-        'investment' => 'orange',
+        'bank' => 'border-l-blue-600',
+        'cash' => 'border-l-green-600',
+        'ewallet' => 'border-l-purple-600',
+        'investment' => 'border-l-orange-600',
+        };
+
+        $bgIconColor = match ($account->type) {
+        'bank' => 'bg-blue-100',
+        'cash' => 'bg-green-100',
+        'ewallet' => 'bg-purple-100',
+        'investment' => 'bg-orange-100',
+        };
+
+        $iconColor = match ($account->type) {
+        'bank' => 'text-blue-600',
+        'cash' => 'text-green-600',
+        'ewallet' => 'text-purple-600',
+        'investment' => 'text-orange-600',
         };
 
         $typeLower = match ($account->type) {
@@ -25,11 +39,11 @@
         }
         @endphp
 
-        <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-xl border-l-4 border-l-{{ $cardColor }}-600 shadow">
+        <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-xl border-l-4 {{ $cardColor }} shadow">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-{{ $cardColor }}-100 rounded-full flex items-center justify-center">
-                        <flux:icon.building-library variant="solid" class="text-{{ $cardColor }}-600" />
+                    <div class="w-10 h-10 {{ $bgIconColor }} rounded-full flex items-center justify-center">
+                        <flux:icon.building-library variant="solid" class="{{ $iconColor }}" />
                     </div>
                     <div class="flex-none space-x-1">
                         <flux:heading size="lg">{{ $account->name }}</flux:heading>
