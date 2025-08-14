@@ -8,16 +8,33 @@
     </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-xl border-l-4 border-l-blue-600 shadow">
+        @foreach ($accounts as $account)
+        @php
+        $cardColor = match ($account->type) {
+        'bank' => 'blue',
+        'cash' => 'green',
+        'ewallet' => 'purple',
+        'investment' => 'orange',
+        };
+
+        $typeLower = match ($account->type) {
+        'bank' => 'Bank',
+        'cash' => 'Cash',
+        'ewallet' => 'E-Wallet',
+        'investment' => 'Investment'
+        }
+        @endphp
+
+        <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-xl border-l-4 border-l-{{ $cardColor }}-600 shadow">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <flux:icon.building-library variant="solid" class="text-blue-600" />
+                    <div class="w-10 h-10 bg-{{ $cardColor }}-100 rounded-full flex items-center justify-center">
+                        <flux:icon.building-library variant="solid" class="text-{{ $cardColor }}-600" />
                     </div>
                     <div class="flex-none space-x-1">
-                        <flux:heading size="lg">nama akun</flux:heading>
+                        <flux:heading size="lg">{{ $account->name }}</flux:heading>
 
-                        <flux:text>Bank</flux:text>
+                        <flux:text>{{ $typeLower }}</flux:text>
                     </div>
                 </div>
 
@@ -29,10 +46,11 @@
             </div>
 
             <div class="text-right mt-4">
-                <flux:heading size="xl">Rp 2.000.000</flux:heading>
-                <flux:text>1234***</flux:text>
+                <flux:heading size="xl">{{ format_rupiah($account->balance) }}</flux:heading>
+                <flux:text>{{ mask_string($account->account_number, 5, 0) }}</flux:text>
             </div>
         </div>
+        @endforeach
     </div>
 
     {{-- modal crud --}}

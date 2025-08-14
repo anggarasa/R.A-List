@@ -18,7 +18,7 @@ class FinancialAccountPage extends Component
     #[Validate('required|integer')]
     public $balance;
 
-    #[Validate('nullable|integer')]
+    #[Validate('nullable')]
     public $accountNumber;
 
     public function saveAccount()
@@ -39,6 +39,8 @@ class FinancialAccountPage extends Component
     
     public function render()
     {
-        return view('livewire.financial.financial-account-page');
+        return view('livewire.financial.financial-account-page', [
+            'accounts' => FinancialAccount::latest()->get(),
+        ]);
     }
 }
