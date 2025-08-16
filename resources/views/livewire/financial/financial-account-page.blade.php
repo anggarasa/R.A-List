@@ -90,8 +90,11 @@
                 </flux:select>
 
                 {{-- input total saldo --}}
+                {{--
                 <flux:input type="number" wire:model="balance" autocomplete="off" label="Total Balance"
-                    placeholder="Enter total balance in here..." />
+                    placeholder="Enter total balance in here..." /> --}}
+                <livewire:widget.currency-input label="Total Balance" name="balance" :error="$errors->first('balance')"
+                    size="sm" />
 
                 {{-- input no akun --}}
                 <flux:input type="number" wire:model="accountNumber" autocomplete="off"

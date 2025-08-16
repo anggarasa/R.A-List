@@ -4,6 +4,7 @@ namespace App\Livewire\Financial;
 
 use App\Models\financial\FinancialAccount;
 use Flux\Flux;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -20,6 +21,14 @@ class FinancialAccountPage extends Component
 
     #[Validate('nullable')]
     public $accountNumber;
+
+    #[On('currency-updated')]
+    public function handleCurrencyUpdate($data)
+    {
+        if ($data['name'] === 'balance') {
+            $this->balance = $data['value'];
+        }
+    }
 
     public function saveAccount()
     {
