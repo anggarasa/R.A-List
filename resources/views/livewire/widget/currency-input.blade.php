@@ -18,7 +18,7 @@
         </div> --}}
 
         <input type="text" id="{{ $id }}" name="{{ $name }}" wire:model.live="value" placeholder="{{ $placeholder }}"
-            @if($disabled) disabled @endif
+            @if($disabled) disabled @endif autocomplete="off"
             @class([ 'block w-full pl-3 pr-12 border rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-offset-0 focus:outline-none'
             , 'py-2 text-sm'=> $size === 'sm',
         'py-2.5 text-base' => $size === 'md',

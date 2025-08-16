@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="flex space-x-3">
-                    <flux:icon.pencil-square variant="mini"
+                    <flux:icon.pencil-square variant="mini" wire:click="setEdit({{ $account }})"
                         class="text-accent hover:text-accent-content cursor-pointer" />
                     <flux:icon.trash variant="mini" class="text-red-600 hover:text-red-700 cursor-pointer" />
                 </div>
@@ -71,8 +71,8 @@
     <flux:modal name="add-account" variant="flyout">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Add Account</flux:heading>
-                <flux:text class="mt-2">Add an account to manage your finances.</flux:text>
+                <flux:heading size="lg">{{ $account ? 'Edit' : 'Add' }} Account</flux:heading>
+                <flux:text class="mt-2">{{ $account ? 'Edit' : 'Add' }} an account to manage your finances.</flux:text>
             </div>
 
             <form wire:submit="saveAccount" class="space-y-6">
@@ -80,7 +80,7 @@
                 <flux:input wire:model="name" label="Name" autocomplete="off"
                     placeholder="Enter name account in here..." />
 
-                {{-- select type --}}
+                {{-- input type akun --}}
                 <flux:select wire:model="type" label="Type">
                     <flux:select.option>Choose type...</flux:select.option>
                     <flux:select.option value="bank">Bank</flux:select.option>
@@ -90,9 +90,6 @@
                 </flux:select>
 
                 {{-- input total saldo --}}
-                {{--
-                <flux:input type="number" wire:model="balance" autocomplete="off" label="Total Balance"
-                    placeholder="Enter total balance in here..." /> --}}
                 <livewire:widget.currency-input label="Total Balance" name="balance" :error="$errors->first('balance')"
                     size="sm" />
 
@@ -102,7 +99,7 @@
 
                 <div class="flex">
                     <flux:spacer />
-                    <flux:button type="submit" variant="primary">Save</flux:button>
+                    <flux:button type="submit" variant="primary">{{ $account ? 'Update' : 'Save' }}</flux:button>
                 </div>
             </form>
         </div>

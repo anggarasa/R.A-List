@@ -22,6 +22,8 @@ class FinancialAccountPage extends Component
     #[Validate('nullable')]
     public $accountNumber;
 
+    public ?FinancialAccount $account = null;
+
     #[On('currency-updated')]
     public function handleCurrencyUpdate($data)
     {
@@ -30,18 +32,44 @@ class FinancialAccountPage extends Component
         }
     }
 
+    public function setEdit(FinancialAccount $account)
+    {
+        if($account) {
+            $this->account = $account;
+            $this->name = $account->name;
+            $this->type = $account->type;
+            $this->accountNumber = $account->account_number;
+            $this->dispatch('update-value-input-currency', number_format($account->balance, 0, '.', ','));
+            Flux::modal('add-account')->show();
+        }
+    }
+
     public function saveAccount()
     {
         $this->validate();
 
-        FinancialAccount::create([
-            'name' => $this->name,
-            'type' => $this->type,
-            'balance' => $this->balance,
-            'account_number' => $this->accountNumber
-        ]);
+        if($this->account) {
+            $this->account->update([
+                'name' => $this->name,
+                'type' => $this->type,
+                'balance' => $this->balance,
+                'account_number' => $this->accountNumber
+            ]);
 
-        $this->dispatch('notification', type: 'success', message: 'Successfully created a new financial account');
+            $this->dispatch('clear-input-currency');
+            $this->dispatch('notification', type: 'success', message: 'Successfully updated the financial account');
+        } else {
+            FinancialAccount::create([
+                'name' => $this->name,
+                'type' => $this->type,
+                'balance' => $this->balance,
+                'account_number' => $this->accountNumber
+            ]);
+
+            $this->dispatch('clear-input-currency');
+            $this->dispatch('notification', type: 'success', message: 'Successfully created a new financial account');
+        }
+
         $this->reset(['name', 'type', 'balance', 'accountNumber']);
         Flux::modal('add-account')->close();
     }

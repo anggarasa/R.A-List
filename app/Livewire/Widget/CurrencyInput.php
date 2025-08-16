@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Widget;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class CurrencyInput extends Component
@@ -43,6 +44,7 @@ class CurrencyInput extends Component
         }
     }
     
+    #[On('update-value-input-currency')]
     public function updatedValue($value)
     {
         $this->rawValue = $this->parseValue($value);
@@ -79,6 +81,7 @@ class CurrencyInput extends Component
         $this->value = $this->formatCurrency($this->rawValue);
     }
     
+    #[On('clear-input-currency')]
     public function clear()
     {
         $this->rawValue = 0;
