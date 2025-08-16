@@ -22,7 +22,7 @@ class FinancialAccountPage extends Component
     #[Validate('nullable')]
     public $accountNumber;
 
-    public ?FinancialAccount $account = null;
+    public ?FinancialAccount $accountEdit = null;
 
     #[On('currency-updated')]
     public function handleCurrencyUpdate($data)
@@ -35,7 +35,7 @@ class FinancialAccountPage extends Component
     public function setEdit(FinancialAccount $account)
     {
         if($account) {
-            $this->account = $account;
+            $this->accountEdit = $account;
             $this->name = $account->name;
             $this->type = $account->type;
             $this->accountNumber = $account->account_number;
@@ -48,8 +48,8 @@ class FinancialAccountPage extends Component
     {
         $this->validate();
 
-        if($this->account) {
-            $this->account->update([
+        if($this->accountEdit) {
+            $this->accountEdit->update([
                 'name' => $this->name,
                 'type' => $this->type,
                 'balance' => $this->balance,
@@ -70,10 +70,17 @@ class FinancialAccountPage extends Component
             $this->dispatch('notification', type: 'success', message: 'Successfully created a new financial account');
         }
 
-        $this->reset(['name', 'type', 'balance', 'accountNumber']);
+        $this->clearFormAccount();
         Flux::modal('add-account')->close();
     }
-    
+
+    public function clearFormAccount()
+    {
+        $this->reset(['name', 'type', 'balance', 'accountNumber']);
+        $this->accountEdit = null;
+        $this->dispatch('clear-input-currency');
+    }
+
     public function render()
     {
         return view('livewire.financial.financial-account-page', [

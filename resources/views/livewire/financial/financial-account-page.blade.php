@@ -68,11 +68,12 @@
     </div>
 
     {{-- modal crud --}}
-    <flux:modal name="add-account" variant="flyout">
+    <flux:modal name="add-account" variant="flyout" @close="clearFormAccount">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ $account ? 'Edit' : 'Add' }} Account</flux:heading>
-                <flux:text class="mt-2">{{ $account ? 'Edit' : 'Add' }} an account to manage your finances.</flux:text>
+                <flux:heading size="lg">{{ $accountEdit == null ? 'Add' : 'Edit' }} Account</flux:heading>
+                <flux:text class="mt-2">{{ $accountEdit == null ? 'Add' : 'Edit' }} an account to manage your
+                    finances.</flux:text>
             </div>
 
             <form wire:submit="saveAccount" class="space-y-6">
@@ -99,7 +100,8 @@
 
                 <div class="flex">
                     <flux:spacer />
-                    <flux:button type="submit" variant="primary">{{ $account ? 'Update' : 'Save' }}</flux:button>
+                    <flux:button type="submit" variant="primary">{{ $accountEdit == null ? 'Add' : 'Update' }}
+                    </flux:button>
                 </div>
             </form>
         </div>
