@@ -83,8 +83,8 @@
                             {{-- Transactions Sub-item (example) --}}
                             <a href="{{ route('financial.account') }}" wire:navigate
                                 class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors duration-200">
-                                <flux:icon name="clipboard-document-list" class="h-4 w-4 shrink-0" />
-                                <span>{{ __('Transactions') }}</span>
+                                <flux:icon name="credit-card" class="h-4 w-4 shrink-0" />
+                                <span>{{ __('Financial Accounts') }}</span>
                             </a>
 
                             {{-- Budget Sub-item (example) --}}

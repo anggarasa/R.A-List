@@ -31,6 +31,13 @@
         'investment' => 'text-orange-600',
         };
 
+        $cardIcon = match ($account->type) {
+        'bank' => 'building-library',
+        'cash' => 'banknotes',
+        'ewallet' => 'device-phone-mobile',
+        'investment' => 'chart-bar',
+        };
+
         $typeLower = match ($account->type) {
         'bank' => 'Bank',
         'cash' => 'Cash',
@@ -43,7 +50,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 {{ $bgIconColor }} rounded-full flex items-center justify-center">
-                        <flux:icon.building-library variant="solid" class="{{ $iconColor }}" />
+                        <flux:icon name="{{ $cardIcon }}" variant="solid" class="{{ $iconColor }}" />
                     </div>
                     <div class="flex-none space-x-1">
                         <flux:heading size="lg">{{ $account->name }}</flux:heading>
