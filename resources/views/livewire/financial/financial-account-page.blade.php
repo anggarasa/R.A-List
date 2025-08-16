@@ -55,7 +55,8 @@
                 <div class="flex space-x-3">
                     <flux:icon.pencil-square variant="mini" wire:click="setEdit({{ $account }})"
                         class="text-accent hover:text-accent-content cursor-pointer" />
-                    <flux:icon.trash variant="mini" class="text-red-600 hover:text-red-700 cursor-pointer" />
+                    <flux:icon.trash wire:click="confirmDelete({{ $account }})" variant="mini"
+                        class="text-red-600 hover:text-red-700 cursor-pointer" />
                 </div>
             </div>
 

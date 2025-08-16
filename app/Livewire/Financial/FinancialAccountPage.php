@@ -74,6 +74,24 @@ class FinancialAccountPage extends Component
         Flux::modal('add-account')->close();
     }
 
+    public function confirmDelete(FinancialAccount $account)
+    {
+        $this->dispatch('notification',
+            type: 'warning',
+            message: 'Are you sure you want to delete this account?',
+            actionEvent: 'deleteAccount',
+            actionParams: [$account]
+        );
+    }
+
+    #[On('deleteAccount')]
+    public function deleteAccount(FinancialAccount $account)
+    {
+        $account->delete();
+        $this->dispatch('notification', type: 'success', message: 'Successfully deleted the financial account');
+        $this->clearFormAccount();
+    }
+
     public function clearFormAccount()
     {
         $this->reset(['name', 'type', 'balance', 'accountNumber']);
