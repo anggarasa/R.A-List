@@ -10,6 +10,7 @@ use App\Livewire\Settings\Appearance;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\ListJobs\JobListView;
 use App\Livewire\Financial\FinancialPage;
+use App\Livewire\Financial\FinancialTransactionPage;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('dashboard', FinancialPage::class)->name('dashboard');
         Route::get('categories', FinancialCategoryPage::class)->name('category');
         Route::get('accounts', FinancialAccountPage::class)->name('account');
+        Route::get('transactions', FinancialTransactionPage::class)->name('transaction');
     });
 
     Route::redirect('settings', 'settings/profile');

@@ -11,14 +11,31 @@ class FinancialAccount extends Model
 
     public function transactions()
     {
-        return $this->hasMany(FinancialTransaction::class);
+        return $this->hasMany(FinancialTransaction::class, 'financial_account_id');
     }
 
-    public function updateBalance()
+    /**
+     * Recalculate balance berdasarkan semua transaksi
+     * Method ini digunakan untuk memastikan akurasi balance
+     */
+    public function recalculateBalance()
     {
-        $income = $this->transactions()->where('type', 'income')->sum('amount');
-        $expense = $this->transactions()->where('type', 'expense')->sum('amount');
+        $totalIncome = $this->transactions()->where('type', 'income')->sum('amount');
+        $totalExpense = $this->transactions()->where('type', 'expense')->sum('amount');
+        
+        // Asumsi balance awal adalah 0, atau Anda bisa menambah field initial_balance
+        $newBalance = $totalIncome - $totalExpense;
+        
+        $this->update(['balance' => $newBalance]);
+        
+        return $newBalance;
+    }
 
-        $this->update(['balance' => $income - $expense]);
+    /**
+     * Method untuk mendapatkan balance saat ini tanpa mengubah database
+     */
+    public function getCurrentBalance()
+    {
+        return $this->balance;
     }
 }

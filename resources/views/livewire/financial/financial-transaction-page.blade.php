@@ -1,0 +1,61 @@
+<div class="space-y-10">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <flux:heading size="xl">Manage Financial Transaction</flux:heading>
+
+        <flux:modal.trigger name="add-transaction">
+            <flux:button icon="plus" variant="primary">Add Transaction</flux:button>
+        </flux:modal.trigger>
+    </div>
+
+    {{-- table transaction --}}
+
+    {{-- modal --}}
+    <flux:modal name="add-transaction" variant="flyout">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">Add Transaction</flux:heading>
+                <flux:text class="mt-2">Add new transaction.</flux:text>
+            </div>
+            <form wire:submit="saveTransaction" class="space-y-6">
+                {{-- input select category --}}
+                <flux:select wire:model="categoryId" label="Category">
+                    <flux:select.option>Choose category...</flux:select.option>
+                    @foreach ($financialCategory as $category)
+                    <flux:select.option value="{{ $category->id }}">{{ $category->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+
+                {{-- input select account --}}
+                <flux:select wire:model="accountId" label="Account">
+                    <flux:select.option>Choose account...</flux:select.option>
+                    @foreach ($financialAccount as $account)
+                    <flux:select.option value="{{ $account->id }}">{{ $account->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+
+                {{-- input select type --}}
+                <flux:select wire:model="type" label="Type">
+                    <flux:select.option>Choose type...</flux:select.option>
+                    <flux:select.option value="income">Income</flux:select.option>
+                    <flux:select.option value="expense">Expense</flux:select.option>
+                    <flux:select.option value="transfer">Transfer</flux:select.option>
+                </flux:select>
+
+                {{-- input date --}}
+                <flux:input type="date" wire:model="transactionDate" label="Select Date" />
+
+                {{-- input amount --}}
+                <livewire:widget.currency-input label="Transaction Amount" name="amount"
+                    :error="$errors->first('amount')" size="sm" />
+
+                {{-- input description --}}
+                <flux:textarea wire:model="description" label="Description" placeholder="Enter description..." />
+
+                <div class="flex">
+                    <flux:spacer />
+                    <flux:button type="submit" variant="primary">Save Transaction</flux:button>
+                </div>
+            </form>
+        </div>
+    </flux:modal>
+</div>
