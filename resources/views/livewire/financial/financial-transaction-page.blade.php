@@ -13,11 +13,11 @@
         :show-per-page="true" :show-pagination="true" :show-filters="true" />
 
     {{-- modal --}}
-    <flux:modal name="add-transaction" variant="flyout">
+    <flux:modal name="add-transaction" variant="flyout" @close="clearForm">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Add Transaction</flux:heading>
-                <flux:text class="mt-2">Add new transaction.</flux:text>
+                <flux:heading size="lg">{{ $transactionId ? 'Update' : 'Add' }} Transaction</flux:heading>
+                <flux:text class="mt-2">{{ $transactionId ? 'Update' : 'Add' }} new transaction.</flux:text>
             </div>
             <form wire:submit="saveTransaction" class="space-y-6">
                 {{-- input select category --}}
@@ -56,7 +56,8 @@
 
                 <div class="flex">
                     <flux:spacer />
-                    <flux:button type="submit" variant="primary">Save Transaction</flux:button>
+                    <flux:button type="submit" variant="primary">{{ $transactionId ? 'Update' : 'Add' }} Transaction
+                    </flux:button>
                 </div>
             </form>
         </div>

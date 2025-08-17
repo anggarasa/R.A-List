@@ -6,12 +6,14 @@ use Flux\Flux;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
+use App\Livewire\Widget\FlexibleTable;
 use App\Models\financial\FinancialAccount;
 use App\Models\financial\FinancialCategory;
 use App\Models\financial\FinancialTransaction;
 
 class FinancialTransactionPage extends Component
 {
+    public $transactionId;
     public $financialCategory;
     public $financialAccount;
 
@@ -47,23 +49,60 @@ class FinancialTransactionPage extends Component
         }
     }
 
+    #[On('update-data-table')]
+    public function edit($data)
+    {
+        if($data) {
+            $this->transactionId = $data['id'];
+            $this->categoryId = $data['financial_category_id'];
+            $this->accountId = $data['financial_account_id'];
+            $this->type = $data['type'];
+            $this->dispatch('update-value-input-currency', number_format($data['amount'], 0, '.', ','));
+            $this->description = $data['description'];
+            $this->transactionDate = date('Y-m-d', strtotime($data['transaction_date']));
+
+            Flux::modal('add-transaction')->show();
+        }
+    }
+
     public function saveTransaction()
     {
         $this->validate();
 
-        FinancialTransaction::create([
-            'financial_category_id' => $this->categoryId,
-            'financial_account_id' => $this->accountId,
-            'type' => $this->type,
-            'amount' => $this->amount,
-            'description' => $this->description,
-            'transaction_date' => $this->transactionDate,
-        ]);
+        if($this->transactionId) {
+            $transaction = FinancialTransaction::find($this->transactionId);
 
-        $this->dispatch('notification', type: 'success', message: 'Transaction saved successfully');
-        $this->dispatch('clear-input-currency');
-        $this->reset(['categoryId', 'accountId', 'type', 'amount', 'description', 'transactionDate']);
+            $transaction->update([
+                'financial_category_id' => $this->categoryId,
+                'financial_account_id' => $this->accountId,
+                'type' => $this->type,
+                'amount' => $this->amount,
+                'description' => $this->description,
+                'transaction_date' => $this->transactionDate,
+            ]);
+
+            $this->dispatch('notification', type: 'success', message: 'Transaction updated successfully');
+        } else {
+            FinancialTransaction::create([
+                'financial_category_id' => $this->categoryId,
+                'financial_account_id' => $this->accountId,
+                'type' => $this->type,
+                'amount' => $this->amount,
+                'description' => $this->description,
+                'transaction_date' => $this->transactionDate,
+            ]);
+
+            $this->dispatch('notification', type: 'success', message: 'Transaction saved successfully');
+        }
+        $this->clearForm();
+        $this->dispatch('refresh-table')->to(FlexibleTable::class);
         Flux::modal('add-transaction')->close();
+    }
+
+    public function clearForm()
+    {
+        $this->reset(['transactionId', 'categoryId', 'accountId', 'type', 'amount', 'description', 'transactionDate']);
+        $this->dispatch('clear-input-currency');
     }
 
     // Start manage view flexible table transaction
