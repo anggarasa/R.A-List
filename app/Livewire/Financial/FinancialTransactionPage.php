@@ -65,6 +65,62 @@ class FinancialTransactionPage extends Component
         $this->reset(['categoryId', 'accountId', 'type', 'amount', 'description', 'transactionDate']);
         Flux::modal('add-transaction')->close();
     }
+
+    // Start manage view flexible table transaction
+    public $columns = [
+        'transaction_date' => ['label' => 'Transaction Date', 'format' => 'date'],
+        'description' => ['label' => 'Description'],
+        'financial_category_id' => ['label' => 'Category Name', 'relation' => 'category.name'],
+        'financial_account_id' => ['label' => 'Account Name', 'relation' => 'account.name'],
+        'type' => [
+            'label' => 'Type',
+            'format' => 'badge',
+            'badge_colors' => [
+                'income' => 'green',
+                'expense' => 'red',
+                'transfer' => 'blue',
+            ],
+            'badge_labels' => [
+                'income' => 'Income',
+                'expense' => 'Expense',
+                'transfer' => 'Transfer',
+            ],
+        ],
+        'amount' => ['label' => 'Amount', 'format' => 'currency'],
+    ];
+
+    public $filters = [
+        'type' => [
+            'label' => 'Type'
+        ],
+        'financial_category_id' => [
+            'label' => 'Category',
+            'relation' => 'category',
+            'display_field' => 'name'
+        ],
+        'financial_account_id' => [
+            'label' => 'Account',
+            'relation' => 'account',
+            'display_field' => 'name'
+        ]
+    ];
+
+    public $search = ['description'];
+
+    public $actions = [
+        [
+            'method' => 'edit',
+            'label' => 'Edit',
+            'class' => 'bg-lime-400 text-black hover:bg-lime-600 cursor-pointer'
+        ],
+        [
+            'method' => 'confirmDelete',
+            'label' => 'Delete',
+            'class' => 'text-white bg-red-600 hover:bg-red-700 cursor-pointer',
+            'confirm' => 'Are you sure you want to delete this category?'
+        ]
+    ];
+    // End manage view flexible table transaction
     
     public function render()
     {

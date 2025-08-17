@@ -16,6 +16,9 @@ class FinancialTransaction extends Model
         'transaction_date' => 'date'
     ];
 
+    // Eager loading untuk relasi yang sering digunakan
+    protected $with = ['category', 'account'];
+
     public function category()
     {
         return $this->belongsTo(FinancialCategory::class, 'financial_category_id');
@@ -33,19 +36,15 @@ class FinancialTransaction extends Model
                 $account = $transaction->account;
                 
                 if ($transaction->type === 'income') {
-                    // Tambah balance untuk income
                     $account->increment('balance', $transaction->amount);
                 } elseif ($transaction->type === 'expense') {
-                    // Kurangi balance untuk expense
                     $account->decrement('balance', $transaction->amount);
                 }
-                // Untuk transfer, bisa ditambahkan logika sesuai kebutuhan
             }
         });
 
         static::updated(function ($transaction) {
             if ($transaction->account) {
-                // Recalculate balance untuk memastikan akurasi
                 $transaction->account->recalculateBalance();
             }
         });
@@ -55,10 +54,8 @@ class FinancialTransaction extends Model
                 $account = $transaction->account;
                 
                 if ($transaction->type === 'income') {
-                    // Kurangi balance karena income dihapus
                     $account->decrement('balance', $transaction->amount);
                 } elseif ($transaction->type === 'expense') {
-                    // Tambah balance karena expense dihapus
                     $account->increment('balance', $transaction->amount);
                 }
             }

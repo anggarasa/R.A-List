@@ -8,6 +8,9 @@
     </div>
 
     {{-- table transaction --}}
+    <livewire:widget.flexible-table :model="App\Models\financial\FinancialTransaction::class" :columns="$columns"
+        :searchable="$search" :actions="$actions" :filters="$filters" :per-page="10" :show-search="true"
+        :show-per-page="true" :show-pagination="true" :show-filters="true" />
 
     {{-- modal --}}
     <flux:modal name="add-transaction" variant="flyout">
