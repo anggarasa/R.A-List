@@ -67,6 +67,12 @@ class FinancialTransactionPage extends Component
 
     public function saveTransaction()
     {
+        if($this->type == 'transfer') {
+            $this->dispatch('notification', type: 'error', message: 'Transfer type not allowed, please choose income or expense');
+            Flux::modal('add-transaction')->close();
+            return;
+        }
+
         $this->validate();
 
         if($this->transactionId) {
