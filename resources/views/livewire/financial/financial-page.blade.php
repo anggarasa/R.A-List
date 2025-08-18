@@ -5,12 +5,12 @@
         <!-- Total Saldo Card -->
         <div class="shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
             <div class="flex items-center space-x-5">
-                <div class="py-2 px-1 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                    <flux:icon.arrow-up variant="solid" class="text-green-600" />
+                <div class="py-2 px-1 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                    <flux:icon.wallet variant="solid" class="text-blue-600" />
                 </div>
                 <div>
                     <flux:heading>Total Saldo</flux:heading>
-                    <flux:heading size="xl" class="text-green-600 dark:text-green-400">Rp 1.000.000</flux:heading>
+                    <flux:heading size="xl" class="text-blue-600 dark:text-blue-400">Rp 1.000.000</flux:heading>
                 </div>
             </div>
             <flux:text class="mt-5">+12% from last month</flux:text>
@@ -87,7 +87,7 @@
         </div>
 
         <!-- Monthly Budget -->
-        <div class="lg:col-start-3 lg:row-start-2 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
+        {{-- <div class="lg:col-start-3 lg:row-start-2 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
             <div class="flex justify-between items-start">
                 <flux:heading size="lg" class="mb-3">Monthly Budget</flux:heading>
                 <flux:text size="sm">
@@ -126,10 +126,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Financial Targets -->
-        <div class="lg:col-start-3 lg:row-start-3 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
+        {{-- <div class="lg:col-start-3 lg:row-start-3 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
             <div class="flex justify-between items-start">
                 <flux:heading size="lg" class="mb-3">Financial Targets</flux:heading>
                 <flux:text size="sm">
@@ -162,7 +162,7 @@
                     <p class="text-xs text-gray-500 mt-1">Target: Jun 2024</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Latest Transactions -->
         <div
