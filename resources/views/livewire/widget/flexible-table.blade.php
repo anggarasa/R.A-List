@@ -39,97 +39,103 @@
                 {{-- Filters Row --}}
                 @if($showFilters && (!empty($filters) || !empty($dateFilters)))
                 <div class="border-t border-gray-200 dark:border-zinc-700 pt-4">
-                    <div class="flex flex-col lg:flex-row lg:items-end gap-4">
-                        {{-- Filter Group --}}
-                        <div class="flex flex-wrap gap-3 w-full">
-                            {{-- Select Filters --}}
-                            @foreach($filters as $key => $filter)
-                            <div class="min-w-[200px] flex-1">
-                                <label class="block text-xs font-medium text-gray-700 dark:text-zinc-300 mb-1">
-                                    {{ $filter['label'] ?? ucfirst($key) }}
-                                </label>
-                                <select wire:model.live="selectedFilters.{{ $key }}"
-                                    class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
-                                    <option value="">Semua {{ $filter['label'] ?? ucfirst($key) }}</option>
-                                    @foreach($this->getFilterOptions($key) as $option)
-                                    <option value="{{ $option }}">{{ ucfirst($option) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endforeach
-
-                            {{-- Date Filters --}}
-                            @foreach($dateFilters as $key => $dateFilter)
-                            <div class="flex flex-col space-y-1 min-w-[200px] flex-1">
-                                <label class="text-xs font-medium text-gray-700 dark:text-zinc-300">
-                                    {{ $dateFilter['label'] ?? ucfirst($key) }}
-                                </label>
-                                <div class="flex flex-col sm:flex-row sm:space-x-2 gap-2 sm:gap-0">
-                                    <input type="date" wire:model.live="dateFilterValues.{{ $key }}.from"
-                                        placeholder="Dari"
-                                        class="flex-1 border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
-                                    <input type="date" wire:model.live="dateFilterValues.{{ $key }}.to"
-                                        placeholder="Sampai"
-                                        class="flex-1 border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                    <div class="flex flex-col gap-4">
+                        {{-- Filter Inputs and Reset Button Row --}}
+                        <div class="flex flex-col gap-4">
+                            {{-- All Filter Inputs Container --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {{-- Select Filters --}}
+                                @foreach($filters as $key => $filter)
+                                <div class="w-full">
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                                        {{ $filter['label'] ?? ucfirst($key) }}
+                                    </label>
+                                    <select wire:model.live="selectedFilters.{{ $key }}"
+                                        class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                        <option value="">Semua {{ $filter['label'] ?? ucfirst($key) }}</option>
+                                        @foreach($this->getFilterOptions($key) as $option)
+                                        <option value="{{ $option }}">{{ ucfirst($option) }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                                @endforeach
+
+                                {{-- Date Filters --}}
+                                @foreach($dateFilters as $key => $dateFilter)
+                                <div class="w-full sm:col-span-2">
+                                    <label class="block text-xs font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                                        {{ $dateFilter['label'] ?? ucfirst($key) }}
+                                    </label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <input type="date" wire:model.live="dateFilterValues.{{ $key }}.from"
+                                            placeholder="Dari"
+                                            class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                        <input type="date" wire:model.live="dateFilterValues.{{ $key }}.to"
+                                            placeholder="Sampai"
+                                            class="w-full border border-gray-300 dark:border-zinc-600 rounded-md px-3 py-2 bg-white dark:bg-zinc-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-1 focus:ring-lime-500 focus:border-lime-500">
+                                    </div>
+                                </div>
+                                @endforeach
                             </div>
-                            @endforeach
+
+                            {{-- Clear Filters Button - Below filter inputs --}}
+                            <div class="flex justify-start">
+                                <button wire:click="clearFilters"
+                                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-zinc-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 transition-colors duration-150">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                    Reset Filter
+                                </button>
+                            </div>
                         </div>
 
-                        {{-- Clear Filters Button --}}
-                        <button wire:click="clearFilters"
-                            class="w-full lg:w-auto inline-flex items-center justify-center px-3 py-2 border border-gray-300 dark:border-zinc-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-zinc-300 bg-white dark:bg-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-600 transition-colors duration-150">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            Reset Filter
-                        </button>
-                    </div>
-
-                    {{-- Active Filters Display --}}
-                    <div class="mt-3 flex flex-wrap gap-2">
-                        {{-- Selected Filter Tags --}}
-                        @foreach($selectedFilters as $field => $value)
-                        @if(!empty($value))
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-lime-100 text-lime-800 dark:bg-lime-900 dark:text-lime-200">
-                            {{ isset($filters[$field]['label']) ? $filters[$field]['label'] : ucfirst($field) }}: {{
-                            ucfirst($value) }}
-                            <button wire:click="$set('selectedFilters.{{ $field }}', '')"
-                                class="ml-1.5 -mr-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-lime-600 hover:bg-lime-200 hover:text-lime-900 dark:text-lime-300 dark:hover:bg-lime-800">
-                                <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                    <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
-                                </svg>
-                            </button>
-                        </span>
-                        @endif
-                        @endforeach
-
-                        {{-- Date Filter Tags --}}
-                        @foreach($dateFilterValues as $field => $dateRange)
-                        @if(!empty($dateRange['from']) || !empty($dateRange['to']))
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                            {{ isset($dateFilters[$field]['label']) ? $dateFilters[$field]['label'] : ucfirst($field)
-                            }}:
-                            @if(!empty($dateRange['from']) && !empty($dateRange['to']))
-                            {{ \Carbon\Carbon::parse($dateRange['from'])->format('d M Y') }} - {{
-                            \Carbon\Carbon::parse($dateRange['to'])->format('d M Y') }}
-                            @elseif(!empty($dateRange['from']))
-                            Dari {{ \Carbon\Carbon::parse($dateRange['from'])->format('d M Y') }}
-                            @else
-                            Sampai {{ \Carbon\Carbon::parse($dateRange['to'])->format('d M Y') }}
+                        {{-- Active Filters Display --}}
+                        <div class="flex flex-wrap gap-2">
+                            {{-- Selected Filter Tags --}}
+                            @foreach($selectedFilters as $field => $value)
+                            @if(!empty($value))
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-lime-100 text-lime-800 dark:bg-lime-900 dark:text-lime-200">
+                                {{ isset($filters[$field]['label']) ? $filters[$field]['label'] : ucfirst($field) }}: {{
+                                ucfirst($value) }}
+                                <button wire:click="$set('selectedFilters.{{ $field }}', '')"
+                                    class="ml-1.5 -mr-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-lime-600 hover:bg-lime-200 hover:text-lime-900 dark:text-lime-300 dark:hover:bg-lime-800">
+                                    <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                        <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
+                                    </svg>
+                                </button>
+                            </span>
                             @endif
-                            <button wire:click="$set('dateFilterValues.{{ $field }}', ['from' => '', 'to' => ''])"
-                                class="ml-1.5 -mr-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-blue-600 hover:bg-blue-200 hover:text-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
-                                <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                    <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
-                                </svg>
-                            </button>
-                        </span>
-                        @endif
-                        @endforeach
+                            @endforeach
+
+                            {{-- Date Filter Tags --}}
+                            @foreach($dateFilterValues as $field => $dateRange)
+                            @if(!empty($dateRange['from']) || !empty($dateRange['to']))
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                {{ isset($dateFilters[$field]['label']) ? $dateFilters[$field]['label'] :
+                                ucfirst($field)
+                                }}:
+                                @if(!empty($dateRange['from']) && !empty($dateRange['to']))
+                                {{ \Carbon\Carbon::parse($dateRange['from'])->format('d M Y') }} - {{
+                                \Carbon\Carbon::parse($dateRange['to'])->format('d M Y') }}
+                                @elseif(!empty($dateRange['from']))
+                                Dari {{ \Carbon\Carbon::parse($dateRange['from'])->format('d M Y') }}
+                                @else
+                                Sampai {{ \Carbon\Carbon::parse($dateRange['to'])->format('d M Y') }}
+                                @endif
+                                <button wire:click="$set('dateFilterValues.{{ $field }}', ['from' => '', 'to' => ''])"
+                                    class="ml-1.5 -mr-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-blue-600 hover:bg-blue-200 hover:text-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
+                                    <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                        <path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7"></path>
+                                    </svg>
+                                </button>
+                            </span>
+                            @endif
+                            @endforeach
+                        </div>
                     </div>
                 </div>
                 @endif
