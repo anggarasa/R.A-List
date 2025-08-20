@@ -90,7 +90,7 @@
                 @endphp
                 <flux:badge color="{{ $statusColor }}">{{ $project->status ?? '' }}</flux:badge>
                 <a href="{{ route('job.project_detail', $project->id ?? '') }}" wire:navigate @click.stop
-                    class="text-lime-600 dark:text-lime-400 text-sm hover:underline">Lihat Detail →</a>
+                    class="text-lime-600 dark:text-lime-400 text-sm hover:underline">See Details →</a>
             </div>
         </div>
         @endforeach
@@ -177,7 +177,8 @@
                     <flux:heading size="lg">{{ $projectDetail->name ?? '' }}</flux:heading>
 
                     <flux:text>
-                        {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date ?? ''), true) }}
+                        {{ \Carbon\Carbon::now()->diffForHumans(\Carbon\Carbon::parse($project->end_date ?? ''), true)
+                        }}
                         remaining
                     </flux:text>
                 </div>
