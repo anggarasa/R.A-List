@@ -250,9 +250,6 @@
                         <flux:select.option value="{{ $category->id }}">{{ $category->name }}</flux:select.option>
                         @endforeach
                     </flux:select>
-                    @error('category_id')
-                    <flux:text size="sm" class="text-red-600 mt-1">{{ $message }}</flux:text>
-                    @enderror
                 </div>
 
                 {{-- Period Selection --}}
@@ -272,9 +269,6 @@
                             <flux:select.option value="11">November</flux:select.option>
                             <flux:select.option value="12">December</flux:select.option>
                         </flux:select>
-                        @error('month')
-                        <flux:text size="sm" class="text-red-600 mt-1">{{ $message }}</flux:text>
-                        @enderror
                     </div>
 
                     <div>
@@ -283,9 +277,6 @@
                             <flux:select.option value="{{ $yr }}">{{ $yr }}</flux:select.option>
                             @endforeach
                         </flux:select>
-                        @error('year')
-                        <flux:text size="sm" class="text-red-600 mt-1">{{ $message }}</flux:text>
-                        @enderror
                     </div>
                 </div>
 
@@ -294,8 +285,10 @@
                     <livewire:widget.currency-input label="Budget Amount" name="budget"
                         :error="$errors->first('budget_amount')" placeholder="Enter budget amount" size="sm" />
                     @error('budget_amount')
-                    <flux:text size="sm" class="text-red-600 mt-1">{{ $message }}</flux:text>
-                    @enderror
+                    <flux:heading class="text-red-400 flex space-x-1 mt-1">
+                        <flux:icon.exclamation-triangle variant="micro" /> {{ $message }}
+                        </flux:headi>
+                        @enderror
                 </div>
 
                 {{-- Actions --}}
