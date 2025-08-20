@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FinancialBudget extends Model
 {
-    protected $fillable = ['category_id', 'amount', 'month', 'year', 'status'];
+    protected $fillable = ['financial_category_id', 'amount', 'month', 'year', 'status'];
     protected $casts = ['amount' => 'decimal:2'];
 
     public function category()

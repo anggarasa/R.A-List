@@ -1,6 +1,6 @@
 <div class="space-y-10">
-    @if (true)
-    {{-- maintanance view page --}}
+    {{-- @if (true)
+    <!-- maintanance view page -->
     <div class="bg-white rounded-xl shadow-sm p-6 dark:bg-zinc-900 dark:text-zinc-100">
         <div class="flex items-center justify-center">
             <flux:icon.information-circle variant="solid" class="size-16" />
@@ -9,11 +9,13 @@
             <flux:heading size="xl">{{ __('Maintenance Mode') }}</flux:heading>
         </div>
     </div>
-    @else
+    @else --}}
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <flux:heading size="xl">{{ __('Manage Financial Budget') }}</flux:heading>
 
-        <flux:button icon="plus" variant="primary">{{ __('Create New Budget') }}</flux:button>
+        <flux:modal.trigger name="add-budget">
+            <flux:button icon="plus" variant="primary">{{ __('Create New Budget') }}</flux:button>
+        </flux:modal.trigger>
     </div>
 
     {{-- budget summary --}}
@@ -76,5 +78,59 @@
             </div>
         </div>
     </div>
-    @endif
+
+    {{-- modal --}}
+    <flux:modal name="add-budget" variant="flyout" @close="clearForm">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">Add Budget</flux:heading>
+                <flux:text class="mt-2">Manage your finances by limiting your expenses.</flux:text>
+            </div>
+
+            <form wire:submit="saveBudget" class="space-y-6">
+                {{-- select category --}}
+                <flux:select wire:model="category_id" label="Select Category">
+                    <flux:select.option>Choose category...</flux:select.option>
+                    @foreach ($categories as $category)
+                    <flux:select.option value="{{ $category->id }}">{{ $category->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+
+                {{-- select month --}}
+                <flux:select wire:model="month" label="Select Month">
+                    <flux:select.option>Choose month...</flux:select.option>
+                    <flux:select.option value="01">January</flux:select.option>
+                    <flux:select.option value="02">February</flux:select.option>
+                    <flux:select.option value="03">March</flux:select.option>
+                    <flux:select.option value="04">April</flux:select.option>
+                    <flux:select.option value="05">May</flux:select.option>
+                    <flux:select.option value="06">June</flux:select.option>
+                    <flux:select.option value="07">July</flux:select.option>
+                    <flux:select.option value="08">August</flux:select.option>
+                    <flux:select.option value="09">September</flux:select.option>
+                    <flux:select.option value="10">October</flux:select.option>
+                    <flux:select.option value="11">November</flux:select.option>
+                    <flux:select.option value="12">December</flux:select.option>
+                </flux:select>
+
+                {{-- select year --}}
+                <flux:select wire:model="year" label="Select Year">
+                    <flux:select.option>Choose year...</flux:select.option>
+                    @foreach($years as $yr)
+                    <flux:select.option value="{{ $yr }}">{{ $yr }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+
+                {{-- input budget amount --}}
+                <livewire:widget.currency-input label="Total Budget" name="budget" :error="$errors->first('budget')"
+                    size="sm" />
+
+                <div class="flex">
+                    <flux:spacer />
+                    <flux:button type="submit" variant="primary">Save Budget</flux:button>
+                </div>
+            </form>
+        </div>
+    </flux:modal>
+    {{-- @endif --}}
 </div>

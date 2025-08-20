@@ -26,23 +26,24 @@
                 <flux:navlist.item class="mt-3" icon="list-bullet" :href="route('job.project_list')"
                     :current="request()->routeIs('job.project_list')" wire:navigate>{{ __('Job List') }}
                 </flux:navlist.item>
+            </flux:navlist.group>
 
+            <flux:navlist.group :heading="__('Financial')" class="grid mt-3">
                 {{-- financial dropdown --}}
-                <div class="mt-3" x-data="{ 
-                        open: {{ request()->routeIs('financial.*') ? 'true' : 'false' }},
-                        toggle() {
-                            this.open = !this.open;
-                        },
-                        openDropdown() {
-                            this.open = true;
-                        },
-                        init() {
-                            // Auto-open if we're on a financial route
-                            if ({{ request()->routeIs('financial.*') ? 'true' : 'false' }}) {
-                                this.open = true;
-                            }
-                        }
-                     }" x-init="init()" @financial-page-loaded.window="openDropdown()">
+                <div x-data="{ open: {{ request()->routeIs('financial.*') ? 'true' : 'false' }},
+                    toggle() {
+                    this.open = !this.open;
+                    },
+                    openDropdown() {
+                    this.open = true;
+                    },
+                    init() {
+                    // Auto-open if we're on a financial route
+                    if ({{ request()->routeIs('financial.*') ? 'true' : 'false' }}) {
+                    this.open = true;
+                    }
+                    }
+                    }" x-init="init()" @financial-page-loaded.window="openDropdown()">
 
                     {{-- Main Financial Item --}}
                     <div class="relative">
