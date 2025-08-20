@@ -1,4 +1,61 @@
-<div class="w-full">
+<div class="w-full" x-data="{
+        displayValue: @entangle('value').live,
+        rawValue: @entangle('rawValue').live,
+        focused: false,
+        
+        formatCurrency(value) {
+            // Parse angka dari string (hapus semua karakter non-digit)
+            const numericValue = parseInt(value.toString().replace(/[^0-9]/g, '')) || 0;
+            this.rawValue = numericValue;
+            
+            if (numericValue === 0) {
+                return '';
+            }
+            
+            // Format ke Rupiah
+            return 'Rp ' + numericValue.toLocaleString('id-ID');
+        },
+        
+        handleInput(event) {
+            const inputValue = event.target.value;
+            this.displayValue = this.formatCurrency(inputValue);
+            
+            // Update ke Livewire dengan debounce
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                $wire.updateRawValue(this.rawValue);
+            }, 300);
+        },
+        
+        handleFocus() {
+            this.focused = true;
+        },
+        
+        handleBlur() {
+            this.focused = false;
+            // Pastikan format tetap konsisten setelah blur
+            this.displayValue = this.formatCurrency(this.rawValue);
+        },
+        
+        clearValue() {
+            this.displayValue = '';
+            this.rawValue = 0;
+            $wire.clear();
+        }
+     }" x-init="
+        // Initialize jika sudah ada nilai
+        if (rawValue > 0) {
+            displayValue = formatCurrency(rawValue);
+        }
+        
+        // Watch perubahan rawValue dari Livewire
+        $watch('rawValue', value => {
+            if (!focused) {
+                displayValue = formatCurrency(value);
+            }
+        });
+     ">
+
     @if($label)
     <label for="{{ $id }}" class="block text-sm font-medium mb-2 text-zinc-700 dark:text-zinc-300">
         {{ $label }}
@@ -9,16 +66,9 @@
     @endif
 
     <div class="relative">
-        {{-- Currency Icon --}}
-        {{-- <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-zinc-400 dark:text-zinc-500" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-            </svg>
-        </div> --}}
-
-        <input type="text" id="{{ $id }}" name="{{ $name }}" wire:model.live="value" placeholder="{{ $placeholder }}"
-            @if($disabled) disabled @endif autocomplete="off"
+        <input type="text" id="{{ $id }}" name="{{ $name }}" x-model="displayValue" @input="handleInput($event)"
+            @focus="handleFocus()" @blur="handleBlur()" placeholder="{{ $placeholder }}" @if($disabled) disabled @endif
+            autocomplete="off" inputmode="numeric"
             @class([ 'block w-full pl-3 pr-12 border rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-offset-0 focus:outline-none'
             , 'py-2 text-sm'=> $size === 'sm',
         'py-2.5 text-base' => $size === 'md',
@@ -40,15 +90,16 @@
         >
 
         {{-- Clear Button --}}
-        @if($value && !$disabled)
-        <button type="button" wire:click="clear"
+        <button type="button" @click="clearValue()" x-show="displayValue && !{{ $disabled ? 'true' : 'false' }}"
+            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
             class="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-zinc-600 dark:hover:text-zinc-300 text-zinc-400 dark:text-zinc-500 transition-colors duration-200"
             tabindex="-1">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
         </button>
-        @endif
     </div>
 
     {{-- Error Message --}}
@@ -64,14 +115,14 @@
     @endif
 
     {{-- Helper Text --}}
-    @if($rawValue > 0)
-    <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-        Nilai: {{ number_format($rawValue, 0, ',', '.') }}
-    </p>
-    @endif
+    <div x-show="rawValue > 0" x-transition>
+        <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            Nilai: <span x-text="rawValue.toLocaleString('id-ID')"></span>
+        </p>
+    </div>
 
     {{-- Hidden input untuk form submission --}}
     @if($name)
-    <input type="hidden" name="{{ $name }}_raw" value="{{ $rawValue }}">
+    <input type="hidden" name="{{ $name }}_raw" x-model="rawValue">
     @endif
 </div>

@@ -44,6 +44,20 @@ class CurrencyInput extends Component
         }
     }
     
+    // Method ini dipanggil ketika Alpine.js mengirim nilai raw
+    public function updateRawValue($rawValue)
+    {
+        $this->rawValue = (int) $rawValue;
+        $this->value = $this->formatCurrency($this->rawValue);
+        
+        // Emit event untuk parent component
+        $this->dispatch('currency-updated', [
+            'name' => $this->name,
+            'value' => $this->rawValue,
+            'formatted' => $this->value
+        ]);
+    }
+    
     #[On('update-value-input-currency')]
     public function updatedValue($value)
     {
