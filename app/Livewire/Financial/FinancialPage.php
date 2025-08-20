@@ -162,29 +162,8 @@ class FinancialPage extends Component
                     'type' => $transaction->type,
                     'date' => $transaction->transaction_date->format('d M Y'),
                     'category' => $transaction->category->name ?? 'Uncategorized',
-                    'emoji' => $this->getCategoryEmoji($transaction->category->name ?? 'Other')
                 ];
             });
-    }
-
-    protected function getCategoryEmoji($categoryName)
-    {
-        $emojis = [
-            'Gaji' => '💼',
-            'Freelance' => '💻',
-            'Investment' => '📈',
-            'Makanan' => '🍽️',
-            'Transportasi' => '🚗',
-            'Entertainment' => '🎬',
-            'Rumah & Sewa' => '🏠',
-            'Utilitas' => '💡',
-            'Kesehatan' => '⚕️',
-            'Pendidikan' => '📚',
-            'Belanja' => '🛒',
-            'Lainnya' => '📋'
-        ];
-
-        return $emojis[$categoryName] ?? '💳';
     }
 
     public function render()

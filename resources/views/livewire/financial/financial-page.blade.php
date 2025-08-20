@@ -78,12 +78,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 auto-row-min gap-2">
         <!-- Income vs Expenses Chart -->
         <div class="lg:col-span-2 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
-            <div class="flex justify-between items-start">
-                <flux:heading size="lg" class="mb-3">Income VS Expenses</flux:heading>
-                <flux:text size="sm">
-                    <flux:link href="#">See Report</flux:link>
-                </flux:text>
-            </div>
+            <flux:heading size="lg" class="mb-3">Income VS Expenses</flux:heading>
             <div class="relative h-64 sm:h-72 lg:h-96">
                 <canvas id="incomeExpenseChart"></canvas>
             </div>
@@ -91,12 +86,7 @@
 
         <!-- Expense Categories Chart -->
         <div class="lg:col-start-3 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
-            <div class="flex justify-between items-start">
-                <flux:heading size="lg" class="mb-3">Expense Categories</flux:heading>
-                <flux:text size="sm">
-                    <flux:link href="{{ route('financial.category') }}" wire:navigate>Manage Category</flux:link>
-                </flux:text>
-            </div>
+            <flux:heading size="lg" class="mb-3">Expense Categories</flux:heading>
             <div class="relative h-64 sm:h-72 lg:h-96">
                 <canvas id="categoryChart"></canvas>
             </div>
@@ -109,7 +99,7 @@
             <div
                 class="p-6 border-b border-zinc-200 dark:border-zinc-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <flux:heading>Latest Transactions</flux:heading>
-                <flux:link href="#">View All</flux:link>
+                <flux:link href="{{ route('financial.transaction') }}">View All</flux:link>
             </div>
             <!-- List -->
             <div class="p-6 space-y-4">
@@ -118,8 +108,15 @@
                     class="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-zinc-100 dark:border-zinc-700 last:border-b-0">
                     <div class="flex items-center">
                         <div
-                            class="p-2 bg-{{ $transaction['type'] === 'income' ? 'green' : 'red' }}-100 dark:bg-{{ $transaction['type'] === 'income' ? 'green' : 'red' }}-900/20 rounded-lg mr-3">
-                            {{ $transaction['emoji'] }}
+                            class="p-2 bg-{{ $transaction['type'] === 'transfer' ? 'blue' : ($transaction['type'] === 'income' ? 'green' : 'red') }}-100 dark:bg-{{ $transaction['type'] === 'transfer' ? 'blue' : ($transaction['type'] === 'income' ? 'green' : 'red') }}-900/20 rounded-lg mr-3">
+                            @if ($transaction['type'] === 'income')
+                            <flux:icon.arrow-up variant="solid" class="text-green-600" />
+
+                            @elseif ($transaction['type'] === 'expense')
+                            <flux:icon.arrow-down variant="solid" class="text-red-600" />
+                            @else
+                            <flux:icon.arrows-right-left variant="solid" class="text-blue-600" />
+                            @endif
                         </div>
                         <div>
                             <flux:heading>{{ $transaction['description'] }}</flux:heading>
