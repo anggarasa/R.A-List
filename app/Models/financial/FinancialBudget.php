@@ -11,7 +11,7 @@ class FinancialBudget extends Model
 
     public function category()
     {
-        return $this->belongsTo(FinancialCategory::class);
+        return $this->belongsTo(FinancialCategory::class, 'financial_category_id');
     }
 
     public function getUsedAmountAttribute()

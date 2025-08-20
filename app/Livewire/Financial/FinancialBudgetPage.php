@@ -66,6 +66,26 @@ class FinancialBudgetPage extends Component
 
     public function render()
     {
-        return view('livewire.financial.financial-budget-page');
+        $budgets = FinancialBudget::with('category')
+            ->when($this->month, fn($q) => $q->where('month', $this->month))
+            ->when($this->year, fn($q) => $q->where('year', $this->year))
+            ->get()
+            ->map(function ($budget) {
+                return (object) [
+                    'id' => $budget->id,
+                    'category' => $budget->category,
+                    'budget' => $budget->used_amount,          // jumlah terpakai
+                    'monthly_budget' => $budget->amount,       // jumlah yg di-set
+                    'progress' => $budget->percentage_used,    // persen progress
+                ];
+            });
+
+        $totalBudget    = $budgets->sum('monthly_budget'); // semua budget yg di-set
+        $totalSpent     = $budgets->sum('budget');         // total pengeluaran
+        $totalRemaining = $totalBudget - $totalSpent;
+
+        return view('livewire.financial.financial-budget-page', compact(
+            'budgets', 'totalBudget', 'totalSpent', 'totalRemaining'
+        ));
     }
 }

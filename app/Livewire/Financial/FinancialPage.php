@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Financial;
 
-use App\Models\financial\FinancialTransaction;
+use Carbon\Carbon;
+use Livewire\Component;
+use Illuminate\Support\Facades\DB;
+use App\Models\financial\FinancialBudget;
 use App\Models\financial\FinancialAccount;
 use App\Models\financial\FinancialCategory;
-use Livewire\Component;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Models\financial\FinancialTransaction;
 
 class FinancialPage extends Component
 {
@@ -20,6 +21,7 @@ class FinancialPage extends Component
     public $latestTransactions;
     public $incomeChange;
     public $expenseChange;
+    public $monthlyBudget;
 
     public function mount()
     {
@@ -78,6 +80,28 @@ class FinancialPage extends Component
 
         // Get latest transactions
         $this->latestTransactions = $this->getLatestTransactions();
+
+        // Get monthly budget
+        $this->monthlyBudget = $this->getMonthlyBudget();
+    }
+
+    public function getMonthlyBudget()
+    {
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        return FinancialBudget::with('category')
+            ->when($currentMonth, fn($q) => $q->where('month', $currentMonth))
+            ->when($currentYear, fn($q) => $q->where('year', $currentYear))
+            ->get()
+            ->map(function ($budget) {
+                return (object) [
+                    'id' => $budget->id,
+                    'category' => $budget->category,
+                    'budget' => $budget->used_amount,          // jumlah terpakai
+                    'monthly_budget' => $budget->amount,       // jumlah yg di-set
+                    'progress' => $budget->percentage_used,    // persen progress
+                ];
+            });
     }
 
     protected function getMonthlyData()

@@ -10,12 +10,12 @@
                 </div>
                 <div>
                     <flux:heading>Total Saldo</flux:heading>
-                    <flux:heading size="xl" class="text-blue-600 dark:text-blue-400">
-                        Rp {{ number_format($totalBalance, 0, ',', '.') }}
+                    <flux:heading size="lg" class="text-blue-600 dark:text-blue-400">
+                        {{ format_rupiah($totalBalance) }}
                     </flux:heading>
                 </div>
             </div>
-            <flux:text class="mt-5">Current Balance</flux:text>
+            <flux:text class="mt-3">Current Balance</flux:text>
         </div>
 
         <!-- Income Card -->
@@ -26,12 +26,12 @@
                 </div>
                 <div>
                     <flux:heading>Income</flux:heading>
-                    <flux:heading size="xl" class="text-green-600 dark:text-green-400">
-                        Rp {{ number_format($totalIncome, 0, ',', '.') }}
+                    <flux:heading size="lg" class="text-green-600 dark:text-green-400">
+                        {{ format_rupiah($totalIncome) }}
                     </flux:heading>
                 </div>
             </div>
-            <flux:text class="mt-5">
+            <flux:text class="mt-3">
                 @if($incomeChange >= 0)
                 +{{ $incomeChange }}% from last month
                 @else
@@ -48,12 +48,12 @@
                 </div>
                 <div>
                     <flux:heading>Expenditure</flux:heading>
-                    <flux:heading size="xl" class="text-red-600 dark:text-red-400">
-                        Rp {{ number_format($totalExpense, 0, ',', '.') }}
+                    <flux:heading size="lg" class="text-red-600 dark:text-red-400">
+                        {{ format_rupiah($totalExpense) }}
                     </flux:heading>
                 </div>
             </div>
-            <flux:text class="mt-5">
+            <flux:text class="mt-3">
                 @if($expenseChange <= 0) {{ abs($expenseChange) }}% reduction from last month @else +{{ $expenseChange
                     }}% from last month @endif </flux:text>
         </div>
@@ -66,12 +66,12 @@
                 </div>
                 <div>
                     <flux:heading>Net Balance</flux:heading>
-                    <flux:heading size="xl" class="text-purple-600 dark:text-purple-400">
-                        Rp {{ number_format($netBalance, 0, ',', '.') }}
+                    <flux:heading size="lg" class="text-purple-600 dark:text-purple-400">
+                        {{ format_rupiah($netBalance) }}
                     </flux:heading>
                 </div>
             </div>
-            <flux:text class="mt-5">This month's remainder</flux:text>
+            <flux:text class="mt-3">This month's remainder</flux:text>
         </div>
     </div>
 
@@ -89,6 +89,26 @@
             <flux:heading size="lg" class="mb-3">Expense Categories</flux:heading>
             <div class="relative h-64 sm:h-72 lg:h-96">
                 <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Monthly Budget -->
+        <div class="lg:col-start-3 lg:row-start-2 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
+            <flux:heading size="lg" class="mb-3">Monthly Budget</flux:heading>
+            <div class="space-y-4">
+                @foreach ($monthlyBudget as $budget)
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <flux:text>{{ $budget->category->name }}</flux:text>
+                        <flux:text>Rp {{ format_nominal($budget->monthly_budget) }} / Rp {{
+                            format_nominal($budget->monthly_budget) }}</flux:text>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-{{ $budget->progress < 50 ? 'blue-500' : ($budget->progress >= 90 ? 'red-500' : 'orange-500') }} h-2 rounded-full"
+                            style="width: {{ min($budget->progress, 100) }}%"></div>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
 

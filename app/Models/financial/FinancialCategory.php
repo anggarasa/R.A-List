@@ -10,12 +10,12 @@ class FinancialCategory extends Model
 
     public function transactions()
     {
-        return $this->hasMany(FinancialTransaction::class);
+        return $this->hasMany(FinancialTransaction::class, 'financial_category_id');
     }
 
     public function budgets()
     {
-        return $this->hasMany(FinancialBudget::class);
+        return $this->hasMany(FinancialBudget::class, 'financial_category_id');
     }
 
     public function getMonthlySpentAttribute()
