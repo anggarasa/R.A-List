@@ -23,7 +23,7 @@ class FlexibleTable extends Component
     public $perPage = 10;
     public $search = '';
     public $sortBy = '';
-    public $sortDirection = 'asc';
+    public $sortDirection = 'desc';
     public $selectedFilters = [];
     public $dateFilterValues = [];
     public $showSearch = true;
@@ -38,7 +38,7 @@ class FlexibleTable extends Component
     protected $queryString = [
         'search' => ['except' => ''],
         'sortBy' => ['except' => ''],
-        'sortDirection' => ['except' => 'asc'],
+        'sortDirection' => ['except' => 'desc'],
         'perPage' => ['except' => 10],
         'selectedFilters' => ['except' => []],
         'dateFilterValues' => ['except' => []],
@@ -109,10 +109,10 @@ class FlexibleTable extends Component
     public function sortByTable($field)
     {
         if ($this->sortBy === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+            $this->sortDirection = $this->sortDirection === 'desc' ? 'asc' : 'desc';
         } else {
             $this->sortBy = $field;
-            $this->sortDirection = 'asc';
+            $this->sortDirection = 'desc';
         }
     }
 
@@ -234,6 +234,14 @@ class FlexibleTable extends Component
         // Apply sorting
         if ($this->sortBy && in_array($this->sortBy, $this->sortable)) {
             $query->orderBy($this->sortBy, $this->sortDirection);
+        } else {
+            // Default: terbaru di atas
+            if ($this->model::query()->getModel()->usesTimestamps()) {
+                $query->orderBy('created_at', 'desc');
+            } else {
+                // fallback kalau model gak ada created_at
+                $query->latest();
+            }
         }
 
         return $query->paginate($this->perPage);

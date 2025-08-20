@@ -35,6 +35,9 @@ class FinancialTransactionPage extends Component
     #[Validate('required|date')]
     public $transactionDate;
 
+    #[Validate('required_if:type,transfer')]
+    public $toAccountId;
+
     public function mount()
     {
         $this->financialCategory = FinancialCategory::all();
@@ -67,39 +70,59 @@ class FinancialTransactionPage extends Component
 
     public function saveTransaction()
     {
-        if($this->type == 'transfer') {
-            $this->dispatch('notification', type: 'error', message: 'Transfer type not allowed, please choose income or expense');
-            Flux::modal('add-transaction')->close();
-            return;
-        }
-
         $this->validate();
 
-        if($this->transactionId) {
-            $transaction = FinancialTransaction::find($this->transactionId);
-
-            $transaction->update([
-                'financial_category_id' => $this->categoryId,
-                'financial_account_id' => $this->accountId,
-                'type' => $this->type,
-                'amount' => $this->amount,
-                'description' => $this->description,
-                'transaction_date' => $this->transactionDate,
-            ]);
-
-            $this->dispatch('notification', type: 'success', message: 'Transaction updated successfully');
-        } else {
+        if($this->type == 'transfer') {
+            // Buat transaksi expense dari akun asal
             FinancialTransaction::create([
                 'financial_category_id' => $this->categoryId,
-                'financial_account_id' => $this->accountId,
-                'type' => $this->type,
+                'financial_account_id' => $this->accountId, // akun asal
+                'type' => 'expense',
                 'amount' => $this->amount,
-                'description' => $this->description,
+                'description' => "[Transfer Out] " . $this->description,
                 'transaction_date' => $this->transactionDate,
             ]);
 
-            $this->dispatch('notification', type: 'success', message: 'Transaction saved successfully');
+            // Buat transaksi income ke akun tujuan
+            FinancialTransaction::create([
+                'financial_category_id' => $this->categoryId,
+                'financial_account_id' => $this->toAccountId, // akun tujuan
+                'type' => 'income',
+                'amount' => $this->amount,
+                'description' => "[Transfer In] " . $this->description,
+                'transaction_date' => $this->transactionDate,
+            ]);
+
+            $this->dispatch('notification', type: 'success', message: 'Transfer completed successfully');
+        } else {
+            // Income / Expense normal
+            if($this->transactionId) {
+                $transaction = FinancialTransaction::find($this->transactionId);
+
+                $transaction->update([
+                    'financial_category_id' => $this->categoryId,
+                    'financial_account_id' => $this->accountId,
+                    'type' => $this->type,
+                    'amount' => $this->amount,
+                    'description' => $this->description,
+                    'transaction_date' => $this->transactionDate,
+                ]);
+
+                $this->dispatch('notification', type: 'success', message: 'Transaction updated successfully');
+            } else {
+                FinancialTransaction::create([
+                    'financial_category_id' => $this->categoryId,
+                    'financial_account_id' => $this->accountId,
+                    'type' => $this->type,
+                    'amount' => $this->amount,
+                    'description' => $this->description,
+                    'transaction_date' => $this->transactionDate,
+                ]);
+
+                $this->dispatch('notification', type: 'success', message: 'Transaction saved successfully');
+            }
         }
+
         $this->clearForm();
         $this->dispatch('refresh-table')->to(FlexibleTable::class);
         Flux::modal('add-transaction')->close();
@@ -107,7 +130,7 @@ class FinancialTransactionPage extends Component
 
     public function clearForm()
     {
-        $this->reset(['transactionId', 'categoryId', 'accountId', 'type', 'amount', 'description', 'transactionDate']);
+        $this->reset(['transactionId', 'categoryId', 'accountId', 'toAccountId', 'type', 'amount', 'description', 'transactionDate']);
         $this->dispatch('clear-input-currency');
     }
 

@@ -108,14 +108,11 @@
                     class="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-zinc-100 dark:border-zinc-700 last:border-b-0">
                     <div class="flex items-center">
                         <div
-                            class="p-2 bg-{{ $transaction['type'] === 'transfer' ? 'blue' : ($transaction['type'] === 'income' ? 'green' : 'red') }}-100 dark:bg-{{ $transaction['type'] === 'transfer' ? 'blue' : ($transaction['type'] === 'income' ? 'green' : 'red') }}-900/20 rounded-lg mr-3">
+                            class="p-2 bg-{{ $transaction['type'] === 'income' ? 'green' : 'red' }}-100 dark:bg-{{ $transaction['type'] === 'income' ? 'green' : 'red' }}-900/20 rounded-lg mr-3">
                             @if ($transaction['type'] === 'income')
                             <flux:icon.arrow-up variant="solid" class="text-green-600" />
-
-                            @elseif ($transaction['type'] === 'expense')
-                            <flux:icon.arrow-down variant="solid" class="text-red-600" />
                             @else
-                            <flux:icon.arrows-right-left variant="solid" class="text-blue-600" />
+                            <flux:icon.arrow-down variant="solid" class="text-red-600" />
                             @endif
                         </div>
                         <div>

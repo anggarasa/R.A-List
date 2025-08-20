@@ -16,7 +16,7 @@ class FinancialAccountPage extends Component
     #[Validate('required|in:bank,cash,ewallet,investment')]
     public $type;
 
-    #[Validate('required|integer')]
+    #[Validate('integer')]
     public $balance;
 
     #[Validate('nullable')]
