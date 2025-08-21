@@ -35,7 +35,8 @@ class CurrencyInput extends Component
         $this->disabled = $disabled;
         $this->error = $error;
         $this->name = $name;
-        $this->id = $id ?: 'currency_input_' . uniqid();
+        // Pastikan setiap komponen memiliki ID unik
+        $this->id = $id ?: 'currency_input_' . uniqid() . '_' . $this->name;
         $this->size = $size;
         
         if ($value !== null) {
@@ -53,20 +54,28 @@ class CurrencyInput extends Component
         // Emit event untuk parent component
         $this->dispatch('currency-updated', [
             'name' => $this->name,
+            'id' => $this->id,
             'value' => $this->rawValue,
             'formatted' => $this->value
         ]);
     }
     
+    // Buat listener yang spesifik untuk setiap ID
     #[On('update-value-input-currency')]
-    public function updatedValue($value)
+    public function updatedValue($value, $targetId = null)
     {
+        // Hanya update jika target ID cocok dengan ID komponen ini
+        if ($targetId && $targetId !== $this->id) {
+            return; // Skip jika bukan untuk komponen ini
+        }
+        
         $this->rawValue = $this->parseValue($value);
         $this->value = $this->formatCurrency($this->rawValue);
         
         // Emit event untuk parent component
         $this->dispatch('currency-updated', [
             'name' => $this->name,
+            'id' => $this->id,
             'value' => $this->rawValue,
             'formatted' => $this->value
         ]);
@@ -95,13 +104,20 @@ class CurrencyInput extends Component
         $this->value = $this->formatCurrency($this->rawValue);
     }
     
+    // Buat clear method yang spesifik untuk ID
     #[On('clear-input-currency')]
-    public function clear()
+    public function clear($targetId = null)
     {
+        // Hanya clear jika target ID cocok
+        if ($targetId && $targetId !== $this->id) {
+            return;
+        }
+        
         $this->rawValue = 0;
         $this->value = '';
         $this->dispatch('currency-updated', [
             'name' => $this->name,
+            'id' => $this->id,
             'value' => $this->rawValue,
             'formatted' => $this->value
         ]);

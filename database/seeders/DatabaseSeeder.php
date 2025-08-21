@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Hash;
 use App\Models\financial\FinancialCategory;
+use Database\Seeders\financial\FinancialGoalsSeeder;
 use Database\Seeders\financial\FinancialAccountSeeder;
 use Database\Seeders\financial\FinancialCategorySeeder;
 
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FinancialCategorySeeder::class,
             FinancialAccountSeeder::class,
+            // FinancialGoalsSeeder::class,
         ]);
 
         User::factory()->create([
