@@ -67,6 +67,10 @@ class FinancialCategorySeeder extends Seeder
                 'name' => 'Hadiah/Donasi',
                 'type' => 'income',
             ],
+            [
+                'name' => 'Transfer',
+                'type' => 'transfer',
+            ],
         ];
 
         foreach($categories as $category) {

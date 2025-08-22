@@ -16,7 +16,7 @@ class FinancialCategoryPage extends Component
     #[Validate('required')]
     public $name;
 
-    #[Validate('required|in:income,expense')]
+    #[Validate('required|in:income,expense,transfer')]
     public $type;
 
     #[On('update-data-table')]
@@ -70,11 +70,13 @@ class FinancialCategoryPage extends Component
             'format' => 'badge',
             'badge_colors' => [
                 'income' => 'green',
-                'expense' => 'red'
+                'expense' => 'red',
+                'transfer' => 'blue',
             ],
             'badge_labels' => [
                 'income' => 'Income',
                 'expense' => 'Expense',
+                'transfer' => 'Transfer',
             ],
         ],
     ];

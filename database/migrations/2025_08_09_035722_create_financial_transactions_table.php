@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('financial_category_id')->constrained()->onDelete('cascade');
             $table->foreignId('financial_account_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['income', 'expense', 'transfer']);
+            $table->enum('type', ['income', 'expense']);
             $table->decimal('amount', 15, 2);
             $table->text('description');
             $table->date('transaction_date');

@@ -40,8 +40,14 @@ class FinancialTransactionPage extends Component
 
     public function mount()
     {
-        $this->financialCategory = FinancialCategory::all();
+        $this->financialCategory = collect();
         $this->financialAccount = FinancialAccount::all();
+    }
+
+    public function updatedType($value)
+    {
+        $this->financialCategory = FinancialCategory::where('type', $value)->get();
+        $this->categoryId = null; // reset category kalau type diganti
     }
 
     #[On('currency-updated')]

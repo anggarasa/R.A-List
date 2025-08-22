@@ -43,7 +43,7 @@ class FinancialBudgetPage extends Component
 
     private function initializeData()
     {
-        $this->categories = FinancialCategory::orderBy('name')->get();
+        $this->categories = FinancialCategory::where('type', 'expense')->orderBy('name')->get();
         $this->generateYearOptions();
     }
 

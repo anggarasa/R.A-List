@@ -30,7 +30,7 @@
                 </flux:select>
 
                 {{-- input select category --}}
-                <flux:select wire:model="categoryId" label="Category">
+                <flux:select wire:model="categoryId" label="Category" :disabled="$type == null">
                     <flux:select.option>Choose category...</flux:select.option>
                     @foreach ($financialCategory as $category)
                     <flux:select.option value="{{ $category->id }}">{{ $category->name }}</flux:select.option>

@@ -38,6 +38,7 @@
                     <flux:select.option>Choose category...</flux:select.option>
                     <flux:select.option value="income">Income</flux:select.option>
                     <flux:select.option value="expense">Expense</flux:select.option>
+                    <flux:select.option value="transfer">Transfer</flux:select.option>
                 </flux:select>
 
                 <!-- Save Button -->
