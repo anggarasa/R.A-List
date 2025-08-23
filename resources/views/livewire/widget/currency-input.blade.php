@@ -2,6 +2,7 @@
         displayValue: @entangle('value').live,
         rawValue: @entangle('rawValue').live,
         focused: false,
+        debounceTimer: null,
         
         formatCurrency(value) {
             // Parse angka dari string (hapus semua karakter non-digit)
@@ -41,20 +42,22 @@
             this.displayValue = '';
             this.rawValue = 0;
             $wire.clear();
-        }
-     }" x-init="
-        // Initialize jika sudah ada nilai
-        if (rawValue > 0) {
-            displayValue = formatCurrency(rawValue);
-        }
+        },
         
-        // Watch perubahan rawValue dari Livewire
-        $watch('rawValue', value => {
-            if (!focused) {
-                displayValue = formatCurrency(value);
+        init() {
+            // Initialize jika sudah ada nilai
+            if (this.rawValue > 0) {
+                this.displayValue = this.formatCurrency(this.rawValue);
             }
-        });
-     ">
+            
+            // Watch perubahan rawValue dari Livewire
+            this.$watch('rawValue', (value) => {
+                if (!this.focused) {
+                    this.displayValue = this.formatCurrency(value);
+                }
+            });
+        }
+     }">
 
     @if($label)
     <label for="{{ $id }}" class="block text-sm font-medium mb-2 text-zinc-700 dark:text-zinc-300">
@@ -94,7 +97,7 @@
             x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95"
             x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150"
             x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-            class="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-zinc-600 dark:hover:text-zinc-300 text-zinc-400 dark:text-zinc-500 transition-colors duration-200"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-zinc-600 dark:hover-text-zinc-300 text-zinc-400 dark:text-zinc-500 transition-colors duration-200"
             tabindex="-1">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
