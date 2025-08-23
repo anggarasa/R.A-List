@@ -29,12 +29,17 @@ class FinancialGoal extends Model
         return $this->target_amount - $this->current_amount;
     }
 
+    public function getDaysLeftAttribute()
+    {
+        return Carbon::now()->diffInDays($this->target_date, false);
+    }
+
     public function getDaysLeftHumanAttribute()
     {
         return Carbon::parse($this->target_date)->diffForHumans([
-            'parts' => 2,       // maksimal berapa unit yang ditampilkan (misal "2 weeks 3 days")
-            'short' => false,   // kalau true jadi singkat "2w 3d"
-            'syntax' => Carbon::DIFF_RELATIVE_TO_NOW, // dibandingkan dengan sekarang
+            'parts' => 2,
+            'short' => false,
+            'syntax' => Carbon::DIFF_RELATIVE_TO_NOW,
         ]);
     }
 }

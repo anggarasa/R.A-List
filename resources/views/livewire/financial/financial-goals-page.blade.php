@@ -87,15 +87,19 @@
                     </div>
 
                     <div class="flex items-center gap-2 ml-4">
-                        @if($goal->status === 'completed')
-                        <flux:badge color="green" icon="check-circle">Completed</flux:badge>
-                        @elseif($goal->days_left_human < 0) <flux:badge color="red" icon="exclamation-triangle">Late
-                            </flux:badge>
-                            @elseif($goal->days_left_human <= 30) <flux:badge color="yellow" icon="clock">Urgent
+                        @php
+                        $badge = match (true) {
+                        $goal->status === 'completed' => ['color' => 'green', 'icon' => 'check-circle', 'text' =>
+                        'Completed'],
+                        $goal->days_left < 0=> ['color' => 'red', 'icon' => 'exclamation-triangle','text' => 'Late'],
+                            $goal->days_left <= 30=> ['color' => 'yellow', 'icon' => 'clock', 'text' => 'Urgent'],
+                                default => ['color' => 'blue', 'icon' => 'flag', 'text' => 'Active'],
+                                };
+                                @endphp
+
+                                <flux:badge color="{{ $badge['color'] }}" icon="{{ $badge['icon'] }}">
+                                    {{ $badge['text'] }}
                                 </flux:badge>
-                                @else
-                                <flux:badge color="blue" icon="currency-dollar">Active</flux:badge>
-                                @endif
                     </div>
                 </div>
 
@@ -201,7 +205,7 @@
             <div class="text-center py-12">
                 <div
                     class="mx-auto w-24 h-24 bg-zinc-100 dark:bg-zinc-900/20 rounded-full flex items-center justify-center mb-4">
-                    <flux:icon.currency-dollar class="w-12 h-12 text-zinc-600 dark:text-zinc-400" />
+                    <flux:icon.flag class="w-12 h-12 text-zinc-600 dark:text-zinc-400" />
                 </div>
                 <flux:heading size="lg" class="text-zinc-900 dark:text-white mb-2">
                     No Financial Goals Set

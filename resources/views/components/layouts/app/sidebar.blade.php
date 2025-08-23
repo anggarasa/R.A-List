@@ -94,7 +94,7 @@
                                 class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors duration-200
                                 {{ request()->routeIs('financial.account') ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border-l-2 border-lime-500' : '' }}">
                                 <flux:icon name="credit-card" class="h-4 w-4 shrink-0" />
-                                <span>{{ __('Financial Accounts') }}</span>
+                                <span>{{ __('Accounts') }}</span>
                             </a>
 
                             {{-- Budget Sub-item (example) --}}
@@ -109,7 +109,7 @@
                             <a href="{{ route('financial.goal') }}" wire:navigate
                                 class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 transition-colors duration-200
                                 {{ request()->routeIs('financial.goal') ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border-l-2 border-lime-500' : '' }}">
-                                <flux:icon name="currency-dollar" class="h-4 w-4 shrink-0" />
+                                <flux:icon name="flag" class="h-4 w-4 shrink-0" />
                                 <span>{{ __('Goals') }}</span>
                             </a>
 
