@@ -1,4 +1,4 @@
-<div class="space-y-10">
+<div class="space-y-10" wire:ignore.self>
     <flux:heading size="xl">My Monthly Financial Report</flux:heading>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 auto-rows-min gap-2">
@@ -79,7 +79,7 @@
         <!-- Income vs Expenses Chart -->
         <div class="lg:col-span-2 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
             <flux:heading size="lg" class="mb-3">Income VS Expenses</flux:heading>
-            <div class="relative h-64 sm:h-72 lg:h-96">
+            <div class="relative h-64 sm:h-72 lg:h-96" wire:ignore>
                 <canvas id="incomeExpenseChart"></canvas>
             </div>
         </div>
@@ -87,7 +87,7 @@
         <!-- Expense Categories Chart -->
         <div class="lg:col-start-3 shadow-lg p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900">
             <flux:heading size="lg" class="mb-3">Expense Categories</flux:heading>
-            <div class="relative h-64 sm:h-72 lg:h-96">
+            <div class="relative h-64 sm:h-72 lg:h-96" wire:ignore>
                 <canvas id="categoryChart"></canvas>
             </div>
         </div>
@@ -151,87 +151,149 @@
         </div>
     </div>
 
-    @script
     <script>
-        // Income vs Expenses Chart
-        const ctx1 = document.getElementById("incomeExpenseChart").getContext("2d");
-        new Chart(ctx1, {
-            type: "bar",
-            data: {
-                labels: @json($monthlyData['labels']),
-                datasets: [
-                    {
-                        label: "Income",
-                        data: @json($monthlyData['income']),
-                        backgroundColor: "rgba(34, 197, 94, 0.5)",
-                        borderColor: "rgb(34, 197, 94)",
-                        borderWidth: 1,
-                    },
-                    {
-                        label: "Expenses",
-                        data: @json($monthlyData['expenses']),
-                        backgroundColor: "rgba(239, 68, 68, 0.5)",
-                        borderColor: "rgb(239, 68, 68)",
-                        borderWidth: 1,
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return "Rp " + (value / 1000000).toFixed(1) + "M";
-                            },
-                        },
-                    },
-                },
-                plugins: {
-                    legend: {
-                        position: "top",
-                    },
-                },
-            },
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
         });
 
-        // Category Chart
-        const ctx2 = document.getElementById("categoryChart").getContext("2d");
-        new Chart(ctx2, {
-            type: "doughnut",
-            data: {
-                labels: @json($categoryData['labels']),
-                datasets: [
-                    {
-                        data: @json($categoryData['data']),
-                        backgroundColor: @json($categoryData['colors']),
+        // Listen for Livewire navigation events
+        document.addEventListener('livewire:navigated', function() {
+            setTimeout(function() {
+                initializeCharts();
+            }, 100);
+        });
+
+        // Initialize charts function
+        function initializeCharts() {
+            // Destroy existing charts if they exist
+            if (window.incomeExpenseChart && typeof window.incomeExpenseChart.destroy === 'function') {
+                window.incomeExpenseChart.destroy();
+                window.incomeExpenseChart = null;
+            }
+            if (window.categoryChart && typeof window.categoryChart.destroy === 'function') {
+                window.categoryChart.destroy();
+                window.categoryChart = null;
+            }
+
+            // Check if canvas elements exist before creating charts
+            const incomeExpenseCanvas = document.getElementById("incomeExpenseChart");
+            const categoryCanvas = document.getElementById("categoryChart");
+
+            // Helper format Rupiah
+            function formatRupiah(value) {
+                return new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0
+                }).format(value);
+            }
+
+            if (incomeExpenseCanvas) {
+                const ctx1 = incomeExpenseCanvas.getContext("2d");
+
+                // Ambil data income & expense dari backend
+                const incomeData = @json($monthlyData['income']);
+                const expenseData = @json($monthlyData['expenses']);
+                const allValues = [...incomeData, ...expenseData];
+
+                // Hitung min & max data
+                const minValue = Math.min(...allValues);
+                const maxValue = Math.max(...allValues);
+
+                // Kasih padding 500k atas & bawah
+                let paddedMin = minValue - 500000;
+                let paddedMax = maxValue + 500000;
+
+                // Biar ga minus
+                if (paddedMin < 0) paddedMin = 0;
+
+                // Dibulatkan ke juta terdekat
+                const suggestedMin = Math.floor(paddedMin / 1000000) * 1000000;
+                const suggestedMax = Math.ceil(paddedMax / 1000000) * 1000000;
+
+                window.incomeExpenseChart = new Chart(ctx1, {
+                    type: "bar",
+                    data: {
+                        labels: @json($monthlyData['labels']),
+                        datasets: [
+                            {
+                                label: "Income",
+                                data: incomeData,
+                                backgroundColor: "rgba(34, 197, 94, 0.5)",
+                                borderColor: "rgb(34, 197, 94)",
+                                borderWidth: 1,
+                            },
+                            {
+                                label: "Expenses",
+                                data: expenseData,
+                                backgroundColor: "rgba(239, 68, 68, 0.5)",
+                                borderColor: "rgb(239, 68, 68)",
+                                borderWidth: 1,
+                            },
+                        ],
                     },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: "bottom",
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                suggestedMin: suggestedMin,
+                                suggestedMax: suggestedMax,
+                                ticks: {
+                                    callback: function (value) {
+                                        return formatRupiah(value);
+                                    },
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                position: "top",
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.dataset.label + ": " + formatRupiah(context.parsed.y);
+                                    }
+                                }
+                            }
+                        },
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return (
-                                    context.label +
-                                    ": Rp " +
-                                    (context.parsed / 1000000).toFixed(1) +
-                                    "M"
-                                );
+                });
+            }
+
+            if (categoryCanvas) {
+                const ctx2 = categoryCanvas.getContext("2d");
+                window.categoryChart = new Chart(ctx2, {
+                    type: "doughnut",
+                    data: {
+                        labels: @json($categoryData['labels']),
+                        datasets: [
+                            {
+                                data: @json($categoryData['data']),
+                                backgroundColor: @json($categoryData['colors']),
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return context.label + ": " + formatRupiah(context.parsed);
+                                    },
+                                },
                             },
                         },
                     },
-                },
-            },
-        });
+                });
+            }
+        }
     </script>
-    @endscript
 </div>

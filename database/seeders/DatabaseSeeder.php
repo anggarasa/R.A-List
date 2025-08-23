@@ -10,6 +10,7 @@ use App\Models\financial\FinancialCategory;
 use Database\Seeders\financial\FinancialGoalsSeeder;
 use Database\Seeders\financial\FinancialAccountSeeder;
 use Database\Seeders\financial\FinancialCategorySeeder;
+use Database\Seeders\financial\FinancialTransactionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,6 +23,7 @@ class DatabaseSeeder extends Seeder
             FinancialCategorySeeder::class,
             FinancialAccountSeeder::class,
             // FinancialGoalsSeeder::class,
+            // FinancialTransactionSeeder::class,
         ]);
 
         User::factory()->create([

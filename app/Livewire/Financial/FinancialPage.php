@@ -4,7 +4,6 @@ namespace App\Livewire\Financial;
 
 use Carbon\Carbon;
 use Livewire\Component;
-use Illuminate\Support\Facades\DB;
 use App\Models\financial\FinancialBudget;
 use App\Models\financial\FinancialAccount;
 use App\Models\financial\FinancialCategory;
@@ -27,6 +26,10 @@ class FinancialPage extends Component
     {
         $this->loadFinancialData();
         $this->dispatch('financial-page-loaded');
+        $this->dispatch('initialize-charts', [
+            'monthlyData' => $this->monthlyData,
+            'categoryData' => $this->categoryData
+        ]);
     }
 
     protected function loadFinancialData()
@@ -139,17 +142,18 @@ class FinancialPage extends Component
     protected function getCategoryData()
     {
         $currentMonth = Carbon::now();
-        
+
         $categories = FinancialCategory::withSum(['transactions' => function ($query) use ($currentMonth) {
             $query->where('type', 'expense')
-                  ->whereMonth('transaction_date', $currentMonth->month)
-                  ->whereYear('transaction_date', $currentMonth->year);
+                ->whereMonth('transaction_date', $currentMonth->month)
+                ->whereYear('transaction_date', $currentMonth->year);
         }], 'amount')
         ->having('transactions_sum_amount', '>', 0)
         ->get();
 
-        $labels = [];
-        $data = [];
+        $labels = $categories->pluck('name')->toArray();
+        $data = $categories->pluck('transactions_sum_amount')->map(fn($v) => (float) $v)->toArray();
+
         $colors = [
             'rgb(59, 130, 246)',   // Blue
             'rgb(34, 197, 94)',    // Green
@@ -158,11 +162,6 @@ class FinancialPage extends Component
             'rgb(239, 68, 68)',    // Red
             'rgb(107, 114, 128)',  // Gray
         ];
-
-        foreach ($categories as $index => $category) {
-            $labels[] = $category->name;
-            $data[] = (int) ($category->transactions_sum_amount ?? 0);
-        }
 
         return [
             'labels' => $labels,
@@ -176,7 +175,7 @@ class FinancialPage extends Component
         return FinancialTransaction::with(['category', 'account'])
             ->orderBy('transaction_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->limit(10)
+            ->limit(5)
             ->get()
             ->map(function ($transaction) {
                 return [
