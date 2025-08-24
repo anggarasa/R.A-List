@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Financial\FianancialReportPage;
 use App\Livewire\Financial\FinancialAccountPage;
 use App\Livewire\Financial\FinancialBudgetPage;
 use App\Livewire\Financial\FinancialCategoryPage;
@@ -33,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('transactions', FinancialTransactionPage::class)->name('transaction');
         Route::get('budgets', FinancialBudgetPage::class)->name('budget');
         Route::get('goals', FinancialGoalsPage::class)->name('goal');
+        Route::get('report', FianancialReportPage::class)->name('report');
     });
 
     Route::redirect('settings', 'settings/profile');
