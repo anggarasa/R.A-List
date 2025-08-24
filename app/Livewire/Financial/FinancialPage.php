@@ -101,6 +101,7 @@ class FinancialPage extends Component
         $budgets = FinancialBudget::with('category')
             ->where('month', $currentMonth)
             ->where('year', $currentYear)
+            ->limit(2)
             ->get();
 
         if ($budgets->isEmpty()) {
@@ -122,6 +123,7 @@ class FinancialPage extends Component
     {
         $goals = FinancialGoal::where('status', 'active')
             ->orderBy('target_date', 'asc')
+            ->limit(2)
             ->get();
 
         if ($goals->isEmpty()) {
