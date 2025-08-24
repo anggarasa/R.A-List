@@ -1,4 +1,10 @@
 <div class="space-y-6" wire:ignore.self>
+    <div class="mb-8">
+        <flux:heading size="xl" class="text-gray-800 dark:text-white">Financial Dashboard</flux:heading>
+        <flux:text class="text-gray-600 dark:text-gray-400">Track your income, expenses, and financial goals</flux:text>
+    </div>
+
+
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <!-- Card Template -->
@@ -223,7 +229,7 @@
 
         <!-- Latest Transactions -->
         <div
-            class="lg:col-span-2  lg:row-span-2 lg:col-start-1 lg:row-start-2 bg-white dark:bg-zinc-900 rounded-2xl shadow">
+            class="{{ $financialGoals && $financialGoals->count() > 0 || $monthlyBudget && $monthlyBudget->count() > 0 ? 'lg:col-span-2' : 'lg:col-span-3' }}  lg:row-span-2 lg:col-start-1 lg:row-start-2 bg-white dark:bg-zinc-900 rounded-2xl shadow">
             <div class="p-6 border-b border-zinc-600 flex items-center justify-between">
                 <div class="truncate">
                     <flux:heading size="lg">Recent Transactions</flux:heading>
