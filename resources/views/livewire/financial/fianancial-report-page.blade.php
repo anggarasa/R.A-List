@@ -1,18 +1,20 @@
 <div class="max-w-7xl mx-auto">
     {{-- Header --}}
-    <div class="mb-8">
-        <div class="flex items-center justify-between">
+    <div class="mb-8 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Financial Report</h1>
-                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Financial Report</h1>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Detailed financial report for the selected period
                 </p>
             </div>
-            <div class="flex items-center space-x-4">
-                <flux:button wire:click="exportReport" variant="primary" icon="arrow-down-tray" size="sm">
+            <div class="flex flex-wrap items-center gap-3">
+                <flux:button wire:click="exportReport" variant="primary" icon="arrow-down-tray" size="sm"
+                    class="w-full sm:w-auto">
                     Export Report
                 </flux:button>
-                <flux:select wire:model.live="selectedPeriod" placeholder="Select Period" size="sm">
+                <flux:select wire:model.live="selectedPeriod" placeholder="Select Period" size="sm"
+                    class="w-full sm:w-auto">
                     <flux:select.option value="this_month">This Month</flux:select.option>
                     <flux:select.option value="last_month">Last Month</flux:select.option>
                     <flux:select.option value="this_year">This Year</flux:select.option>
@@ -23,21 +25,18 @@
 
         {{-- Custom Date Range --}}
         @if($selectedPeriod === 'custom')
-        <div class="mt-4 flex items-center space-x-4">
-            <div>
-                <flux:input type="date" wire:model.live="customStartDate" label="From" />
-            </div>
-            <div>
-                <flux:input type="date" wire:model.live="customEndDate" label="To" />
-            </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <flux:input type="date" wire:model.live="customStartDate" label="From" class="flex-1" />
+            <flux:input type="date" wire:model.live="customEndDate" label="To" class="flex-1" />
         </div>
         @endif
     </div>
 
     {{-- Summary Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
         {{-- Total Balance --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
+        <div
+            class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
             <flux:text>Total Balance</flux:text>
             <flux:heading size="lg">Rp {{ number_format($summary['total_balance'], 0, ',', '.') }}</flux:heading>
             <flux:text class="text-blue-600 dark:text-blue-400 mt-2">
@@ -46,7 +45,8 @@
         </div>
 
         {{-- Total Income --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
+        <div
+            class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
             <flux:text>Total Income</flux:text>
             <flux:heading size="lg">Rp {{ number_format($summary['total_income'], 0, ',', '.') }}</flux:heading>
             <flux:text
@@ -57,7 +57,8 @@
         </div>
 
         {{-- Total Expenses --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
+        <div
+            class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
             <flux:text>Total Expenses</flux:text>
             <flux:heading size="lg">Rp {{ number_format($summary['total_expenses'], 0, ',', '.') }}</flux:heading>
             <flux:text
@@ -68,7 +69,8 @@
         </div>
 
         {{-- Savings Rate --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
+        <div
+            class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
             <flux:text>Savings Rate</flux:text>
             <flux:heading size="lg">{{ number_format($summary['savings_rate'], 1) }}%</flux:heading>
             <flux:text
@@ -86,46 +88,14 @@
         </div>
     </div>
 
-    {{-- Net Savings Indicator --}}
-    <div
-        class="bg-gradient-to-r from-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-50 to-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-100 dark:from-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-900/20 dark:to-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-800/20 rounded-xl p-4 mb-8">
-        <div class="flex items-center justify-between">
-            <div>
-                <h3
-                    class="text-lg font-semibold text-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-800 dark:text-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-200">
-                    Net {{ $summary['net_savings'] >= 0 ? 'Savings' : 'Deficit' }}
-                </h3>
-                <p
-                    class="text-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-600 dark:text-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-300">
-                    Rp {{ number_format(abs($summary['net_savings']), 0, ',', '.') }}
-                </p>
-            </div>
-            <div
-                class="text-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-600 dark:text-{{ $summary['net_savings'] >= 0 ? 'green' : 'red' }}-300">
-                @if($summary['net_savings'] >= 0)
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
-                        clip-rule="evenodd"></path>
-                </svg>
-                @else
-                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
-                        clip-rule="evenodd"></path>
-                </svg>
-                @endif
-            </div>
-        </div>
-    </div>
-
     {{-- Charts Row --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
         {{-- Monthly Trend --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Monthly Trend</h3>
-                <flux:select wire:model.live="chartPeriod" size="sm">
+        <div
+            class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Monthly Trend</h3>
+                <flux:select wire:model.live="chartPeriod" size="sm" class="w-full sm:w-auto">
                     <flux:select.option value="6months">Last 6 months</flux:select.option>
                     <flux:select.option value="12months">Last 12 months</flux:select.option>
                 </flux:select>
@@ -136,42 +106,20 @@
         </div>
 
         {{-- Category Breakdown --}}
-        <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Expense Categories</h3>
+        <div
+            class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-6">Expense Categories</h3>
             <div class="h-64 relative" wire:ignore>
                 <canvas id="categoryChart" class="w-full h-full"></canvas>
             </div>
         </div>
     </div>
 
-    {{-- Category Breakdown Table --}}
-    @if($categoryBreakdown->count() > 0)
-    <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6 mb-8">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Expense Breakdown by Category</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach($categoryBreakdown as $category)
-            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg">
-                <div>
-                    <p class="font-medium text-gray-900 dark:text-white">{{ $category->category->name ?? 'Uncategorized'
-                        }}</p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        {{ number_format(($category['total_amount'] / $summary['total_expenses']) * 100, 1) }}%
-                    </p>
-                </div>
-                <p class="font-semibold text-gray-900 dark:text-white">
-                    Rp {{ number_format($category['total_amount'], 0, ',', '.') }}
-                </p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-    @endif
-
     {{-- Recent Transactions --}}
-    <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
-            <flux:button variant="ghost" size="sm"
+    <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-4 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Recent Transactions</h3>
+            <flux:button variant="ghost" size="sm" class="w-full sm:w-auto"
                 onclick="window.location.href='{{ route('financial.transaction') }}'">
                 View All
             </flux:button>
@@ -179,35 +127,30 @@
 
         @if($transactions->count() > 0)
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200 dark:border-zinc-700">
-                        <th class="text-left py-3 text-sm font-medium text-gray-600 dark:text-gray-400">Description</th>
-                        <th class="text-left py-3 text-sm font-medium text-gray-600 dark:text-gray-400">Category</th>
-                        <th class="text-left py-3 text-sm font-medium text-gray-600 dark:text-gray-400">Account</th>
-                        <th class="text-left py-3 text-sm font-medium text-gray-600 dark:text-gray-400">Date</th>
-                        <th class="text-right py-3 text-sm font-medium text-gray-600 dark:text-gray-400">Amount</th>
+                        <th class="text-left py-3 font-medium text-gray-600 dark:text-gray-400">Description</th>
+                        <th class="text-left py-3 font-medium text-gray-600 dark:text-gray-400">Category</th>
+                        <th class="text-left py-3 font-medium text-gray-600 dark:text-gray-400">Account</th>
+                        <th class="text-left py-3 font-medium text-gray-600 dark:text-gray-400">Date</th>
+                        <th class="text-right py-3 font-medium text-gray-600 dark:text-gray-400">Amount</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-zinc-700">
                     @foreach($transactions as $transaction)
                     <tr>
-                        <td class="py-4 text-sm font-medium text-gray-900 dark:text-white">
-                            {{ $transaction->description }}
+                        <td class="py-4 font-medium text-gray-900 dark:text-white">{{ $transaction->description }}</td>
+                        <td class="py-4 text-gray-600 dark:text-gray-400">{{ $transaction->category->name ??
+                            'Uncategorized' }}</td>
+                        <td class="py-4 text-gray-600 dark:text-gray-400">{{ $transaction->account->name ?? 'Unknown' }}
                         </td>
-                        <td class="py-4 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $transaction->category->name ?? 'Uncategorized' }}
-                        </td>
-                        <td class="py-4 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $transaction->account->name ?? 'Unknown' }}
-                        </td>
-                        <td class="py-4 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $transaction->transaction_date->format('M d, Y') }}
-                        </td>
+                        <td class="py-4 text-gray-600 dark:text-gray-400">{{ $transaction->transaction_date->format('M
+                            d, Y') }}</td>
                         <td
-                            class="py-4 text-sm font-medium text-right {{ $transaction->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                            {{ $transaction->type === 'income' ? '+' : '-' }}Rp {{ number_format($transaction->amount,
-                            0, ',', '.') }}
+                            class="py-4 font-medium text-right {{ $transaction->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                            {{ $transaction->type === 'income' ? '+' : '-' }}Rp {{
+                            number_format($transaction->amount,0,',','.') }}
                         </td>
                     </tr>
                     @endforeach
@@ -220,6 +163,7 @@
         </div>
         @endif
     </div>
+
 
     <script>
         class FinancialChartManager {
@@ -293,20 +237,12 @@
             // Destroy existing charts
             destroyCharts() {
                 if (this.monthlyChart) {
-                    try {
-                        this.monthlyChart.destroy();
-                    } catch (e) {
-                        console.warn('Error destroying monthly chart:', e);
-                    }
+                    this.monthlyChart.destroy();
                     this.monthlyChart = null;
                 }
                 
                 if (this.categoryChart) {
-                    try {
-                        this.categoryChart.destroy();
-                    } catch (e) {
-                        console.warn('Error destroying category chart:', e);
-                    }
+                    this.categoryChart.destroy();
                     this.categoryChart = null;
                 }
                 
@@ -328,8 +264,6 @@
 
             async _performInitialize(chartData, categoryBreakdown) {
                 try {
-                    console.log('Initializing charts with data:', { chartData, categoryBreakdown });
-                    
                     // Clean up existing charts first
                     this.destroyCharts();
                     
@@ -344,10 +278,8 @@
                     this.categoryChart = await this.createCategoryChart(categoryEl, categoryBreakdown);
                     
                     this.isInitialized = true;
-                    console.log('Charts initialized successfully');
                     
                 } catch (error) {
-                    console.error('Failed to initialize charts:', error);
                     this.destroyCharts();
                     throw error;
                 }
@@ -535,19 +467,15 @@
 
             // Update existing charts with new data
             async updateCharts(chartData = [], categoryBreakdown = []) {
-                console.log('Updating charts with data:', { chartData, categoryBreakdown });
                 
                 if (!this.isInitialized || !this.monthlyChart || !this.categoryChart) {
-                    console.log('Charts not initialized, initializing now...');
                     return await this.initialize(chartData, categoryBreakdown);
                 }
 
                 try {
                     await this.updateMonthlyChart(chartData);
                     await this.updateCategoryChart(categoryBreakdown);
-                    console.log('Charts updated successfully');
                 } catch (error) {
-                    console.error('Failed to update charts, reinitializing:', error);
                     return await this.initialize(chartData, categoryBreakdown);
                 }
             }
@@ -607,12 +535,10 @@
 
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded - initializing charts');
             const chartData = @json($chartData);
             const categoryBreakdown = @json($categoryBreakdown);
             
-            window.chartManager.initialize(chartData, categoryBreakdown)
-                .catch(error => console.error('Initial chart setup failed:', error));
+            window.chartManager.initialize(chartData, categoryBreakdown);
         });
 
         // Handle Livewire navigation
@@ -620,17 +546,23 @@
             const chartData = @json($chartData);
             const categoryBreakdown = @json($categoryBreakdown);
 
-            window.chartManager.initialize(chartData, categoryBreakdown)
-                .catch(err => console.error('Initial chart init failed', err));
+            window.chartManager.initialize(chartData, categoryBreakdown);
 
             Livewire.on('updateChart', (eventData) => {
                 const data = Array.isArray(eventData) ? eventData[0] : eventData;
                 const chartData = data?.chartData || [];
                 const categoryBreakdown = data?.categoryBreakdown || [];
 
-                window.chartManager.updateCharts(chartData, categoryBreakdown)
-                    .catch(err => console.error('Chart update failed', err));
+                window.chartManager.updateCharts(chartData, categoryBreakdown);
             });
+        });
+
+        document.addEventListener('livewire:navigated', function() {
+            const chartData = @json($chartData);
+            const categoryBreakdown = @json($categoryBreakdown);
+            setTimeout(function() {
+                window.chartManager.initialize(chartData, categoryBreakdown);
+            }, 100);
         });
 
         // Handle window resize

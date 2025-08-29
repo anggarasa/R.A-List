@@ -414,7 +414,7 @@ class FianancialReportPage extends Component
             // For now, just show success message
             // You can implement actual export logic here (CSV, PDF, etc.)
             
-            $this->dispatch('notification', type: 'error', message: 'Export report not implemented yet.');
+            $this->dispatch('notification', type: 'info', message: 'Export report not implemented yet.');
 
             // Log::info('Financial report exported', [
             //     'period' => $this->selectedPeriod,
