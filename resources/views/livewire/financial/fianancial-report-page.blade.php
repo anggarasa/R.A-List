@@ -228,6 +228,19 @@
                 this.categoryChart = null;
                 this.isInitialized = false;
                 this.initPromise = null;
+
+                this.defaultColors = [
+                    'rgb(239, 68, 68)',
+                    'rgb(245, 158, 11)',
+                    'rgb(34, 197, 94)',
+                    'rgb(59, 130, 246)',
+                    'rgb(147, 51, 234)',
+                    'rgb(236, 72, 153)',
+                    'rgb(20, 184, 166)',
+                    'rgb(251, 146, 60)',
+                    'rgb(129, 140, 248)',
+                    'rgb(168, 85, 247)'
+                ];
                 
                 // Bind methods to preserve context
                 this.initialize = this.initialize.bind(this);
@@ -573,11 +586,11 @@
                 } else {
                     this.categoryChart.data.labels = data.map(cat => cat?.category?.name || 'Uncategorized');
                     this.categoryChart.data.datasets[0].data = data.map(cat => this.safeNumberConvert(cat.total_amount));
+                    this.categoryChart.data.datasets[0].backgroundColor = this.defaultColors;
                 }
                 
-                this.categoryChart.update('none'); // No animation for faster updates
-                
-                // Force resize to fix display issues
+                this.categoryChart.update('none');
+
                 await new Promise(resolve => {
                     setTimeout(() => {
                         if (this.categoryChart) {
