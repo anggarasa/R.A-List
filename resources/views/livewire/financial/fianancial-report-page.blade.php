@@ -134,7 +134,7 @@
                     <flux:select.option value="12months">Last 12 months</flux:select.option>
                 </flux:select>
             </div>
-            <div class="h-64 relative">
+            <div class="h-64 relative" wire:ignore>
                 <canvas id="monthlyTrendChart" class="w-full h-full"></canvas>
             </div>
         </div>
@@ -142,7 +142,7 @@
         {{-- Category Breakdown --}}
         <div class="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Expense Categories</h3>
-            <div class="h-64 relative">
+            <div class="h-64 relative" wire:ignore>
                 <canvas id="categoryChart" class="w-full h-full"></canvas>
             </div>
         </div>
@@ -607,48 +607,21 @@
         });
 
         // Handle Livewire navigation
-        document.addEventListener('livewire:navigated', function() {
-            console.log('Livewire navigated - reinitializing charts');
-            setTimeout(() => {
-                const chartData = @json($chartData);
-                const categoryBreakdown = @json($categoryBreakdown);
-                window.chartManager.initialize(chartData, categoryBreakdown)
-                    .catch(error => console.error('Chart setup after navigation failed:', error));
-            }, 300);
-        });
-
-        // Listen for Livewire chart update events
         document.addEventListener('livewire:initialized', () => {
+            const chartData = @json($chartData);
+            const categoryBreakdown = @json($categoryBreakdown);
+
+            window.chartManager.initialize(chartData, categoryBreakdown)
+                .catch(err => console.error('Initial chart init failed', err));
+
             Livewire.on('updateChart', (eventData) => {
-                console.log('Update chart event received:', eventData);
-                
                 const data = Array.isArray(eventData) ? eventData[0] : eventData;
                 const chartData = data?.chartData || [];
                 const categoryBreakdown = data?.categoryBreakdown || [];
-                
-                // Add slight delay to ensure DOM is stable
-                setTimeout(() => {
-                    window.chartManager.updateCharts(chartData, categoryBreakdown)
-                        .catch(error => console.error('Chart update failed:', error));
-                }, 150);
-            });
-        });
 
-        // Handle component updates
-        document.addEventListener('livewire:updated', function() {
-            console.log('Livewire updated - refreshing charts if needed');
-            setTimeout(() => {
-                const chartData = @json($chartData);
-                const categoryBreakdown = @json($categoryBreakdown);
-                
-                if (window.chartManager.isInitialized) {
-                    window.chartManager.updateCharts(chartData, categoryBreakdown)
-                        .catch(error => console.error('Chart refresh failed:', error));
-                } else {
-                    window.chartManager.initialize(chartData, categoryBreakdown)
-                        .catch(error => console.error('Chart initialization failed:', error));
-                }
-            }, 200);
+                window.chartManager.updateCharts(chartData, categoryBreakdown)
+                    .catch(err => console.error('Chart update failed', err));
+            });
         });
 
         // Handle window resize
