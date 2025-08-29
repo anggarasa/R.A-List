@@ -25,14 +25,10 @@
         @if($selectedPeriod === 'custom')
         <div class="mt-4 flex items-center space-x-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">From</label>
-                <input type="date" wire:model.live="customStartDate"
-                    class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white">
+                <flux:input type="date" wire:model.live="customStartDate" label="From" />
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">To</label>
-                <input type="date" wire:model.live="customEndDate"
-                    class="rounded-md border-gray-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white">
+                <flux:input type="date" wire:model.live="customEndDate" label="To" />
             </div>
         </div>
         @endif
