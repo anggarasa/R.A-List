@@ -208,10 +208,6 @@
                     await new Promise(resolve => setTimeout(resolve, 100));
                     attempts++;
                 }
-                
-                if (typeof Chart === 'undefined') {
-                    throw new Error('Chart.js failed to load after 5 seconds');
-                }
             }
 
             // Wait for DOM elements to be available
@@ -229,9 +225,7 @@
                     
                     await new Promise(resolve => setTimeout(resolve, 100));
                     attempts++;
-                }
-                
-                throw new Error('Chart elements not found after 5 seconds');
+                }   
             }
 
             // Destroy existing charts
