@@ -6,9 +6,10 @@ use Livewire\Component;
 use App\Models\financial\FinancialTransaction;
 use App\Models\financial\FinancialAccount;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
+
+use function PHPSTORM_META\type;
 
 class FianancialReportPage extends Component
 {
@@ -406,31 +407,25 @@ class FianancialReportPage extends Component
     {
         try {
             // Get current data
-            $summary = $this->getSummaryData();
-            $transactions = $this->getRecentTransactions();
-            $categoryBreakdown = $this->getCategoryBreakdown();
+            // $summary = $this->getSummaryData();
+            // $transactions = $this->getRecentTransactions();
+            // $categoryBreakdown = $this->getCategoryBreakdown();
             
             // For now, just show success message
             // You can implement actual export logic here (CSV, PDF, etc.)
             
-            $this->dispatch('notify', [
-                'message' => 'Report exported successfully!',
-                'type' => 'success'
-            ]);
+            $this->dispatch('notification', type: 'error', message: 'Export report not implemented yet.');
 
-            Log::info('Financial report exported', [
-                'period' => $this->selectedPeriod,
-                'transactions_count' => $transactions->count(),
-                'categories_count' => $categoryBreakdown->count()
-            ]);
+            // Log::info('Financial report exported', [
+            //     'period' => $this->selectedPeriod,
+            //     'transactions_count' => $transactions->count(),
+            //     'categories_count' => $categoryBreakdown->count()
+            // ]);
             
         } catch (\Exception $e) {
             Log::error('Export report error: ' . $e->getMessage());
             
-            $this->dispatch('notify', [
-                'message' => 'Failed to export report. Please try again.',
-                'type' => 'error'
-            ]);
+            $this->dispatch('notification', type: 'error', message: 'Failed to export report. Please try again.');
         }
     }
 
