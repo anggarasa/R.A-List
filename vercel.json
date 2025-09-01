@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "framework": null,
+  "functions": { "api/index.php": { "runtime": "vercel-php@0.6.0" } },
+  "routes": [
+    {
+      "src": "/img/(.*)",
+      "dest": "/public/assets/images/"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ],
+  "outputDirectory": "public",
+  "env": {
+    "APP_NAME": "R.A List",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_URL": "https://ra-list.vercel.app",
+    "APP_LOCALE": "en",
+    "APP_FALLBACK_LOCALE": "en",
+    "APP_FAKER_LOCALE": "en_US",
+    "APP_CONFIG_CACHE": "/tmp/config.php",
+    "APP_ROUTES_CACHE": "/tmp/routes.php",
+    "VIEW_COMPILED_PATH": "/tmp",
+    "CACHE_DRIVER": "array",
+    "LOG_CHANNEL": "stderr",
+    "SESSION_DRIVER": "cookie",
+    "DB_CONNECTION": "mysql",
+    "DB_HOST": "127.0.0.1",
+    "DB_PORT": "3306",
+    "DB_DATABASE": "ra_list_db",
+    "DB_USERNAME": "root",
+    "DB_PASSWORD": "",
+    "MYSQL_ATTR_SSL_CA": "/etc/pki/tls/certs/ca-bundle.crt",
+    "MAIL_MAILER": "smtp",
+    "MAIL_HOST": "smtp.gmail.com",
+    "MAIL_PORT": "587",
+    "MAIL_USERNAME": "anggasaputra6609@gmail.com",
+    "MAIL_PASSWORD": "kkcoptrantxnpkzn",
+    "MAIL_FROM_ADDRESS": "anggasaputra6609@gmail.com",
+    "MAIL_FROM_NAME": "R.A List"
+  }
+}
