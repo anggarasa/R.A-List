@@ -1,59 +1,82 @@
+@php
+// Accept props: $name (required), $label, $placeholder, $required, $disabled, $error, $id, $size
+$id = $id ?? ('currency_input_'.uniqid().'_'.$name);
+$size = $size ?? 'md';
+$placeholder = $placeholder ?? 'Masukkan nominal';
+$required = $required ?? false;
+$disabled = $disabled ?? false;
+@endphp
+
 <div class="w-full" x-data="{
-        displayValue: @entangle('value').live,
-        rawValue: @entangle('rawValue').live,
+        rawValue: 0,
+        displayValue: '',
         focused: false,
         debounceTimer: null,
-        
+
+        parseNumeric(value) {
+            return parseInt((value ?? '').toString().replace(/[^0-9]/g, '')) || 0;
+        },
+
         formatCurrency(value) {
-            // Parse angka dari string (hapus semua karakter non-digit)
-            const numericValue = parseInt(value.toString().replace(/[^0-9]/g, '')) || 0;
-            this.rawValue = numericValue;
-            
-            if (numericValue === 0) {
-                return '';
-            }
-            
-            // Format ke Rupiah
+            const numericValue = Number(value) || 0;
+            if (numericValue === 0) return '';
             return 'Rp ' + numericValue.toLocaleString('id-ID');
         },
-        
+
+        syncToLivewire() {
+            if (this.$refs.raw) {
+                this.$refs.raw.value = this.rawValue || 0;
+                this.$refs.raw.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        },
+
         handleInput(event) {
+            const caretStart = event.target.selectionStart;
+            const caretEnd = event.target.selectionEnd;
             const inputValue = event.target.value;
-            this.displayValue = this.formatCurrency(inputValue);
-            
-            // Update ke Livewire dengan debounce
+
+            this.rawValue = this.parseNumeric(inputValue);
+            this.displayValue = inputValue;
+
             clearTimeout(this.debounceTimer);
             this.debounceTimer = setTimeout(() => {
-                $wire.updateRawValue(this.rawValue);
-            }, 300);
+                this.syncToLivewire();
+            }, 200);
+
+            this.$nextTick(() => {
+                event.target.setSelectionRange(caretStart, caretEnd);
+            });
         },
-        
+
         handleFocus() {
             this.focused = true;
+            this.displayValue = this.rawValue ? this.rawValue.toString() : '';
         },
-        
+
         handleBlur() {
             this.focused = false;
-            // Pastikan format tetap konsisten setelah blur
             this.displayValue = this.formatCurrency(this.rawValue);
         },
-        
+
         clearValue() {
             this.displayValue = '';
             this.rawValue = 0;
-            $wire.clear();
+            this.syncToLivewire();
         },
-        
+
         init() {
-            // Initialize jika sudah ada nilai
-            if (this.rawValue > 0) {
-                this.displayValue = this.formatCurrency(this.rawValue);
-            }
-            
-            // Watch perubahan rawValue dari Livewire
-            this.$watch('rawValue', (value) => {
-                if (!this.focused) {
-                    this.displayValue = this.formatCurrency(value);
+            // Initialize raw from hidden input (Livewire-bound)
+            this.rawValue = this.parseNumeric(this.$refs.raw?.value || 0);
+            this.displayValue = this.formatCurrency(this.rawValue);
+
+            // Watch hidden input value changes (from Livewire updates)
+            this.$watch(() => this.$refs.raw?.value, (value) => {
+                const numeric = this.parseNumeric(value || 0);
+                if (numeric !== this.rawValue) {
+                    this.rawValue = numeric;
+                    if (!this.focused) {
+                        this.displayValue = this.formatCurrency(this.rawValue);
+                    }
                 }
             });
         }
@@ -69,7 +92,7 @@
     @endif
 
     <div class="relative">
-        <input type="text" id="{{ $id }}" name="{{ $name }}" x-model="displayValue" @input="handleInput($event)"
+        <input type="text" id="{{ $id }}" name="{{ $name }}_display" x-model="displayValue" @input="handleInput($event)"
             @focus="handleFocus()" @blur="handleBlur()" placeholder="{{ $placeholder }}" @if($disabled) disabled @endif
             autocomplete="off" inputmode="numeric"
             @class([ 'block w-full pl-3 pr-12 border rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-offset-0 focus:outline-none'
@@ -124,8 +147,8 @@
         </p>
     </div>
 
-    {{-- Hidden input untuk form submission --}}
+    {{-- Hidden input terhubung ke Livewire --}}
     @if($name)
-    <input type="hidden" name="{{ $name }}_raw" x-model="rawValue">
+    <input type="hidden" x-ref="raw" wire:model.live="{{ $name }}">
     @endif
 </div>

@@ -37,20 +37,7 @@ class FinancialGoalsPage extends Component
     public $sortDirection = 'asc';
     public $filterStatus = 'all';
 
-    /**
-     * Handle currency input updates from custom component
-     */
-    #[On('currency-updated')]
-    public function handleCurrencyUpdate($data)
-    {
-        if ($data['name'] === 'target_amount') {
-            $this->target_amount = $data['value'];
-        } 
-        
-        if ($data['name'] === 'current_amount') {
-            $this->current_amount = $data['value'];
-        }
-    }
+    // Currency input now binds directly via wire:model on hidden input
 
     /**
      * Save or update financial goal
@@ -121,15 +108,8 @@ class FinancialGoalsPage extends Component
         $this->target_date = $goal->target_date->format('Y-m-d');
         $this->description = $goal->description;
         
-        $this->dispatch('update-value-input-currency', 
-            value: number_format($goal->current_amount, 0, '.', ','),
-            targetId: 'current_amount'
-        );
-        
-        $this->dispatch('update-value-input-currency', 
-            value: number_format($goal->target_amount, 0, '.', ','),
-            targetId: 'target_amount'
-        );
+        $this->current_amount = (int) $goal->current_amount;
+        $this->target_amount = (int) $goal->target_amount;
 
         Flux::modal('add-goal')->show();
     }
@@ -198,7 +178,6 @@ class FinancialGoalsPage extends Component
             'target_date', 'description', 'isEditMode', 'editingGoalId'
         ]);
         
-        $this->dispatch('clear-input-currency');
         Flux::modal('add-goal')->close();
     }
 

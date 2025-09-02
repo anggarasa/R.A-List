@@ -61,8 +61,12 @@
                 <flux:input type="date" wire:model="transactionDate" label="Select Date" />
 
                 {{-- input amount --}}
-                <livewire:widget.currency-input label="Transaction Amount" name="amount"
-                    :error="$errors->first('amount')" size="sm" />
+                @include('livewire.widget.currency-input', [
+                'label' => 'Transaction Amount',
+                'name' => 'amount',
+                'error' => $errors->first('amount'),
+                'size' => 'sm',
+                ])
 
                 {{-- input description --}}
                 <flux:textarea wire:model="description" label="Description" placeholder="Enter description..." />

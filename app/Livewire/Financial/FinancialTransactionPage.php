@@ -50,13 +50,7 @@ class FinancialTransactionPage extends Component
         $this->categoryId = null; // reset category kalau type diganti
     }
 
-    #[On('currency-updated')]
-    public function handleCurrencyUpdate($data)
-    {
-        if ($data['name'] === 'amount') {
-            $this->amount = $data['value'];
-        }
-    }
+    // Currency input now binds directly via wire:model on hidden input
 
     #[On('update-data-table')]
     public function edit($data)
@@ -66,7 +60,7 @@ class FinancialTransactionPage extends Component
             $this->categoryId = $data['financial_category_id'];
             $this->accountId = $data['financial_account_id'];
             $this->type = $data['type'];
-            $this->dispatch('update-value-input-currency', number_format($data['amount'], 0, '.', ','));
+            $this->amount = (int) $data['amount'];
             $this->description = $data['description'];
             $this->transactionDate = date('Y-m-d', strtotime($data['transaction_date']));
 
@@ -137,7 +131,6 @@ class FinancialTransactionPage extends Component
     public function clearForm()
     {
         $this->reset(['transactionId', 'categoryId', 'accountId', 'toAccountId', 'type', 'amount', 'description', 'transactionDate']);
-        $this->dispatch('clear-input-currency');
     }
 
     // Start manage view flexible table transaction
