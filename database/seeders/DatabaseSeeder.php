@@ -19,17 +19,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            FinancialCategorySeeder::class,
-            FinancialAccountSeeder::class,
-            // FinancialGoalsSeeder::class,
-            // FinancialTransactionSeeder::class,
-        ]);
-
-        User::factory()->create([
-            'name' => 'Anggara Saputra',
-            'email' => 'anggarasaputra273@gmail.com',
-            'password' => Hash::make("anggara#r.a_list"),
-        ]);
+        //
     }
 }
