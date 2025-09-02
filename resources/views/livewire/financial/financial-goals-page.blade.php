@@ -250,9 +250,14 @@
 
                 {{-- Target Amount --}}
                 <div>
-                    <livewire:widget.currency-input :id="'target_amount'" :label="'Target Amount'" name="target_amount"
-                        wire:key="target_amount" :error="$errors->first('target_amount')"
-                        placeholder="Enter the amount you want to save" size="sm" />
+                    @include('livewire.widget.currency-input', [
+                    'id' => 'target_amount',
+                    'label' => 'Target Amount',
+                    'name' => 'target_amount',
+                    'error' => $errors->first('target_amount'),
+                    'placeholder' => 'Enter the amount you want to save',
+                    'size' => 'sm',
+                    ])
                     @error('target_amount')
                     <flux:text size="sm" class="text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
                         <flux:icon.exclamation-triangle variant="micro" />
@@ -263,9 +268,14 @@
 
                 {{-- Current Amount --}}
                 <div>
-                    <livewire:widget.currency-input :id="'current_amount'" :label="'Current Amount'"
-                        name="current_amount" wire:key="current_amount" :error="$errors->first('current_amount')"
-                        placeholder="Enter the amount you already have" size="sm" />
+                    @include('livewire.widget.currency-input', [
+                    'id' => 'current_amount',
+                    'label' => 'Current Amount',
+                    'name' => 'current_amount',
+                    'error' => $errors->first('current_amount'),
+                    'placeholder' => 'Enter the amount you already have',
+                    'size' => 'sm',
+                    ])
                     @error('current_amount')
                     <flux:text size="sm" class="text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
                         <flux:icon.exclamation-triangle variant="micro" />

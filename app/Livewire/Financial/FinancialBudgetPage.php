@@ -60,13 +60,7 @@ class FinancialBudgetPage extends Component
         $this->filterYear = now()->year;
     }
 
-    #[On('currency-updated')]
-    public function handleCurrencyUpdate($data)
-    {
-        if ($data['name'] === 'budget') {
-            $this->budget_amount = $data['value'];
-        }
-    }
+    // Currency input now binds directly via wire:model on hidden input
 
     public function openCreateModal()
     {
@@ -87,9 +81,7 @@ class FinancialBudgetPage extends Component
         $this->budget_amount = $budget->amount;
         
         // Update currency input dengan format yang benar
-        $this->dispatch('update-value-input-currency', 
-            number_format($budget->amount, 0, '.', ',')
-        );
+        $this->budget_amount = (int) $budget->amount;
         
         Flux::modal('budget-modal')->show();
     }
@@ -169,7 +161,6 @@ class FinancialBudgetPage extends Component
             'category_id', 'month', 'year', 'budget_amount', 
             'editingBudget', 'isEditing'
         ]);
-        $this->dispatch('clear-input-currency');
         $this->resetValidation();
     }
 

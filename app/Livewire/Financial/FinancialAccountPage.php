@@ -24,13 +24,7 @@ class FinancialAccountPage extends Component
 
     public ?FinancialAccount $accountEdit = null;
 
-    #[On('currency-updated')]
-    public function handleCurrencyUpdate($data)
-    {
-        if ($data['name'] === 'balance') {
-            $this->balance = $data['value'];
-        }
-    }
+    // Currency input now binds directly via wire:model on hidden input
 
     public function setEdit(FinancialAccount $account)
     {
@@ -39,7 +33,7 @@ class FinancialAccountPage extends Component
             $this->name = $account->name;
             $this->type = $account->type;
             $this->accountNumber = $account->account_number;
-            $this->dispatch('update-value-input-currency', number_format($account->balance, 0, '.', ','));
+            $this->balance = (int) $account->balance;
             Flux::modal('add-account')->show();
         }
     }
@@ -56,7 +50,6 @@ class FinancialAccountPage extends Component
                 'account_number' => $this->accountNumber
             ]);
 
-            $this->dispatch('clear-input-currency');
             $this->dispatch('notification', type: 'success', message: 'Successfully updated the financial account');
         } else {
             FinancialAccount::create([
@@ -66,7 +59,6 @@ class FinancialAccountPage extends Component
                 'account_number' => $this->accountNumber
             ]);
 
-            $this->dispatch('clear-input-currency');
             $this->dispatch('notification', type: 'success', message: 'Successfully created a new financial account');
         }
 
@@ -96,7 +88,6 @@ class FinancialAccountPage extends Component
     {
         $this->reset(['name', 'type', 'balance', 'accountNumber']);
         $this->accountEdit = null;
-        $this->dispatch('clear-input-currency');
     }
 
     public function render()
