@@ -155,7 +155,7 @@
                             </flux:text>
                         </div>
                         <div class="flex justify-between items-center">
-                            <flux:text size="sm">Collected:</flux:text>
+                            <flux:text size="sm">Target:</flux:text>
                             <flux:text size="sm" class="font-semibold text-blue-600 dark:text-blue-400">
                                 Rp {{ number_format($goal->target_amount, 0, ',', '.') }}
                             </flux:text>
@@ -250,14 +250,16 @@
 
                 {{-- Target Amount --}}
                 <div>
-                    @include('livewire.widget.currency-input', [
+                    {{-- @include('livewire.widget.currency-input', [
                     'id' => 'target_amount',
                     'label' => 'Target Amount',
                     'name' => 'target_amount',
                     'error' => $errors->first('target_amount'),
                     'placeholder' => 'Enter the amount you want to save',
                     'size' => 'sm',
-                    ])
+                    ]) --}}
+                    <x-input-currency label="Target Amount" wire:model="target_amount" name="target_amount"
+                        id="target_amount" size="md" placeholder='Enter the amount you want to save' />
                     @error('target_amount')
                     <flux:text size="sm" class="text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
                         <flux:icon.exclamation-triangle variant="micro" />
@@ -268,14 +270,16 @@
 
                 {{-- Current Amount --}}
                 <div>
-                    @include('livewire.widget.currency-input', [
+                    {{-- @include('livewire.widget.currency-input', [
                     'id' => 'current_amount',
                     'label' => 'Current Amount',
                     'name' => 'current_amount',
                     'error' => $errors->first('current_amount'),
                     'placeholder' => 'Enter the amount you already have',
                     'size' => 'sm',
-                    ])
+                    ]) --}}
+                    <x-input-currency label="Current Amount" wire:model="current_amount" name="current_amount"
+                        id="current_amount" size="md" placeholder='Enter the amount you already have' />
                     @error('current_amount')
                     <flux:text size="sm" class="text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
                         <flux:icon.exclamation-triangle variant="micro" />
