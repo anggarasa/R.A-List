@@ -16,10 +16,10 @@ class FinancialGoalsPage extends Component
     #[Validate('required|string|max:255')]
     public $name = '';
 
-    #[Validate('required|numeric|min:1')]
+    #[Validate('required|integer|min:1')]
     public $target_amount = 0;
 
-    #[Validate('nullable|numeric|min:0')]
+    #[Validate('nullable|integer|min:0')]
     public $current_amount = 0;
 
     #[Validate('required|date|after:today')]
@@ -108,8 +108,9 @@ class FinancialGoalsPage extends Component
         $this->target_date = $goal->target_date->format('Y-m-d');
         $this->description = $goal->description;
         
-        $this->current_amount = (int) $goal->current_amount;
-        $this->target_amount = (int) $goal->target_amount;
+        // Ensure amounts are integers for currency input
+        $this->current_amount = $this->parseAmount($goal->current_amount);
+        $this->target_amount = $this->parseAmount($goal->target_amount);
 
         Flux::modal('add-goal')->show();
     }
@@ -286,6 +287,25 @@ class FinancialGoalsPage extends Component
     public function getSubmitButtonText()
     {
         return $this->isEditMode ? 'Update Goal' : 'Add Goal';
+    }
+
+    /**
+     * Parse amount from database to integer for currency input
+     */
+    private function parseAmount($amount)
+    {
+        if (is_null($amount) || $amount === '') {
+            return 0;
+        }
+        
+        // If it's already a number, return it
+        if (is_numeric($amount)) {
+            return (int) $amount;
+        }
+        
+        // If it's a string with formatting, clean it
+        $cleaned = str_replace(['.', ','], '', $amount);
+        return (int) $cleaned;
     }
 
     public function render()

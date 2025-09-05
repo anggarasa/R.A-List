@@ -28,8 +28,8 @@ class FinancialBudgetPage extends Component
     #[Validate('required', message: 'Please select a year')]
     public $year = '';
 
-    #[Validate('required|numeric|min:1000', message: 'Budget amount must be at least Rp 1.000')]
-    public $budget_amount = '';
+    #[Validate('required|integer|min:1000', message: 'Budget amount must be at least Rp 1.000')]
+    public $budget_amount = 0;
 
     // Filter properties
     public $filterMonth;
@@ -66,6 +66,7 @@ class FinancialBudgetPage extends Component
     {
         $this->resetForm();
         $this->isEditing = false;
+        $this->budget_amount = 0; // Ensure clean start
         Flux::modal('budget-modal')->show();
     }
 
@@ -78,10 +79,9 @@ class FinancialBudgetPage extends Component
         $this->category_id = $budget->financial_category_id;
         $this->month = $budget->month;
         $this->year = $budget->year;
-        $this->budget_amount = $budget->amount;
         
-        // Update currency input dengan format yang benar
-        $this->budget_amount = (int) $budget->amount;
+        // Parse amount untuk input currency (integer)
+        $this->budget_amount = $this->parseAmount($budget->amount);
         
         Flux::modal('budget-modal')->show();
     }
@@ -161,6 +161,7 @@ class FinancialBudgetPage extends Component
             'category_id', 'month', 'year', 'budget_amount', 
             'editingBudget', 'isEditing'
         ]);
+        $this->budget_amount = 0; // Ensure it's always an integer
         $this->resetValidation();
     }
 
@@ -257,5 +258,24 @@ class FinancialBudgetPage extends Component
         ];
 
         return $months[$monthNumber] ?? 'Unknown';
+    }
+
+    /**
+     * Parse amount from database to integer for currency input
+     */
+    private function parseAmount($amount)
+    {
+        if (is_null($amount) || $amount === '') {
+            return 0;
+        }
+        
+        // If it's already a number, return it
+        if (is_numeric($amount)) {
+            return (int) $amount;
+        }
+        
+        // If it's a string with formatting, clean it
+        $cleaned = str_replace(['.', ','], '', $amount);
+        return (int) $cleaned;
     }
 }

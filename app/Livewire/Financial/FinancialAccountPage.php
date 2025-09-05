@@ -16,13 +16,19 @@ class FinancialAccountPage extends Component
     #[Validate('required|in:bank,cash,ewallet,investment')]
     public $type;
 
-    #[Validate('integer')]
-    public $balance;
+    #[Validate('required|integer|min:0')]
+    public $balance = 0;
 
     #[Validate('nullable')]
     public $accountNumber;
 
     public ?FinancialAccount $accountEdit = null;
+
+    public function mount()
+    {
+        // Initialize balance as integer
+        $this->balance = 0;
+    }
 
     // Currency input now binds directly via wire:model on hidden input
 
@@ -33,7 +39,10 @@ class FinancialAccountPage extends Component
             $this->name = $account->name;
             $this->type = $account->type;
             $this->accountNumber = $account->account_number;
-            $this->balance = (int) $account->balance;
+            
+            // Parse balance untuk input currency (integer)
+            $this->balance = $this->parseAmount($account->balance);
+            
             Flux::modal('add-account')->show();
         }
     }
@@ -87,7 +96,27 @@ class FinancialAccountPage extends Component
     public function clearFormAccount()
     {
         $this->reset(['name', 'type', 'balance', 'accountNumber']);
+        $this->balance = 0; // Ensure it's always an integer
         $this->accountEdit = null;
+    }
+
+    /**
+     * Parse amount from database to integer for currency input
+     */
+    private function parseAmount($amount)
+    {
+        if (is_null($amount) || $amount === '') {
+            return 0;
+        }
+        
+        // If it's already a number, return it
+        if (is_numeric($amount)) {
+            return (int) $amount;
+        }
+        
+        // If it's a string with formatting, clean it
+        $cleaned = str_replace(['.', ','], '', $amount);
+        return (int) $cleaned;
     }
 
     public function render()
