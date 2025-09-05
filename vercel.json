@@ -11,7 +11,7 @@
             "dest": "/public/build/"
         },
         {
-            "src": "/img/(.*)",
+            "src": "/assets/images/(.*)",
             "dest": "/public/assets/images/"
         },
         {
