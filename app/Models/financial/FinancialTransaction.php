@@ -41,12 +41,18 @@ class FinancialTransaction extends Model
                     $account->decrement('balance', $transaction->amount);
                 }
             }
+            
+            // Clear dashboard cache when new transaction is created
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
         });
 
         static::updated(function ($transaction) {
             if ($transaction->account) {
                 $transaction->account->recalculateBalance();
             }
+            
+            // Clear dashboard cache when transaction is updated
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
         });
 
         static::deleted(function ($transaction) {
@@ -59,6 +65,9 @@ class FinancialTransaction extends Model
                     $account->increment('balance', $transaction->amount);
                 }
             }
+            
+            // Clear dashboard cache when transaction is deleted
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
         });
     }
 }
