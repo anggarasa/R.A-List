@@ -282,17 +282,20 @@
 
                 {{-- Budget Amount --}}
                 <div>
-                    @include('livewire.widget.currency-input', [
+                    {{-- @include('livewire.widget.currency-input', [
                     'label' => 'Budget Amount',
                     'name' => 'budget_amount',
                     'placeholder' => 'Enter budget amount',
                     'size' => 'sm',
                     'error' => $errors->first('budget_amount'),
-                    ])
+                    ]) --}}
+                    <x-input-currency label="Budget Amount" wire:model="budget_amount" size="md"
+                        placeholder="Enter budget amount" name="budget_amount" />
                     @error('budget_amount')
-                    <flux:heading class="text-red-400 flex space-x-1 mt-1">
-                        <flux:icon.exclamation-triangle variant="micro" /> {{ $message }}
-                    </flux:heading>
+                    <flux:text size="sm" class="text-red-600 dark:text-red-400 mt-1 flex items-center gap-1">
+                        <flux:icon.exclamation-triangle variant="micro" />
+                        {{ $message }}
+                    </flux:text>
                     @enderror
                 </div>
 
