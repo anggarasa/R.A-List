@@ -60,7 +60,7 @@ class FinancialTransactionPage extends Component
             $this->categoryId = $data['financial_category_id'];
             $this->accountId = $data['financial_account_id'];
             $this->type = $data['type'];
-            $this->amount = (int) $data['amount'];
+            $this->amount = number_format($data['amount'],0,',','.');
             $this->description = $data['description'];
             $this->transactionDate = date('Y-m-d', strtotime($data['transaction_date']));
 

@@ -15,6 +15,16 @@
   [x-cloak] {
     display: none !important;
   }
+
+  input[type="text"]::-webkit-outer-spin-button,
+  input[type="text"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="text"] {
+    -moz-appearance: textfield;
+  }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
