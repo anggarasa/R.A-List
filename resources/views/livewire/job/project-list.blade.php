@@ -152,7 +152,7 @@
                 'mode' => 'range',
                 'label' => 'Period',
                 'required' => false,
-                'minDate' => now()->format('Y-m-d')
+                'minDate' => '2025-01-01'
                 ])
 
                 {{-- deskripsi --}}
