@@ -137,9 +137,8 @@ $inputId = $id ?? $name;
             <input type="text" name="{{ $name }}" id="{{ $inputId }}" x-model="displayValue"
                 @input="handleInput($event)" @focus="handleFocus($event)" @blur="handleBlur()"
                 placeholder="{{ $placeholder }}" {{ $disabled ? 'disabled' : '' }} {{ $required ? 'required' : '' }}
-                autocomplete="off" inputmode="numeric" pattern="[0-9]*" aria-invalid="{{ $error ? 'true' : 'false' }}"
-                @if($error) aria-describedby="{{ $inputId }}-error" @elseif($helper)
-                aria-describedby="{{ $inputId }}-helper" @endif
+                autocomplete="off" aria-invalid="{{ $error ? 'true' : 'false' }}" @if($error)
+                aria-describedby="{{ $inputId }}-error" @elseif($helper) aria-describedby="{{ $inputId }}-helper" @endif
                 class="block w-full {{ $sizePaddingLeft }} {{ $sizePaddingRight }} {{ $sizeHeight }} border rounded-lg shadow-sm transition-all duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-0 focus:outline-none border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-400 {{ $disabled ? 'bg-gray-50 cursor-not-allowed' : 'bg-white' }} {{ $error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : '' }} {{ $class }}">
 
             <!-- Currency Icon -->
