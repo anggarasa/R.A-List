@@ -55,9 +55,9 @@ class Dashboard extends Component
             ->sum('amount');
 
         // Project & Task Data
-        $this->activeProjects = Project::where('status', 'active')->count();
-        $this->completedTasks = Task::where('status', 'completed')->count();
-        $this->pendingTasks = Task::where('status', 'pending')->count();
+        $this->activeProjects = Project::where('status', 'In Progress')->count();
+        $this->completedTasks = Task::where('status', 'Done')->count();
+        $this->pendingTasks = Task::where('status', 'Todo')->count();
 
         // Recent Transactions
         $this->recentTransactions = FinancialTransaction::with(['category', 'account'])
