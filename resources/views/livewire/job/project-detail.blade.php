@@ -352,7 +352,7 @@
                     'mode' => 'single',
                     'label' => 'Due Date',
                     'required' => false,
-                    'minDate' => now()->format('Y-m-d')
+                    'minDate' => '2025-01-01'
                     ])
 
                     <!-- Form Grid -->
