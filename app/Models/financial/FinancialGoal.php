@@ -12,6 +12,21 @@ class FinancialGoal extends Model
         'target_date', 'status', 'description'
     ];
 
+    protected static function booted()
+    {
+        static::created(function () {
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
+        });
+
+        static::updated(function () {
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
+        });
+
+        static::deleted(function () {
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
+        });
+    }
+
     protected $casts = [
         'target_amount' => 'decimal:2',
         'current_amount' => 'decimal:2',

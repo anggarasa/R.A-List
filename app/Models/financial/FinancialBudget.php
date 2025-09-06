@@ -9,6 +9,21 @@ class FinancialBudget extends Model
     protected $fillable = ['financial_category_id', 'amount', 'month', 'year', 'status'];
     protected $casts = ['amount' => 'decimal:2'];
 
+    protected static function booted()
+    {
+        static::created(function () {
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
+        });
+
+        static::updated(function () {
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
+        });
+
+        static::deleted(function () {
+            \App\Livewire\Financial\FinancialPage::clearDashboardCache();
+        });
+    }
+
     public function category()
     {
         return $this->belongsTo(FinancialCategory::class, 'financial_category_id');
@@ -16,6 +31,8 @@ class FinancialBudget extends Model
 
     public function getUsedAmountAttribute()
     {
+        // This accessor should be avoided in favor of pre-calculated values
+        // to prevent N+1 queries. Use optimized queries in the controller instead.
         return $this->category->transactions()
             ->where('type', 'expense')
             ->whereMonth('transaction_date', $this->month)
