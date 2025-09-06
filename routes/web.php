@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Dashboard;
 use App\Livewire\Financial\FianancialReportPage;
 use App\Livewire\Financial\FinancialAccountPage;
 use App\Livewire\Financial\FinancialBudgetPage;
@@ -20,7 +21,8 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    // Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
 
     // job list route
     Route::get('job/project_lists', ProjectList::class)->name('job.project_list');
