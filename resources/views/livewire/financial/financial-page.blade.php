@@ -2,7 +2,7 @@
     <!-- Header Section -->
     <div class="bg-white dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
                 <div>
                     <flux:heading size="xl" class="text-gray-900 dark:text-white font-bold">
                         Financial Dashboard
