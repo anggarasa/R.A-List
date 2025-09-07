@@ -184,7 +184,7 @@ class FinancialTransactionPage extends Component
             'method' => 'confirmDelete',
             'label' => 'Delete',
             'class' => 'text-white bg-red-600 hover:bg-red-700 cursor-pointer',
-            'confirm' => 'Are you sure you want to delete this category?'
+            'confirm' => 'Are you sure you want to delete this transaction?'
         ]
     ];
     // End manage view flexible table transaction
